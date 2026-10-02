@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+body { background: #FFF5F9; color: #2A1433; font-family: var(--font-jakarta), system-ui, sans-serif; font-size: 16px; }
+:focus-visible { outline: 3px solid #D81B60; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
