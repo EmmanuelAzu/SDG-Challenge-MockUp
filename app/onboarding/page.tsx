@@ -1,9 +1,15 @@
-export default function Onboarding() {
-  return (
-    <main className="mx-auto max-w-sm px-4 py-12">
-      <h1 className="font-display text-3xl font-semibold">Welcome to Sisi</h1>
-      <p className="mt-2 text-plum-500">Onboarding is built in the next phase.</p>
-      <a href="/home" className="mt-6 inline-block rounded-input bg-pink-600 px-5 py-3 font-semibold text-white">Go to my journey</a>
-    </main>
-  );
+import { requireUser } from '@/lib/auth';
+import { OnboardingFlow } from '@/components/onboarding-flow';
+
+export const dynamic = 'force-dynamic';
+
+export default async function Onboarding({ searchParams }: { searchParams: Promise<{ community?: string }> }) {
+  const { community } = await searchParams;
+  const { supabase, user } = await requireUser();
+  const [{ data: communities }, { data: profile }] = await Promise.all([
+    supabase.from('communities').select('id,slug,name,kind').order('name'),
+    supabase.from('profiles').select('display_name').eq('id', user.id).single(),
+  ]);
+  const preset = (communities ?? []).find((c) => c.slug === community)?.id ?? null;
+  return <OnboardingFlow communities={communities ?? []} presetCommunity={preset} defaultName={profile?.display_name ?? ''} />;
 }

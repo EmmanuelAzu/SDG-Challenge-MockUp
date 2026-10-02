@@ -43,7 +43,7 @@ do $$ declare t text; begin
 
 -- Own-row policies
 do $$ declare t text; begin
-  foreach t in array array['lesson_progress','action_completions','user_milestones','invest_sim_runs','invest_checklist','streaks','confidence_surveys','notifications','user_blocks','session_rsvps','challenge_completions'] loop
+  foreach t in array array['lesson_progress','action_completions','user_milestones','invest_sim_runs','invest_checklist','confidence_surveys','notifications','session_rsvps','challenge_completions'] loop
     execute format('create policy own_rw on %I for all using (user_id = auth.uid()) with check (user_id = auth.uid())', t);
   end loop; end $$;
 create policy own_blocks on user_blocks for all using (blocker_id = auth.uid()) with check (blocker_id = auth.uid());
@@ -118,6 +118,9 @@ begin
       insert into notifications (user_id,kind,title,body,href) values (nxt.user_id,'booking','You''re in! A seat opened up','Your waitlisted booking is now confirmed.','/tickets/'||nxt.id);
     end if;
   end if;
+  update bookings w set waitlist_position = r.rn
+    from (select id, row_number() over (order by waitlist_position) rn from bookings where event_id = b.event_id and status = 'waitlisted') r
+   where w.id = r.id;
 end $$;
 
 -- Leaderboards (opted-in only / aggregated)
@@ -155,3 +158,8 @@ language sql stable security definer set search_path = public as $$
   from badge_shares s join user_badges ub on ub.id = s.user_badge_id join badges b on b.slug = ub.badge_slug
   join profiles p on p.id = ub.user_id where s.code = p_code and s.revoked_at is null $$;
 grant execute on function public_badge(text) to anon, authenticated;
+
+-- XP = total points, kept in sync atomically
+create or replace function bump_xp() returns trigger language plpgsql security definer set search_path = public as $$
+begin update profiles set xp = xp + new.points where id = new.user_id; return new; end $$;
+create trigger point_events_xp after insert on point_events for each row execute function bump_xp();

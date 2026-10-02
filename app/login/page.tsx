@@ -1,11 +1,13 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
-export default function Login() {
+function LoginForm() {
   const router = useRouter();
-  const [mode, setMode] = useState<'in' | 'up'>('in');
+  const params = useSearchParams();
+  const community = params.get('community');
+  const [mode, setMode] = useState<'in' | 'up'>(params.get('mode') === 'up' ? 'up' : 'in');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -17,14 +19,14 @@ export default function Login() {
     const email = String(f.get('email'));
     const password = String(f.get('password'));
     const supabase = createClient();
-    const ref = new URLSearchParams(window.location.search).get('ref') ?? undefined;
+    const ref = params.get('ref') ?? undefined;
     const { error } =
       mode === 'up'
         ? await supabase.auth.signUp({ email, password, options: { data: { display_name: String(f.get('name') ?? ''), ref } } })
         : await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) return setError(error.message.includes('Invalid') ? 'That email and password don’t match. Check them and try again.' : error.message);
-    router.replace(mode === 'up' ? '/onboarding' : '/home');
+    router.replace(mode === 'up' ? `/onboarding${community ? `?community=${community}` : ''}` : community ? `/community/${community}` : '/home');
     router.refresh();
   }
 
@@ -54,5 +56,14 @@ export default function Login() {
       </button>
       <p className="mt-2 text-xs text-plum-500">Forgot your password? Ask your facilitator to set a temporary one.</p>
     </main>
+  );
+}
+
+import { Suspense } from 'react';
+export default function Login() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

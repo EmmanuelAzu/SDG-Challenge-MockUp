@@ -5,3 +5,18 @@
 - No Supabase MCP/CLI/credentials available in the build sandbox: schema, RLS and seed are written as migrations + `pnpm seed`, to be applied once credentials exist.
 - Pinned TypeScript 6 (Next 15 can't load TS 7; it also silently broke the @/ path alias).
 - Pinned ESLint 8 (eslint-config-next 15 legacy config).
+- lucide-react no longer ships brand icons; share sheet uses generic icons (Camera/Briefcase/Share2).
+- `no-explicit-any` is off until `lib/database.types.ts` can be generated from a live Supabase project; Supabase rows are untyped meanwhile.
+- Quiz answers (correct_index) are readable by the client for instant feedback; grading and points are re-checked server-side.
+- Phase 2 ships 5 milestone courses / 10 lessons; the remaining courses (TFSA deep-dive, student-to-professional, O-Week Starter, etc.) land in Phase 3/4.
+- savings-streak badge = actions in 4 different ISO weeks (no separate 'saving' action type exists yet).
+- SQL verified against a local Postgres 16 with a stubbed auth schema (booking/waitlist, leaderboards, RLS smoke tests) because no Supabase project is available.
+- Spec v2 applied: weekly-target streaks (computed from effort days in `point_events`, no `streaks` table), levels from `profiles.xp` (kept by a DB trigger), no points for sharing, Focus mode (profile flag + `sisi_focus` cookie so client-side celebrations can honour it), 22 badges, single daily cron `/api/cron/daily`.
+- Weekly target uses the user's *current* target for the whole 12-week history (targets are not versioned).
+- An "active day" = a SAST day with any effort point event except weekly_target, onboarding and feedback. Re-opening a finished lesson earns nothing, so it does not count as an active day.
+- Life Track is assigned by explicit rules in `lib/content/life-tracks.ts` (unit-tested); the user can change it in Profile.
+- Glossary terms are marked `[[term]]` automatically when seeding (first occurrence per card) rather than hand-tagged.
+- Lesson sources use publisher home pages only (SARS, FSCA, Treasury, NCR, Labour, Banking Association) since deep links could not be verified here. No reviews are seeded: every lesson shows "Review pending".
+- Feedback points: 5 per rating or topic suggestion, at most 5 awards in any rolling 7 days.
+- Circle Cup / Campus Cup winners are chosen by `lib/jobs/winners.ts`; the 0-point `circle_cup` / `campus_cup` flag events drive the badge rules.
+- Courses: 5 courses / 10 lessons seeded so far (spec target is 11 courses / 30 lessons plus 6 reels); the rest is Phase 3/4 content work.

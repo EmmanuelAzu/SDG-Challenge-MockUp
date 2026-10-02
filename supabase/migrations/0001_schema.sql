@@ -17,6 +17,11 @@ create table profiles (
   avatar_url text,
   role user_role not null default 'member',
   goals text[] not null default '{}',
+  life_track text,
+  weekly_target smallint not null default 2 check (weekly_target between 1 and 3),
+  focus_mode boolean not null default false,
+  share_milestones boolean not null default false,
+  xp int not null default 0,
   show_on_leaderboard boolean not null default false,
   share_name_mode name_mode not null default 'first',
   referral_code text unique not null default substr(encode(gen_random_bytes(6),'hex'),1,8),
@@ -79,7 +84,7 @@ create table mutes (channel_id uuid references channels on delete cascade, user_
 create table courses (id uuid primary key default gen_random_uuid(), slug text unique not null, title text not null, topic text, level text, cover_url text, sort int default 0);
 create table lessons (
   id uuid primary key default gen_random_uuid(), course_id uuid references courses on delete cascade, slug text not null,
-  title text not null, format text not null default 'cards' check (format in ('video','cards')), video_url text,
+  title text not null, format text not null default 'cards' check (format in ('video','cards','reel')), video_url text,
   cards jsonb not null default '[]', transcript text, takeaway text, duration_sec int default 180, sort int default 0,
   unique (course_id, slug)
 );
@@ -120,7 +125,6 @@ create table point_events (
   created_at timestamptz not null default now(), unique (user_id,source,source_id)
 );
 create index on point_events (user_id, created_at);
-create table streaks (user_id uuid primary key references profiles on delete cascade, current int not null default 0, longest int not null default 0, last_active_date date, freezes_left int not null default 1, freeze_week text);
 create table badges (slug text primary key, name text not null, description text, meaning_line text, rule jsonb, rarity text not null default 'common' check (rarity in ('common','rare','epic')), sort int default 0);
 create table user_badges (id uuid primary key default gen_random_uuid(), user_id uuid references profiles on delete cascade, badge_slug text references badges, earned_at timestamptz default now(), unique (user_id,badge_slug));
 create table badge_shares (id uuid primary key default gen_random_uuid(), code text unique not null default substr(encode(gen_random_bytes(6),'hex'),1,10), user_badge_id uuid references user_badges on delete cascade, name_mode name_mode not null default 'first', include_community boolean not null default false, revoked_at timestamptz, created_at timestamptz default now());
@@ -132,7 +136,8 @@ create table help_requests (id uuid primary key default gen_random_uuid(), user_
 create table safety_resources (id uuid primary key default gen_random_uuid(), category text, name text not null, phone text, sms text, url text, description text, verified boolean not null default false, sort int default 0);
 create table confidence_surveys (id uuid primary key default gen_random_uuid(), user_id uuid references profiles on delete cascade, kind text check (kind in ('pre','post')), answers jsonb not null, created_at timestamptz default now());
 create table analytics_events (id bigint generated always as identity primary key, user_id uuid, name text not null, props jsonb default '{}', created_at timestamptz default now());
-create table notifications (id uuid primary key default gen_random_uuid(), user_id uuid references profiles on delete cascade, kind text, title text not null, body text, href text, read_at timestamptz, created_at timestamptz default now());
+create table notifications (id uuid primary key default gen_random_uuid(), user_id uuid references profiles on delete cascade, kind text, title text not null, body text, href text, read_at timestamptz, dedupe_key text, created_at timestamptz default now());
+create unique index notifications_dedupe on notifications (user_id, dedupe_key) where dedupe_key is not null;
 
 -- profile auto-create on signup
 create or replace function handle_new_user() returns trigger language plpgsql security definer set search_path = public as $$
