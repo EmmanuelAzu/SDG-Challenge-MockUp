@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 
-const money = (n: number) => `R${Math.round(n).toLocaleString('en-ZA')}`;
+// Deterministic formatting: toLocaleString differs between server and browser and breaks hydration.
+const money = (n: number) => `R${Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
 
 /** 50/30/20 builder. Values stay in this component's state; nothing is sent anywhere. */
 export function BudgetBuilder() {

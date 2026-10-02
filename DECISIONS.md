@@ -20,3 +20,4 @@
 - Feedback points: 5 per rating or topic suggestion, at most 5 awards in any rolling 7 days.
 - Circle Cup / Campus Cup winners are chosen by `lib/jobs/winners.ts`; the 0-point `circle_cup` / `campus_cup` flag events drive the badge rules.
 - Courses: 5 courses / 10 lessons seeded so far (spec target is 11 courses / 30 lessons plus 6 reels); the rest is Phase 3/4 content work.
+- `SISI_PREVIEW=1 pnpm dev` swaps Supabase for an in-memory fixture backend (lib/preview/*) so every screen can be reviewed without a project. Dev-only: disabled when NODE_ENV=production.

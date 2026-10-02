@@ -95,7 +95,7 @@ export function LessonPlayer({ lesson, questions, action, initialStage, topic, s
       <h1 className="mt-2 font-display text-2xl font-semibold">{lesson.title}</h1>
       <p className="text-sm text-plum-500">{Math.ceil((lesson.duration_sec ?? 180) / 60)} min or less</p>
       <p className="mt-1 text-xs text-plum-500">
-        {review ? `Reviewed by ${review.reviewer_name}, ${review.credential}, ${new Date(review.reviewed_on).toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' })}` : 'Review pending'}
+        {review ? `Reviewed by ${review.reviewer_name}, ${review.credential}, ${new Date(review.reviewed_on).toLocaleDateString('en-ZA', { month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg' })}` : 'Review pending'}
       </p>
 
       {stage === 'cards' && (
