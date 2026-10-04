@@ -4,7 +4,7 @@ import { TRACKS } from '@/lib/content/life-tracks';
 import { DEFAULT_REMINDER_DAYS } from '@/lib/engine/actions';
 import type { Message, PointEvent, User, World } from './types';
 
-export const WORLD_VERSION = 2;
+export const WORLD_VERSION = 3;
 export const DEMO_PASSWORD = 'SisiDemo2026!';
 const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'];
 
@@ -239,6 +239,13 @@ export function buildWorld(now = new Date()): World {
     ],
     shares: [], channels, messages, reactions: [], reports: [], blocks: [], mutes: [], reads,
     events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone: [], seasons, askedShare: { 'u-nomsa': true },
+    // Nomsa's private money data: a budget and two goals (one 60% done)
+    budgets: { 'u-nomsa': { template: 'Allowance', income: 4200, lines: { rent: 1000, transport: 420, groceries: 1000, utilities: 420, family: 0, emergency: 420, investing: 0, fun: 420 }, savedAt: iso(daysAgo(9)) } },
+    goals: [
+      { id: 'goal-laptop', userId: 'u-nomsa', name: 'Laptop for varsity', emoji: '💻', target: 8000, dueOn: iso(daysAgo(-120)).slice(0, 10), createdAt: iso(daysAgo(40)), reachedAt: null, deposits: [{ id: 'd1', amount: 2000, at: iso(daysAgo(30)) }, { id: 'd2', amount: 1500, at: iso(daysAgo(14)) }, { id: 'd3', amount: 1300, at: iso(daysAgo(5)) }] },
+      { id: 'goal-emergency', userId: 'u-nomsa', name: 'First R1,500 emergency fund', emoji: '🛟', target: 1500, dueOn: null, createdAt: iso(daysAgo(20)), reachedAt: null, deposits: [{ id: 'd4', amount: 400, at: iso(daysAgo(10)) }] },
+    ],
+    invest: {},
     notifications: [{ id: 'n-seed-1', userId: 'u-nomsa', kind: 'welcome', title: 'Welcome back, Nomsa', body: 'You are 60 points from Bud level. One lesson gets you most of the way.', href: '/home', at: iso(daysAgo(0)), read: false }],
     analytics: [],
   };

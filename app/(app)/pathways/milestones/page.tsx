@@ -24,6 +24,7 @@ export default function Milestones() {
         ))}
       </ol>
       <h2 className="mt-10 font-display text-xl font-semibold">Try the tools</h2>
+      <p className="mt-1 text-sm"><Link href="/tools/budget" className="font-semibold text-pink-700">Open the full budget builder →</Link> (saving it completes your First budget action)</p>
       <div className="mt-3 grid gap-4 sm:grid-cols-2"><CashFlowCheck /><BudgetBuilder /></div>
       <footer className="mt-10 text-xs text-plum-500">Sisi provides financial education, not financial advice.</footer>
     </div>

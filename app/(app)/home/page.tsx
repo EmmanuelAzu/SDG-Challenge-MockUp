@@ -6,6 +6,9 @@ import { useApp } from '@/components/shell/app-context';
 import { playerFor } from '@/lib/engine/player';
 import { firstName } from '@/lib/engine/helpers';
 import { shouldAskShare } from '@/lib/engine/feed';
+import { realResults } from '@/lib/engine/goals';
+import { stepsDone } from '@/lib/engine/invest';
+import { rand } from '@/lib/money';
 import { update } from '@/lib/world/store';
 
 export default function HomePage() {
@@ -13,6 +16,8 @@ export default function HomePage() {
   const p = playerFor(w, me.id, now);
   const { journey, weekly, level } = p;
   const toReward = Math.min(journey.doneCount, 3);
+  const money = realResults(w, me.id);
+  const inv = w.invest[me.id];
   const chip = 'flex items-center gap-1 rounded-full bg-pink-100 px-3 py-1 text-sm font-semibold text-pink-700';
 
   return (
@@ -73,11 +78,13 @@ export default function HomePage() {
 
       <section className="mt-6 rounded-card bg-white p-4 ring-1 ring-pink-100" aria-label="Real results">
         <h2 className="font-display text-lg font-semibold">Your real results</h2>
-        <dl className="mt-3 grid grid-cols-3 gap-3 text-center">
+        <dl className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
           <div><dt className="text-xs text-plum-500">Lessons done</dt><dd className="font-display text-2xl font-semibold text-pink-700">{journey.lessonsCompleted}</dd></div>
           <div><dt className="text-xs text-plum-500">Milestones</dt><dd className="font-display text-2xl font-semibold text-pink-700">{journey.doneCount}/5</dd></div>
           <div><dt className="text-xs text-plum-500">Confidence</dt><dd className="font-display text-2xl font-semibold text-pink-700">{p.confidenceChange === null ? '–' : `${p.confidenceChange >= 0 ? '+' : ''}${p.confidenceChange.toFixed(1)}`}</dd></div>
+          <div><dt className="text-xs text-plum-500">Saved so far</dt><dd className="font-display text-2xl font-semibold text-pink-700">{money.goals ? rand(money.saved) : '–'}</dd></div>
         </dl>
+        {money.goals > 0 && <p className="mt-2 text-center text-xs text-plum-500">{money.reached} of {money.goals} savings {money.goals === 1 ? 'goal' : 'goals'} reached. Only you see these amounts.</p>}
         {p.confidenceChange === null && <p className="mt-2 text-xs text-plum-500">Your confidence change appears after your 4-week check-in.</p>}
       </section>
 
@@ -85,7 +92,13 @@ export default function HomePage() {
       <ul className="mt-3 grid gap-3 sm:grid-cols-3">
         <li><Link href="/pathways/milestones" className="block rounded-card bg-pink-100 p-4"><b className="font-display text-pink-700">Money Milestones</b><span className="mt-1 block text-sm">{journey.doneCount} of 5 done</span></Link></li>
         <li className="rounded-card bg-lavender-100 p-4"><b className="font-display text-lavender-600">Money Buddy</b><span className="mt-1 block text-sm">Coming soon</span></li>
-        <li className="rounded-card bg-mint-100 p-4"><b className="font-display text-mint-700">Invest HER</b><span className="mt-1 block text-sm">Coming soon</span></li>
+        <li><Link href="/pathways/invest-her" className="block rounded-card bg-mint-100 p-4"><b className="font-display text-mint-700">Invest HER</b><span className="mt-1 block text-sm">{inv?.finishedAt ? 'Finished 🎉' : inv ? `${stepsDone(inv)} of 4 steps` : 'Start a guided, simulated first step'}</span></Link></li>
+      </ul>
+
+      <h2 className="mt-8 font-display text-xl font-semibold">Money tools</h2>
+      <ul className="mt-3 grid grid-cols-2 gap-3 text-sm font-semibold">
+        <li><Link href="/tools/budget" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300">💰 Budget builder<span className="block text-xs font-normal text-plum-500">{w.budgets[me.id] ? 'Update your budget' : 'Plan your month'}</span></Link></li>
+        <li><Link href="/tools/goals" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300">🎯 Savings goals<span className="block text-xs font-normal text-plum-500">{money.goals ? `${money.goals} active` : 'Set your first goal'}</span></Link></li>
       </ul>
 
       <div className="mt-8 rounded-card bg-white p-4 ring-1 ring-pink-100">

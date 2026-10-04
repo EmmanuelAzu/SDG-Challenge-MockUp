@@ -39,3 +39,8 @@
 - The demo clock advances day by day (`advanceClock`): simulated members earn points and chat, the daily job runs each day (reminders, Circle Cup on the 1st, Campus Cup at season end).
 - Seeded sessions are relative to "now"; "today's" session may already be underway when the world is created.
 - Unread counts: before first opening a chat only messages since joining count; all personas start caught up.
+- Money tools: budget, goals and Invest HER state live in the world but are only ever read for the signed-in user; analytics events for them carry no amounts (unit-tested).
+- Saving a budget completes the `budget-50-30-20` lesson action (+15, once), which is what completes the First budget milestone and earns Budget Builder.
+- Goal Getter = a 0-point `goal_reached` flag event, like the other badge flags. Reaching a goal never earns points.
+- Invest HER completes when: readiness answered, all 3 explainers opened, the simulator saved, and at least 3 of 4 checklist items ticked. The readiness check is a guide with friendly tips, never advice, and stores no amounts.
+- Compound maths: monthly compounding, contributions at month end (R200/month, 10 years, 8% = R36,589). Template incomes in the budget builder are examples only.

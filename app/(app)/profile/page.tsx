@@ -11,7 +11,7 @@ export default function Profile() {
   const { w, me } = useApp();
   const j = getJourney(w, me.id);
   const exportData = () => {
-    const mine = { user: { ...me, password: '(hidden)' }, points: w.pointEvents.filter((p) => p.userId === me.id), badges: w.userBadges.filter((b) => b.userId === me.id), surveys: w.surveys.filter((s) => s.userId === me.id), progress: Object.fromEntries(Object.entries(w.lessonProgress).filter(([k]) => k.startsWith(`${me.id}:`))) };
+    const mine = { user: { ...me, password: '(hidden)' }, points: w.pointEvents.filter((p) => p.userId === me.id), badges: w.userBadges.filter((b) => b.userId === me.id), surveys: w.surveys.filter((s) => s.userId === me.id), budget: w.budgets[me.id] ?? null, goals: w.goals.filter((g) => g.userId === me.id), invest: w.invest[me.id] ?? null, progress: Object.fromEntries(Object.entries(w.lessonProgress).filter(([k]) => k.startsWith(`${me.id}:`))) };
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(mine, null, 2)], { type: 'application/json' }));
     a.download = 'my-sisi-data.json';
@@ -27,6 +27,7 @@ export default function Profile() {
       for (const k of Object.keys(x.lessonProgress)) if (k.startsWith(`${me.id}:`)) delete x.lessonProgress[k];
       for (const k of Object.keys(x.actionCompletions)) if (k.startsWith(`${me.id}:`)) delete x.actionCompletions[k];
       delete x.milestonesDone[me.id]; delete x.glossaryLookups[me.id];
+      delete x.budgets[me.id]; delete x.invest[me.id]; x.goals = x.goals.filter((g) => g.userId !== me.id);
     });
     setSession(null);
     router.replace('/');

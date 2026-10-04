@@ -62,6 +62,12 @@ export type FeedNote = { id: string; postId: string; userId: string; body: strin
 export type Challenge = { id: string; communityId: string | null; title: string; description: string; points: number; weekStart: string };
 export type CampusSeason = { id: string; name: string; startsOn: string; endsOn: string; prizeText: string; communityIds: string[]; awardedAt: ISO | null };
 
+export type BudgetCategory = 'rent' | 'transport' | 'groceries' | 'utilities' | 'family' | 'emergency' | 'investing' | 'fun';
+export type Budget = { template: string; income: number; lines: Record<BudgetCategory, number>; savedAt: ISO };
+export type Deposit = { id: string; amount: number; at: ISO };
+export type SavingsGoal = { id: string; userId: string; name: string; emoji: string; target: number; dueOn: string | null; deposits: Deposit[]; createdAt: ISO; reachedAt: ISO | null };
+export type InvestState = { affordability: Record<string, string>; monthly: number; years: number; rate: number; explainersSeen: string[]; simulated: boolean; simRuns: number; checklist: string[]; startedAt: ISO; finishedAt: ISO | null };
+
 export type Notification = { id: string; userId: string; kind: string; title: string; body: string; href: string; at: ISO; read: boolean; key?: string };
 export type AnalyticsEvent = { id: string; userId: string; name: string; props: Record<string, string | number | boolean>; at: ISO };
 
@@ -103,6 +109,9 @@ export type World = {
   challengeDone: { challengeId: string; userId: string; at: ISO }[];
   seasons: CampusSeason[];
   askedShare: Record<string, boolean>;
+  budgets: Record<string, Budget>;
+  goals: SavingsGoal[];
+  invest: Record<string, InvestState>;
   notifications: Notification[];
   analytics: AnalyticsEvent[];
 };
