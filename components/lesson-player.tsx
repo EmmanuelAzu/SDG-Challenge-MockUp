@@ -1,32 +1,26 @@
 'use client';
-import { useState, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check, Download, MessageCircle, Star, ShieldAlert, X } from 'lucide-react';
-import { completeAction, completeLesson, recordLookup, submitFeedback, submitQuiz } from '@/app/(app)/learn/actions';
+import { completeAction, completeLesson, recordLookup, startLesson, submitFeedback, submitQuiz } from '@/lib/engine/actions';
 import { useCelebrate } from '@/components/celebration/provider';
 import { RichText } from '@/components/rich-text';
+import { useApp } from '@/components/shell/app-context';
+import { glossaryBySlug, lessonById } from '@/lib/content';
+import { update } from '@/lib/world/store';
 
-type Card = { title: string; body: string; callout?: string };
-type Q = { id: string; prompt: string; options: string[]; correct_index: number; explanation: string | null };
 type Term = { slug: string; term: string; definition: string; money_example: string | null };
-type Props = {
-  lesson: { id: string; title: string; cards: Card[]; takeaway: string | null; duration_sec: number | null; format: string; video_url: string | null; transcript: string | null };
-  questions: Q[];
-  action: { id: string; title: string; description: string | null } | null;
-  initialStage: 'cards' | 'quiz' | 'action';
-  topic: string;
-  sources: { title: string; url: string | null }[];
-  review: { reviewer_name: string; credential: string; reviewed_on: string } | null;
-  glossary: Term[];
-  focus: boolean;
-  rated: boolean;
-};
 
-export function LessonPlayer({ lesson, questions, action, initialStage, topic, sources, review, glossary, focus, rated }: Props) {
+export function LessonPlayer({ lessonId }: { lessonId: string }) {
+  const { w, me } = useApp();
+  const lesson = lessonById(lessonId)!;
   const celebrate = useCelebrate();
+  const progress = w.lessonProgress[`${me.id}:${lessonId}`];
+  const pendingAction = w.actionCompletions[`${me.id}:${lesson.action.id}`]?.status === 'done' ? null : lesson.action;
+  const initialStage = progress?.status === 'passed' ? (pendingAction ? 'action' : 'cards') : progress?.status === 'completed' ? 'quiz' : 'cards';
   const [stage, setStage] = useState<'cards' | 'quiz' | 'action' | 'done'>(initialStage);
   const [i, setI] = useState(0);
-  const [pending, start] = useTransition();
+  const pending = false;
   const [qi, setQi] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [picked, setPicked] = useState<number | null>(null);
@@ -36,53 +30,52 @@ export function LessonPlayer({ lesson, questions, action, initialStage, topic, s
   const [term, setTerm] = useState<Term | null>(null);
   const [rating, setRating] = useState(0);
   const [confusing, setConfusing] = useState('');
-  const [sent, setSent] = useState(rated);
+  const [sent, setSent] = useState(w.feedback.some((f) => f.userId === me.id && f.lessonId === lessonId));
 
-  const cards = lesson.cards ?? [];
-  const isVideo = lesson.format === 'video' && lesson.video_url;
-  const terms = new Map(glossary.map((t) => [t.slug, t]));
-  const investing = /invest/i.test(topic);
+  const cards = lesson.cards;
+  const isVideo = lesson.format === 'video' && !!lesson.videoUrl;
+  const questions = lesson.quiz;
+  const action = pendingAction;
+  const focus = me.focusMode;
+  const investing = /invest/i.test(lesson.topic);
+  const sources = lesson.sources;
+  const review = lesson.review;
+  const act = <T,>(fn: (x: typeof w, now: Date) => T) => update((x, now) => fn(x, now));
+  useEffect(() => { update((x, now) => startLesson(x, me.id, lessonId, now)); }, [me.id, lessonId]);
 
   function openTerm(slug: string, label: string) {
-    setTerm(terms.get(slug) ?? { slug, term: label, definition: 'We are still writing this definition.', money_example: null });
-    void recordLookup(slug).then(celebrate);
+    const g = glossaryBySlug(slug);
+    setTerm(g ? { slug, term: g.term, definition: g.definition, money_example: g.example } : { slug, term: label, definition: 'We are still writing this definition.', money_example: null });
+    celebrate(act((x, now) => recordLookup(x, me.id, slug, now)));
   }
   function finishCards() {
-    start(async () => {
-      const r = await completeLesson(lesson.id);
-      setPoints((p) => p + r.points);
-      celebrate(r);
-      setStage(questions.length ? 'quiz' : action ? 'action' : 'done');
-    });
+    const r = act((x, now) => completeLesson(x, me.id, lesson.id, now));
+    setPoints((p) => p + r.points);
+    celebrate(r);
+    setStage(questions.length ? 'quiz' : action ? 'action' : 'done');
   }
   function nextQuestion() {
     const next = [...answers, picked!];
     setAnswers(next);
     setPicked(null);
     if (qi + 1 < questions.length) return setQi(qi + 1);
-    start(async () => {
-      const r = await submitQuiz({ lessonId: lesson.id, answers: next });
-      setResult(r);
-      setPoints((p) => p + r.points);
-      celebrate(r);
-    });
+    const r = act((x, now) => submitQuiz(x, me.id, lesson.id, next, now));
+    setResult(r);
+    setPoints((p) => p + r.points);
+    celebrate(r);
   }
   function retry() { setQi(0); setAnswers([]); setPicked(null); setResult(null); }
   function doAction(status: 'done' | 'skipped', msg?: string) {
-    start(async () => {
-      const r = await completeAction({ actionId: action!.id, status });
-      setPoints((p) => p + r.points);
-      celebrate(r);
-      setNote(msg ?? '');
-      setStage('done');
-    });
+    const r = act((x, now) => completeAction(x, me.id, lesson.id, status, now));
+    setPoints((p) => p + r.points);
+    celebrate(r);
+    setNote(msg ?? '');
+    setStage('done');
   }
   function sendFeedback() {
-    start(async () => {
-      const r = await submitFeedback({ lessonId: lesson.id, rating, confusing });
-      setPoints((p) => p + r.points);
-      setSent(true);
-    });
+    const pts = act((x, now) => submitFeedback(x, me.id, lesson.id, rating, confusing, now));
+    setPoints((p) => p + pts);
+    setSent(true);
   }
   const shareText = `${lesson.takeaway ?? lesson.title} (learned on Sisi)`;
 
@@ -93,15 +86,15 @@ export function LessonPlayer({ lesson, questions, action, initialStage, topic, s
     <div>
       <Link href="/learn" className="text-sm text-pink-700">← Learn</Link>
       <h1 className="mt-2 font-display text-2xl font-semibold">{lesson.title}</h1>
-      <p className="text-sm text-plum-500">{Math.ceil((lesson.duration_sec ?? 180) / 60)} min or less</p>
+      <p className="text-sm text-plum-500">{Math.ceil((lesson.durationSec) / 60)} min or less</p>
       <p className="mt-1 text-xs text-plum-500">
-        {review ? `Reviewed by ${review.reviewer_name}, ${review.credential}, ${new Date(review.reviewed_on).toLocaleDateString('en-ZA', { month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg' })}` : 'Review pending'}
+        {review ? `Reviewed by ${review.by}, ${new Date(review.on).toLocaleDateString('en-ZA', { month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg' })}` : 'Review pending'}
       </p>
 
       {stage === 'cards' && (
         <section className="mt-5" aria-live="polite">
           {isVideo ? (
-            <div className="aspect-video overflow-hidden rounded-card"><iframe className="h-full w-full" src={lesson.video_url!} title={lesson.title} allowFullScreen /></div>
+            <div className="aspect-video overflow-hidden rounded-card"><iframe className="h-full w-full" src={lesson.videoUrl!} title={lesson.title} allowFullScreen /></div>
           ) : (
             <>
               <div className="h-2 rounded-full bg-pink-100" role="progressbar" aria-valuenow={i + 1} aria-valuemin={1} aria-valuemax={cards.length}>
@@ -136,7 +129,7 @@ export function LessonPlayer({ lesson, questions, action, initialStage, topic, s
               <button onClick={finishCards} disabled={pending} className={primary}>{questions.length ? 'On to the quiz' : 'Finish lesson'}</button>
             )}
           </div>
-          {lesson.transcript && <details className="mt-6 text-sm"><summary className="cursor-pointer font-medium">Transcript</summary><p className="mt-2 text-plum-500">{lesson.transcript}</p></details>}
+          
           {sources.length > 0 && (
             <details className="mt-4 text-sm"><summary className="cursor-pointer font-medium">Sources</summary>
               <ul className="mt-2 list-disc pl-5 text-plum-500">{sources.map((s) => <li key={s.title}>{s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline">{s.title}</a> : s.title}</li>)}</ul>
@@ -151,8 +144,8 @@ export function LessonPlayer({ lesson, questions, action, initialStage, topic, s
           <h2 className="mt-1 font-display text-xl font-semibold">{questions[qi].prompt}</h2>
           <ul className="mt-4 space-y-2">
             {questions[qi].options.map((o, n) => {
-              const right = picked !== null && n === questions[qi].correct_index;
-              const wrong = picked === n && n !== questions[qi].correct_index;
+              const right = picked !== null && n === questions[qi].correct;
+              const wrong = picked === n && n !== questions[qi].correct;
               return (
                 <li key={n}>
                   <button onClick={() => picked === null && setPicked(n)} disabled={picked !== null} className={`flex w-full items-center justify-between rounded-input border p-3 text-left font-medium ${right ? 'border-mint-700 bg-mint-100' : wrong ? 'border-coral-600 bg-red-50' : 'border-pink-300 bg-white'}`}>
@@ -164,7 +157,7 @@ export function LessonPlayer({ lesson, questions, action, initialStage, topic, s
           </ul>
           {picked !== null && (
             <div role="status" className="mt-4 rounded-card bg-pink-100 p-4 text-sm">
-              <b>{picked === questions[qi].correct_index ? 'Yes!' : 'Not quite.'}</b> {questions[qi].explanation}
+              <b>{picked === questions[qi].correct ? 'Yes!' : 'Not quite.'}</b> {questions[qi].explanation}
               <button onClick={nextQuestion} disabled={pending} className={`${primary} mt-3 block`}>{qi + 1 < questions.length ? 'Next question' : 'See my result'}</button>
             </div>
           )}

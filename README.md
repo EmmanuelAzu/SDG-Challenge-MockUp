@@ -1,20 +1,23 @@
-# Sisi — money confidence, together
+# Sisi — money confidence, together (mock)
 
-Beta web app for the PPS Investments SDG Challenge. Next.js 15 · Supabase · Vercel (lhr1).
+Clickable mock of the Sisi beta for the PPS Investments SDG Challenge. **No backend, no database, no env vars.** Everything runs in the browser and is stored in `localStorage`. Plan: [`docs/PLAN.md`](docs/PLAN.md).
 
-## Setup
-1. `pnpm install`
-2. Create a Supabase project `sisi-pps` (eu-west-2) and turn **Confirm email off**; leave only the Email provider on.
-3. Apply `supabase/migrations/*.sql` in order (SQL editor or `supabase db push`).
-4. Copy `.env.example` to `.env.local` and fill in the Supabase keys, `CRON_SECRET` and VAPID keys (`npx web-push generate-vapid-keys`).
-5. `pnpm seed` (idempotent; creates demo users, communities, Circles, chat, content, Campus Cup season).
-6. `pnpm dev`
+## Run
+```
+pnpm install
+pnpm dev          # http://localhost:3000
+pnpm test         # engine unit tests
+pnpm build
+```
 
-## Demo logins (`/demo`, when `NEXT_PUBLIC_DEMO_MODE=true`)
-Password for all: `SisiDemo2026!` — `nomsa@`, `new@`, `thandi@`, `admin@` `demo.sisi.app`.
+## Try it
+- `/demo` — one tap into a persona: **Nomsa** (mid-journey), **New member** (live onboarding), **Thandi** (facilitator), **Admin**. Password for all: `SisiDemo2026!`.
+- Open a second tab and pick a different persona: each tab is a different person on the same shared mock world.
+- Bottom-left flask button = **Demo tools**: switch persona, move the demo clock (+1 day, +1 week, next 1st), reset the world.
+- Share links are stateless (the card lives in the URL), so `/b/<code>` works on any device.
 
-## Checks
-`pnpm lint` · `pnpm exec tsc --noEmit` · `pnpm test` · `pnpm build`
+## Deploy (Vercel)
+Import the GitHub repo at vercel.com/new. Framework is auto-detected; there is nothing to configure.
 
-## Status
-See `DECISIONS.md` for judgement calls.
+## Layout
+`app/` pages · `components/` UI · `content/`-style data in `lib/content/` · `lib/world/` store, seed, hooks · `lib/engine/` pure rules (points, levels, weekly target, badges, journey) · `tests/`.

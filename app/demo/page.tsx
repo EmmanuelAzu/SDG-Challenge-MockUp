@@ -1,41 +1,26 @@
 'use client';
-import { notFound, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-
-const USERS = [
-  { email: 'nomsa@demo.sisi.app', label: 'Nomsa — member, mid-journey' },
-  { email: 'new@demo.sisi.app', label: 'New member — live onboarding' },
-  { email: 'thandi@demo.sisi.app', label: 'Thandi — facilitator' },
-  { email: 'admin@demo.sisi.app', label: 'Admin — PPS staff console' },
-];
+import { useRouter } from 'next/navigation';
+import { DEMO_PASSWORD, PERSONAS } from '@/lib/world/seed';
+import { getWorld, setSession } from '@/lib/world/store';
 
 export default function Demo() {
-  if (process.env.NEXT_PUBLIC_DEMO_MODE !== 'true') notFound();
   const router = useRouter();
-  const [error, setError] = useState('');
-
-  async function go(email: string) {
-    const { error } = await createClient().auth.signInWithPassword({ email, password: 'SisiDemo2026!' });
-    if (error) return setError('Demo users aren’t seeded yet. Run `pnpm seed` first.');
-    router.replace(email.startsWith('new@') ? '/onboarding' : '/home');
-    router.refresh();
-  }
-
+  if (process.env.NEXT_PUBLIC_DEMO_MODE === 'false') return null;
+  const go = (id: string) => { setSession(id); router.replace(getWorld()!.users[id].onboardedAt ? '/home' : '/onboarding'); };
   return (
     <main className="mx-auto max-w-sm px-4 py-12">
       <h1 className="font-display text-3xl font-semibold">Demo logins</h1>
-      <p className="mt-1 text-sm text-plum-500">One tap to sign in. Demo data only.</p>
+      <p className="mt-1 text-sm text-plum-500">One tap to sign in. This is a mock, so everything stays in this browser. Open another tab to be a second person at the same time.</p>
       <ul className="mt-6 space-y-3">
-        {USERS.map((u) => (
-          <li key={u.email}>
-            <button onClick={() => go(u.email)} className="w-full rounded-card bg-white p-4 text-left font-medium shadow-sm ring-1 ring-pink-100 hover:ring-pink-300">
-              {u.label}
+        {PERSONAS.map((p) => (
+          <li key={p.id}>
+            <button onClick={() => go(p.id)} className="w-full rounded-card bg-white p-4 text-left ring-1 ring-pink-100 hover:ring-pink-300">
+              <b className="block">{p.label}</b><span className="text-sm text-plum-500">{p.blurb} · {p.email}</span>
             </button>
           </li>
         ))}
       </ul>
-      {error && <p role="alert" className="mt-4 text-sm text-coral-600">{error}</p>}
+      <p className="mt-4 text-xs text-plum-500">Password for all demo accounts: <code>{DEMO_PASSWORD}</code></p>
     </main>
   );
 }

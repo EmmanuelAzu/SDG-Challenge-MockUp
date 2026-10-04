@@ -1,9 +1,11 @@
 'use client';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Bloom } from '@/components/bloom';
-import { completeOnboarding } from '@/app/onboarding/actions';
+import { completeOnboarding } from '@/lib/engine/actions';
+import { update } from '@/lib/world/store';
+import { useMe } from '@/lib/world/hooks';
 import { useCelebrate } from '@/components/celebration/provider';
 import { assignTrack, QUIZ, TRACKS, type QuizAnswers } from '@/lib/content/life-tracks';
 
@@ -20,13 +22,14 @@ const LIKERT = [
   'I feel comfortable talking about money with people I trust.',
 ];
 
-type Community = { id: string; slug: string; name: string; kind: string };
+type Community = { id: string; slug: string; name: string };
 // 0-2 slides · 3 name · 4 community · 5-9 quiz · 10 result · 11 confidence · 12 consent
 const LAST = 12;
 
 export function OnboardingFlow({ communities, presetCommunity, defaultName }: { communities: Community[]; presetCommunity: string | null; defaultName: string }) {
   const router = useRouter();
   const celebrate = useCelebrate();
+  const meId = useMe()!.me.id;
   const [step, setStep] = useState(0);
   const [name, setName] = useState(defaultName);
   const [nick, setNick] = useState('');
@@ -36,7 +39,7 @@ export function OnboardingFlow({ communities, presetCommunity, defaultName }: { 
   const [conf, setConf] = useState<number[]>([0, 0, 0, 0, 0]);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
-  const [pending, start] = useTransition();
+  const pending = false;
 
   const primary = 'w-full rounded-input bg-pink-600 py-3 font-semibold text-white hover:bg-pink-700 disabled:opacity-50';
   const field = 'mt-1 w-full rounded-input border border-pink-300 bg-white px-3 py-3';
@@ -51,15 +54,13 @@ export function OnboardingFlow({ communities, presetCommunity, defaultName }: { 
 
   function finish() {
     setError('');
-    start(async () => {
-      try {
-        const earned = await completeOnboarding({ displayName: name, nickname: nick, communityId: community, joinCode: code || undefined, quiz: quiz as QuizAnswers, confidence: conf, consent: true });
-        celebrate(earned);
-        router.replace('/home');
-      } catch {
-        setError('Something went wrong. Check your answers and try again.');
-      }
-    });
+    try {
+      const earned = update((w, now) => completeOnboarding(w, meId, { displayName: name, nickname: nick, communityId: community, joinCode: code || undefined, quiz: quiz as QuizAnswers, confidence: conf }, now));
+      celebrate(earned);
+      router.replace('/home');
+    } catch {
+      setError('Something went wrong. Check your answers and try again.');
+    }
   }
 
   return (

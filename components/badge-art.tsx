@@ -171,7 +171,7 @@ export function BadgeArt({ slug, rarity = 'common', size = 96, locked = false }:
   return (
     <svg width={size} height={size} viewBox="0 0 96 96" style={locked ? { opacity: 0.35, filter: 'grayscale(1)' } : undefined}>
       <circle cx="48" cy="48" r="44" fill={c.fill} stroke={c.ring} strokeWidth="4" />
-      <Emblem />
+      {Emblem()}
     </svg>
   );
 }

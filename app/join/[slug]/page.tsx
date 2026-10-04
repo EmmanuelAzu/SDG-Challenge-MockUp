@@ -1,15 +1,15 @@
+'use client';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Bloom } from '@/components/bloom';
-import { createClient } from '@/lib/supabase/server';
+import { useWorld } from '@/lib/world/hooks';
 
-export const dynamic = 'force-dynamic';
-
-export default async function Join({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const supabase = await createClient();
-  const { data: c } = await supabase.from('communities').select('name,description').eq('slug', slug).maybeSingle();
-  if (!c) notFound();
+export default function Join() {
+  const { slug } = useParams<{ slug: string }>();
+  const w = useWorld();
+  if (!w) return <main className="mx-auto max-w-sm px-4 py-12" aria-busy="true"><div className="h-40 animate-pulse rounded-card bg-pink-100" /></main>;
+  const c = w.communities.find((x) => x.slug === slug);
+  if (!c) return <main className="mx-auto max-w-sm px-4 py-12 text-center"><h1 className="font-display text-2xl font-semibold">We can’t find that community</h1><Link href="/" className="mt-4 inline-block text-pink-700 underline">Meet Sisi</Link></main>;
   return (
     <main className="mx-auto max-w-sm px-4 py-12 text-center">
       <div className="flex justify-center"><Bloom progress={5} size={120} /></div>

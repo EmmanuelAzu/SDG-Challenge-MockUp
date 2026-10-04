@@ -1,4 +1,15 @@
 # Decisions log
+
+**Pivot (Oct 4):** the Supabase/Vercel-backend build was dropped in favour of a fully client-side mock (see docs/PLAN.md). The entries below about Supabase, migrations, seeding and cron describe the abandoned approach and are kept for history.
+
+## Mock build
+- World = one JSON document in `localStorage` (`sisi.world.v1`), changed only through `update()`; session id per tab in `sessionStorage`; cross-tab sync via the `storage` event.
+- Demo clock = real time + a stored offset; every engine function takes `now` so time-dependent rules are testable.
+- Share links are stateless (payload in the URL). Revoking a link is local-only: a mock limit.
+- OG share-card routes use the Node runtime and read fonts from `assets/fonts` (file URL fetch is unsupported by `next start`'s edge sandbox); `outputFileTracingIncludes` ships the fonts.
+- satori (OG images) only allows intrinsic elements inside `<svg>` and requires `display:flex` on divs with several children, so `BadgeArt` calls emblem functions directly and card text is built as single strings.
+- Passwords are stored in plain text in the browser (mock only, never for real data).
+
 - GitHub repo is `emmanuelazu/sdg-challenge-mockup` (session scope), not `sisi`; Vercel project still `sisi-pps`.
 - Tailwind v3 (not v4) for stable shadcn-style tokens via tailwind.config.
 - Zod v4 installed (latest); use `z.string()` APIs compatible with both.

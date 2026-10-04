@@ -1,15 +1,13 @@
-import { requireUser } from '@/lib/auth';
+'use client';
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { OnboardingFlow } from '@/components/onboarding-flow';
+import { useMe } from '@/lib/world/hooks';
 
-export const dynamic = 'force-dynamic';
-
-export default async function Onboarding({ searchParams }: { searchParams: Promise<{ community?: string }> }) {
-  const { community } = await searchParams;
-  const { supabase, user } = await requireUser();
-  const [{ data: communities }, { data: profile }] = await Promise.all([
-    supabase.from('communities').select('id,slug,name,kind').order('name'),
-    supabase.from('profiles').select('display_name').eq('id', user.id).single(),
-  ]);
-  const preset = (communities ?? []).find((c) => c.slug === community)?.id ?? null;
-  return <OnboardingFlow communities={communities ?? []} presetCommunity={preset} defaultName={profile?.display_name ?? ''} />;
+function Inner() {
+  const slug = useSearchParams().get('community');
+  const { w, me } = useMe()!;
+  const preset = w.communities.find((c) => c.slug === slug)?.id ?? null;
+  return <OnboardingFlow communities={w.communities} presetCommunity={preset} defaultName={me.displayName} />;
 }
+export default function Onboarding() { return <Suspense><Inner /></Suspense>; }

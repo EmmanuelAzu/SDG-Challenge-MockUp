@@ -9,6 +9,8 @@ const withSerwist = withSerwistInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // OG share cards read these font files at request time
+  outputFileTracingIncludes: { '/api/og/**': ['./assets/fonts/**'] },
   images: { remotePatterns: [{ protocol: 'https', hostname: '**.supabase.co' }] },
 };
 
