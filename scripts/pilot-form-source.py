@@ -16,7 +16,7 @@ main = [
    options=[{"v": "Yes, I am 18 or older and I agree to take part", "go": "continue"}, {"v": "No, I do not agree", "go": "submit"}],
    help="You can stop at any time and skip any question you prefer not to answer.", source="POPIA consent; wording to be confirmed by PPS"),
  q("PID", "text", "Your participant ID", "CONT", "Links this form to the anonymous in-app results without using a name or email", required=True,
-   help="You will see it on the last screen of the Sisi pilot. It looks like P-7K3Q9X. Type NONE if you did not get one.", pattern=r"^(P-[A-Z0-9]{6}|NONE)$", source="App participant id"),
+   help="You will see it on the last screen of the Sisi pilot. It looks like 7K3Q. Type NONE if you did not get one.", pattern=r"^([A-Z0-9]{4}|NONE)$", source="App participant id"),
  # About you (baseline). Age band, situation and experience come from the optional profile in the app, joined by participant ID.
  q("Q1", "choice", "Do you have your own account with a bank or a mobile-money service?", "BEH", "SDG 5.a baseline: access to financial services",
    options=["Yes, a bank account", "Yes, mobile money only", "Yes, both", "No", PNS], source="Concept follows Global Findex account ownership; wording is ours"),
@@ -60,7 +60,7 @@ main = [
 ]
 
 day7 = [
- q("PID", "text", "Your participant ID", "CONT", "Join to the session data", required=True, help="The same ID as before (looks like P-7K3Q9X). Type NONE if you do not have it.", pattern=r"^(P-[A-Z0-9]{6}|NONE)$"),
+ q("PID", "text", "Your participant ID", "CONT", "Join to the session data", required=True, help="The same ID as before (looks like 7K3Q). Type NONE if you do not have it.", pattern=r"^([A-Z0-9]{4}|NONE)$"),
  q("D1", "choice", "Since the session, how many times have you opened Sisi?", "BEH", "Return use", options=["Not at all", "Once", "2 to 3 times", "4 or more times"], required=True),
  q("D2", "checkbox", "Since the session, have you… (Tick all that apply)", "BEH", "SDG 5.a / 4.4: behaviour change since the session", required=True, other=True,
    options=["Made or updated a budget", "Set a savings goal", "Put money aside that I would not have saved otherwise", "Started or added to an emergency fund", "Talked about money with someone", "Done a Sisi lesson with a friend", "None of these"]),

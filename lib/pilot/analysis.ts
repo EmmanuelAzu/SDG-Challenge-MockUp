@@ -114,7 +114,7 @@ const bool = (v: unknown) => (typeof v === 'boolean' ? v : undefined);
 
 /** Validates and cleans an imported run. Returns null when it is not a Sisi pilot code. */
 export function cleanRun(x: any): PilotRun | null {
-  if (!x || typeof x !== 'object' || typeof x.id !== 'string' || !/^P-[A-Z0-9]{6}$/.test(x.id) || typeof x.chapters !== 'object') return null;
+  if (!x || typeof x !== 'object' || typeof x.id !== 'string' || !/^[A-Z0-9]{4}$/.test(x.id) || typeof x.chapters !== 'object') return null;
   const chapters: PilotRun['chapters'] = {};
   for (const c of CHAPTERS) { const v = x.chapters?.[c.id]; if (v) chapters[c.id] = { startedAt: str(v.startedAt) || undefined, doneAt: str(v.doneAt) || undefined, reaction: [1, 2, 3].includes(v.reaction) ? v.reaction : undefined, seen: v.seen === true }; }
   const f = x.facts ?? {};

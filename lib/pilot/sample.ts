@@ -12,7 +12,7 @@ export function simulatedRuns(n: number, now: Date): PilotRun[] {
   const pick = <T,>(a: readonly T[]): T => a[Math.floor(r() * a.length)];
   const ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   return Array.from({ length: n }, (_, i) => {
-    const id = 'P-' + Array.from({ length: 6 }, () => ALPHA[Math.floor(r() * ALPHA.length)]).join('');
+    const id = Array.from({ length: 4 }, () => ALPHA[Math.floor(r() * ALPHA.length)]).join('');
     const t0 = new Date(now.getTime() - (i + 1) * 3_600_000);
     let at = t0.getTime();
     const chapters: PilotRun['chapters'] = {};

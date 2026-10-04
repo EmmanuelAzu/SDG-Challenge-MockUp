@@ -70,10 +70,10 @@
    "domain": "CONT",
    "purpose": "Links this form to the anonymous in-app results without using a name or email",
    "required": true,
-   "help": "You will see it on the last screen of the Sisi pilot. It looks like P-7K3Q9X. Type NONE if you did not get one.",
+   "help": "You will see it on the last screen of the Sisi pilot. It looks like 7K3Q. Type NONE if you did not get one.",
    "source": "App participant id",
    "expand": false,
-   "pattern": "^(P-[A-Z0-9]{6}|NONE)$",
+   "pattern": "^([A-Z0-9]{4}|NONE)$",
    "section": "About you"
   },
   {
@@ -488,10 +488,10 @@
    "domain": "CONT",
    "purpose": "Join to the session data",
    "required": true,
-   "help": "The same ID as before (looks like P-7K3Q9X). Type NONE if you do not have it.",
+   "help": "The same ID as before (looks like 7K3Q). Type NONE if you do not have it.",
    "source": "",
    "expand": false,
-   "pattern": "^(P-[A-Z0-9]{6}|NONE)$",
+   "pattern": "^([A-Z0-9]{4}|NONE)$",
    "section": "One week later"
   },
   {

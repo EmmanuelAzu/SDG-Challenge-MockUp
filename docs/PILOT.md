@@ -28,16 +28,16 @@ Primary goals: **SDG 4 (Quality Education)** and **SDG 5 (Gender Equality)**. **
 | 5 safe, relevant participation | Comfort and safety in the community, whether Sisi speaks to women like them |
 | 10.2 (byproduct) | Every result cut by age, situation, data cost, language and phone access |
 
-## 2. The guided experience (about 15 minutes, plus the feedback form)
+## 2. The guided experience (about 18 minutes, plus the feedback form)
 
 | Part | What happens | Sisi's point | Time |
 |---|---|---|---|
-| Welcome | Sisi says hello. Consent, a nickname, a community | Set the tone: an older sister, not a bank | 1 min |
+| Welcome | Sisi says hello. Consent and a nickname. No community is chosen up front: they are made-up practice communities, so testers join one during CONNECT | Set the tone: an older sister, not a bank | 1 min |
 | 1. LEARN | Lesson "Now-Now, Stack It, Grow It": six cards, a three-question quiz, one small action. Points and a celebration appear | Learn, check, do. Points only show progress | 4 min |
-| 2. DO | Fix a student's budget (R3,500 in, R3,600 out, a R1,500 laptop). Sisi coaches live as the sliders move | Knowing is nice; doing is better. Payoff: "your version saves R150 a month, so the laptop is ten months away, with no interest" | 3 min |
+| 2. DO | Fix a student's budget (R3,500 in, R3,600 out, a R1,500 laptop). Sisi coaches live as the sliders move, then try the payslip decoder | Knowing is nice; doing is better. Payoff: "your version saves R150 a month, so the laptop is ten months away, with no interest" | 4 min |
 | 3. PROGRESS | Rewards page: Bloom, level, badges. Choose a weekly target of 1 to 3 days | Progress without pressure: nothing resets if you miss a day. Focus mode hides points and badges | 2 min |
 | 4. REWARD | See the reward ladder and this week's prize-draw numbers, choose cash (R50) or investment credit (R55, 10% more), watch a simulated claim go Claimed, Approved, Paid | A reward that is yours to choose. Every pilot reward is subject to PPS approval. Nothing is real money | 2 min |
-| 5. CONNECT | Say hello in your community's Lounge (simulated women reply), start a practice Money Buddy, send a nudge and see the reply | Money feels easier with people | 3 min |
+| 5. CONNECT | Join a practice community, say hello in its Lounge (simulated women reply), start a practice Money Buddy, send a nudge and see the reply | Money feels easier with people | 4 min |
 | Wrap-up | A summary of "your first week", a shelf to peek at more (payslip simulator, Letterbox, Invest HER, events, Talk to someone, Support), then the results code and participant ID | The whole loop in one place | 1 min |
 
 Each chapter has an intro from Sisi, a coaching strip at the top of the screen showing the next step, and a short wrap-up with one optional tap ("Loved it", "It was okay", "Not for me"). The strip's "Story" button always returns to Sisi's guide.
@@ -64,7 +64,7 @@ These are proposals for PPS to confirm or change in `lib/pilot/analysis.ts`. Bel
 | Rule | Target |
 |---|---|
 | Completion | ≥ 80% finish all five chapters |
-| Time | ≥ 75% of finishers within 15 minutes |
+| Time | ≥ 75% of finishers within 18 minutes |
 | Quiz | ≥ 70% pass the lesson quiz (2 of 3 or better) |
 | Budget | ≥ 80% of those who try fix the scenario |
 | Connect | ≥ 70% of those who try say hello and start a Money Buddy |
@@ -76,7 +76,7 @@ These are proposals for PPS to confirm or change in `lib/pilot/analysis.ts`. Bel
 - **Target:** 30 or more finished testers for a first read, across campus, first-job and out-of-school women aged 18 to 26. Fewer than 10 gives usability findings only. Observe at least 8 in person (facilitator notes in `/pilot/guide`) alongside remote testers.
 - **Do not change the app during the pilot.** A new version resets stored data on every device (`WORLD_VERSION`, now 8). Collect all codes first if a fix is essential.
 - **Shared devices:** between testers use Profile → "Delete my account / reset my data".
-- **How results reach you (no backend):** at the end each tester gets an anonymous **results code** (about 600 characters) and a **participant ID**. They send the code by WhatsApp, email or file; a staff member pastes codes into **Staff console → Pilot results**, which shows the dashboard and exports a CSV. Join that CSV to the Google Form export on the participant ID. Codes from the earlier checklist pilot (they start with SISI2) are not accepted.
+- **How results reach you (no backend):** at the end each tester gets an anonymous **results code** (about 600 characters) and a short 4-character **participant ID** (for example 7K3Q). The results code is optional and sits behind a facilitator-only fold on the last screen; the in-app tracking is passive, on-device and holds no names, amounts or message text, so the pilot still works if you only use the Google Form plus observation, with the ID as the join key. They send the code by WhatsApp, email or file; a staff member pastes codes into **Staff console → Pilot results**, which shows the dashboard and exports a CSV. Join that CSV to the Google Form export on the participant ID. Codes from the earlier checklist pilot (they start with SISI2) are not accepted.
 - **Risk:** a tester who clears browser data before sending the code loses their record. Ask for the code before they leave.
 - Tester guide: `/pilot/guide` and `docs/Sisi-Pilot-Tester-Guide.pdf`.
 

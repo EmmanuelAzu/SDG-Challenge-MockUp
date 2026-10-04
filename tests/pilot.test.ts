@@ -10,6 +10,8 @@ import { startSimBuddy, nudge } from '@/lib/engine/buddy';
 import { completeAction, completeLesson, submitQuiz } from '@/lib/engine/actions';
 import { saveBudget, linesFromTemplate, TEMPLATES } from '@/lib/engine/budget';
 import { communityChannel } from '@/lib/engine/chat';
+import { joinCommunity } from '@/lib/engine/actions';
+import { track } from '@/lib/engine/helpers';
 import { COURSES } from '@/lib/content';
 
 const NOW = new Date('2026-10-07T10:00:00Z');
@@ -75,26 +77,25 @@ describe('guided pilot', () => {
   const LESSON = 'now-now-stack-it-grow-it';
   const fresh = () => {
     const w = buildWorld(NOW);
-    const r = quickStart(w, { nickname: 'Test', communitySlug: 'student-savers', profile: null, device: 'mobile' }, NOW);
+    const r = quickStart(w, { nickname: 'Test', profile: null, device: 'mobile' }, NOW);
     if (!r.ok) throw new Error(r.error);
     return { w, id: r.userId };
   };
   const sync = (w: ReturnType<typeof fresh>['w'], id: string, at: Date) => { if (pendingUpdate(w, id)) applyUpdate(w, id, at); };
 
   it('has five chapters in Sisi’s loop order', () => { expect(CHAPTERS.map((c) => c.label)).toEqual(['LEARN', 'DO', 'PROGRESS', 'REWARD', 'CONNECT']); });
-  it('quick start creates an onboarded practice account, joins the community and begins the story', () => {
+  it('quick start creates an onboarded practice account, joins no community yet and begins the story', () => {
     const { w, id } = fresh();
     expect(w.users[id].onboardedAt).toBeTruthy();
-    expect(w.communityMembers.some((m) => m.userId === id)).toBe(true);
+    expect(w.communityMembers.some((m) => m.userId === id)).toBe(false);
     expect(w.pilot[id]).toMatchObject({ stage: 'story', path: 'quick' });
-    expect(w.pilot[id].id).toMatch(/^P-[A-Z0-9]{6}$/);
+    expect(w.pilot[id].id).toMatch(/^[A-Z0-9]{4}$/);
     expect(chapterIndex(w.pilot[id])).toBe(0);
     expect(w.surveys.some((s) => s.userId === id)).toBe(false);
   });
-  it('rejects bad nicknames and unlisted communities', () => {
+  it('rejects bad nicknames', () => {
     const w = buildWorld(NOW);
-    expect(quickStart(w, { nickname: 'a', communitySlug: 'wits', profile: null, device: 'mobile' }, NOW)).toMatchObject({ ok: false });
-    expect(quickStart(w, { nickname: 'Test', communitySlug: 'pps-yp', profile: null, device: 'mobile' }, NOW)).toMatchObject({ ok: false });
+    expect(quickStart(w, { nickname: 'a', profile: null, device: 'mobile' }, NOW)).toMatchObject({ ok: false });
   });
   it('LEARN needs the cards, the quiz and the action, in the real app', () => {
     const { w, id } = fresh(); const run = () => w.pilot[id];
@@ -146,12 +147,14 @@ describe('guided pilot', () => {
     const { w, id } = fresh(); const run = () => w.pilot[id];
     for (const c of CHAPTERS.slice(0, 4)) run().chapters[c.id] = { startedAt: later(0).toISOString(), doneAt: later(0).toISOString(), seen: true };
     startChapter(w, id, 'connect', later(0));
-    expect(Object.values(stepsDone(w, id, run(), 'connect'))).toEqual([false, false, false]);
+    expect(Object.values(stepsDone(w, id, run(), 'connect'))).toEqual([false, false, false, false]);
     const comm = w.communities.find((c) => c.slug === 'student-savers')!;
+    joinCommunity(w, id, comm.id, later(0.5));
+    expect(stepsDone(w, id, run(), 'connect').join).toBe(true);
     const ch = communityChannel(w, comm.id)!;
     w.messages.push({ id: 'm1', channelId: ch.id, userId: id, body: 'Hi!', replyTo: null, kind: 'user', pinned: false, deleted: false, at: later(1).toISOString() });
     const r = startSimBuddy(w, id, later(2)); if (!r.ok) throw new Error('x');
-    expect(stepsDone(w, id, run(), 'connect')).toMatchObject({ hello: true, buddy: true, nudge: false });
+    expect(stepsDone(w, id, run(), 'connect')).toMatchObject({ join: true, hello: true, buddy: true, nudge: false });
     nudge(w, id, r.pair.id, later(3));
     expect(stepsDone(w, id, run(), 'connect').nudge).toBe(true);
     expect(run().facts.messageSent).toBeFalsy(); sync(w, id, later(3));
@@ -164,10 +167,12 @@ describe('guided pilot', () => {
     CHAPTERS.forEach((c, i) => {
       startChapter(w, id, c.id, later(i * 3));
       if (c.id === 'learn') { completeLesson(w, id, LESSON, later(i * 3 + 1)); submitQuiz(w, id, LESSON, [1, 0, 1], later(i * 3 + 1)); completeAction(w, id, LESSON, 'done', later(i * 3 + 1)); }
+      if (c.id === 'do') track(w, id, 'payslip_sim_saved', {}, later(i * 3 + 1));
       if (c.id === 'do') saveBudget(w, id, { template: 'workshop', income: 3500, lines: { ...linesFromTemplate(tpl, 3500), transport: 600, fun: 450, emergency: 150 } }, later(i * 3 + 1));
       if (c.id === 'progress') setWeeklyTargetAction(w, id, 2, later(i * 3 + 1));
       if (c.id === 'reward') chooseReward(w, id, 'cash', later(i * 3 + 1));
       if (c.id === 'connect') {
+        joinCommunity(w, id, comm.id, later(i * 3 + 1));
         w.messages.push({ id: 'm1', channelId: communityChannel(w, comm.id)!.id, userId: id, body: 'A very private message about my rent', replyTo: null, kind: 'user', pinned: false, deleted: false, at: later(i * 3 + 1).toISOString() });
         const r = startSimBuddy(w, id, later(i * 3 + 1)); if (r.ok) nudge(w, id, r.pair.id, later(i * 3 + 1));
       }

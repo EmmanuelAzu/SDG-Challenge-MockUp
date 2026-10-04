@@ -85,7 +85,6 @@ export const PROFILE = {
 export const FEEDBACK_FORM_URL = '';
 
 /** Quick-start communities offered to testers (no approval needed). */
-export const QUICK_COMMUNITIES = ['wits', 'uj', 'student-savers', 'first-salary-club', 'invest-curious', 'side-hustle-sisters'];
 
 /** Deterministic hash helpers for assigning forms and shuffling options per participant. */
 export const hash = (s: string) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; };

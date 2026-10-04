@@ -78,7 +78,7 @@ export type PilotFacts = {
   messageSent?: boolean; buddyStarted?: boolean; nudged?: boolean; points?: number; level?: string; badges?: string[];
 };
 export type PilotRun = {
-  id: string; // anonymous participant id, e.g. P-7K3Q9X
+  id: string; // anonymous participant id, e.g. 7K3Q
   userId: string | null; // local account; never exported
   simulated?: boolean;
   path: 'quick' | 'account';

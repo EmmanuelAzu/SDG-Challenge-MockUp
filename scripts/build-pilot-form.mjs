@@ -98,7 +98,7 @@ function addQuestion_(form, q) {
       item = form.addTextItem();
       if (q.pattern) {
         item.setValidation(FormApp.createTextValidation()
-          .setHelpText('Please enter your ID exactly as shown (for example P-7K3Q9X), or type NONE.')
+          .setHelpText('Please enter your ID exactly as shown (for example 7K3Q), or type NONE.')
           .requireTextMatchesPattern(q.pattern)
           .build());
       }

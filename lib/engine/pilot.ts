@@ -1,6 +1,6 @@
 import type { ChapterId, PilotFacts, PilotRun, World } from '@/lib/world/types';
 import { CHAPTERS, chapterById } from '@/lib/pilot/journey';
-import { QUICK_COMMUNITIES, formFor } from '@/lib/pilot/instruments';
+import { formFor } from '@/lib/pilot/instruments';
 import { LESSONS } from '@/lib/content';
 import { completeOnboarding, createAccount } from './actions';
 import { xpOf } from './award';
@@ -10,7 +10,7 @@ import { track } from './helpers';
 import { levelFor } from './levels';
 
 const ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-export const newParticipantId = () => 'P-' + Array.from({ length: 6 }, () => ALPHA[Math.floor(Math.random() * ALPHA.length)]).join('');
+export const newParticipantId = () => Array.from({ length: 4 }, () => ALPHA[Math.floor(Math.random() * ALPHA.length)]).join('');
 void formFor; // parallel-form helpers are kept for a possible future before/after check
 
 export const runOf = (w: World, userId: string | null | undefined): PilotRun | undefined => (userId ? w.pilot[userId] : undefined);
@@ -28,15 +28,13 @@ export function startRun(w: World, userId: string, o: { path: 'quick' | 'account
 }
 
 /** Quick start: a practice account with just a nickname, so the story begins at the lesson, not at a long form. */
-export function quickStart(w: World, o: { nickname: string; communitySlug: string; profile: Profile; device: 'mobile' | 'desktop' }, now: Date): { ok: true; userId: string } | { ok: false; error: string } {
+export function quickStart(w: World, o: { nickname: string; profile: Profile; device: 'mobile' | 'desktop' }, now: Date): { ok: true; userId: string } | { ok: false; error: string } {
   const nickname = o.nickname.trim().slice(0, 20);
   if (nickname.length < 2) return { ok: false, error: 'Pick a nickname with at least 2 letters. Please do not use your full name.' };
-  const community = w.communities.find((c) => c.slug === o.communitySlug && QUICK_COMMUNITIES.includes(c.slug));
-  if (!community) return { ok: false, error: 'Pick a community to join.' };
   const slug = Math.random().toString(36).slice(2, 10);
   const acc = createAccount(w, { email: `pilot-${slug}@pilot.sisi.app`, password: Math.random().toString(36).slice(2, 14) + 'A1', displayName: nickname }, now);
   if (!acc.ok) return acc;
-  completeOnboarding(w, acc.id, { displayName: nickname, nickname, communityId: community.id, quiz: { source: 'allowance', goal: 'budget', timeframe: 'month', obligations: 'none', checkins: 2 }, confidence: [], skipSurvey: true }, now);
+  completeOnboarding(w, acc.id, { displayName: nickname, nickname, communityId: '', quiz: { source: 'allowance', goal: 'budget', timeframe: 'month', obligations: 'none', checkins: 2 }, confidence: [], skipSurvey: true }, now);
   startRun(w, acc.id, { path: 'quick', profile: o.profile, device: o.device }, now);
   track(w, acc.id, 'pilot_started', { path: 'quick' }, now);
   return { ok: true, userId: acc.id };
@@ -77,14 +75,15 @@ export function stepsDone(w: World, userId: string, run: PilotRun, id: ChapterId
     }
     case 'do': {
       const b = w.budgets[userId];
-      return { budget: !!b && b.savedAt >= from && b.income === BUDGET_SCENARIO.income && totals(b.income, b.lines).spent <= b.income && b.lines.emergency + b.lines.investing >= BUDGET_SCENARIO.minSaving };
+      return { payslip: events(w, userId, 'payslip_sim_saved', from).length > 0, budget: !!b && b.savedAt >= from && b.income === BUDGET_SCENARIO.income && totals(b.income, b.lines).spent <= b.income && b.lines.emergency + b.lines.investing >= BUDGET_SCENARIO.minSaving };
     }
     case 'progress': return { target: events(w, userId, 'weekly_target_set', from).length > 0 };
     case 'reward': return { choose: !!run.facts.rewardChoice };
     case 'connect': {
       const pair = pairOf(w, userId);
+      const join = w.communityMembers.some((m) => m.userId === userId && m.status === 'active' && m.joinedAt >= from);
       const hello = w.messages.some((m) => m.userId === userId && m.kind === 'user' && m.at >= from && w.channels.some((c) => c.id === m.channelId && (c.kind === 'community' || c.kind === 'circle')));
-      return { hello, buddy: !!pair, nudge: !!pair && pair.nudges.some((n) => n.fromId === userId) };
+      return { join, hello, buddy: !!pair, nudge: !!pair && pair.nudges.some((n) => n.fromId === userId) };
     }
   }
 }

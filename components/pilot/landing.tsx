@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Bloom } from '@/components/bloom';
 import { CHAPTERS, GUIDED_MINUTES } from '@/lib/pilot/journey';
-import { PROFILE, QUICK_COMMUNITIES } from '@/lib/pilot/instruments';
+import { PROFILE } from '@/lib/pilot/instruments';
 import { quickStart, startRun } from '@/lib/engine/pilot';
 import { setSession, update } from '@/lib/world/store';
 import type { User, World } from '@/lib/world/types';
@@ -15,10 +15,8 @@ export function Landing({ w, me }: { w: World; me: User | undefined }) {
   const [agree, setAgree] = useState(false);
   const [profile, setProfile] = useState<Profile>({ ageBand: '', status: '', experience: '' });
   const [nickname, setNickname] = useState('');
-  const [slug, setSlug] = useState('');
   const [error, setError] = useState('');
   const device = typeof window !== 'undefined' && window.innerWidth >= 768 ? 'desktop' : 'mobile';
-  const communities = QUICK_COMMUNITIES.map((s) => w.communities.find((c) => c.slug === s)).filter((c): c is NonNullable<typeof c> => !!c);
   const prof = profile.ageBand || profile.status || profile.experience ? profile : null;
   const ready = age && agree;
   const field = 'mt-1 w-full rounded-input border border-pink-300 bg-white px-3 py-2.5 text-sm';
@@ -28,7 +26,7 @@ export function Landing({ w, me }: { w: World; me: User | undefined }) {
     setError('');
     if (!ready) return setError('Please tick both boxes to take part.');
     if (useAccount && me) { update((x, n) => startRun(x, me.id, { path: 'account', profile: prof, device }, n)); return; }
-    const r = update((x, n) => quickStart(x, { nickname, communitySlug: slug, profile: prof, device }, n));
+    const r = update((x, n) => quickStart(x, { nickname, profile: prof, device }, n));
     if (!r.ok) return setError(r.error);
     setSession(r.userId);
   }
@@ -73,10 +71,6 @@ export function Landing({ w, me }: { w: World; me: User | undefined }) {
       <section className="mt-4 rounded-card bg-white p-4 ring-1 ring-pink-100">
         <h2 className="font-display text-lg font-semibold">Let’s begin</h2>
         <label className="mt-2 block text-sm font-medium">Pick a nickname<input value={nickname} onChange={(e) => setNickname(e.target.value)} maxLength={20} placeholder="Not your full name" className={field} autoComplete="off" /></label>
-        <fieldset className="mt-3"><legend className="text-sm font-medium">Which community feels most like you?</legend>
-          <div className="mt-1 space-y-1.5" role="radiogroup" aria-label="Community">
-            {communities.map((c) => <button key={c.id} type="button" role="radio" aria-checked={slug === c.slug} onClick={() => setSlug(c.slug)} className={`flex w-full items-center gap-2 rounded-input border px-3 py-2 text-left text-sm ${slug === c.slug ? 'border-pink-600 bg-pink-100 font-semibold' : 'border-pink-300 bg-white'}`}><span aria-hidden>{c.emoji}</span> {c.name}</button>)}
-          </div></fieldset>
         {error && <p role="alert" className="mt-3 text-sm text-coral-600">{error}</p>}
         <button onClick={() => begin(false)} disabled={!ready} className="mt-4 w-full rounded-input bg-pink-600 py-3 font-semibold text-white hover:bg-pink-700 disabled:opacity-50">Start the story</button>
         {signedIn && <button onClick={() => begin(true)} disabled={!ready} className="mt-2 w-full rounded-input border border-pink-600 py-2.5 text-sm font-semibold text-pink-700 disabled:opacity-50">Use my current account ({me!.displayName || 'this account'}) instead</button>}

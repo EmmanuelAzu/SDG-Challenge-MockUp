@@ -29,13 +29,16 @@ export const CHAPTERS: Chapter[] = [
     outro: { headline: 'That’s the loop: learn, check, do.', body: ['You also just earned points. They are only a way of seeing progress, and you can switch them off with Focus mode if they are not your thing.'] },
   },
   {
-    id: 'do', n: 2, label: 'DO', title: 'Put it into practice', minutes: 3, emoji: '🧮', href: '/tools/budget?template=workshop',
+    id: 'do', n: 2, label: 'DO', title: 'Put it into practice', minutes: 4, emoji: '🧮', href: '/tools/budget?template=workshop',
     intro: {
       headline: 'Knowing is nice. Doing is better.',
       body: ['Meet a student with R3,500 a month who is spending R3,600, and who wants a R1,500 laptop.', 'Your job: fix her budget so she is not overspending and can save at least R150 a month.', 'I’ll coach you as you move the sliders.'],
       cta: 'Open the budget',
     },
-    steps: [{ id: 'budget', tip: 'Move the sliders so you spend no more than R3,500 and save at least R150 (Emergency savings or Investing). Then tap Save.' }],
+    steps: [
+      { id: 'budget', tip: 'Move the sliders so you spend no more than R3,500 and save at least R150 (Emergency savings or Investing). Then tap Save.' },
+      { id: 'payslip', tip: 'Bonus: open the payslip decoder, try a sample salary and tap Save to see where a salary goes before it reaches you.', href: '/tools/payslip' },
+    ],
     outro: { headline: 'Look what that bought her.', body: ['At R150 a month, the R1,500 laptop is ten months away, with no interest to pay.', 'Borrowing it at 15% would have cost R225 more. That is the lesson from earlier, now in her own numbers.'] },
   },
   {
@@ -59,14 +62,15 @@ export const CHAPTERS: Chapter[] = [
     outro: { headline: 'That’s how a claim would work.', body: ['In the full app PPS reviews each claim and you watch it move from Claimed to Approved to Paid. Vouchers expire. Investments don’t.'] },
   },
   {
-    id: 'connect', n: 5, label: 'CONNECT', title: 'You are not doing this alone', minutes: 3, emoji: '💬', href: '/community',
+    id: 'connect', n: 5, label: 'CONNECT', title: 'You are not doing this alone', minutes: 4, emoji: '💬', href: '/community',
     intro: {
       headline: 'Money feels easier with people.',
       body: ['Say hello in your community, then meet a Money Buddy: a friend you do a short plan with each week.', 'The women in these chats and your practice buddy are simulated for the pilot, so you can see how it would feel.'],
       cta: 'Meet my community',
     },
     steps: [
-      { id: 'hello', tip: 'Open your community’s Lounge, accept the guidelines and say hello. Other women reply in a few seconds.' },
+      { id: 'join', tip: 'Browse the communities and join one that feels right for you. They are practice communities made up for the pilot.', href: '/community' },
+      { id: 'hello', tip: 'Open that community’s Lounge, accept the guidelines and say hello. Other women reply in a few seconds.' },
       { id: 'buddy', tip: 'Now open Money Buddy and start with a practice buddy. Look at this week’s plan.', href: '/pathways/buddy' },
       { id: 'nudge', tip: 'Send your buddy a friendly nudge and see what happens.', href: '/pathways/buddy' },
     ],
@@ -76,7 +80,7 @@ export const CHAPTERS: Chapter[] = [
 
 export const chapterById = (id: ChapterId) => CHAPTERS.find((c) => c.id === id)!;
 export const TOTAL_MINUTES = CHAPTERS.reduce((a, c) => a + c.minutes, 0) + 2; // plus the welcome and the wrap-up
-export const GUIDED_MINUTES = 15;
+export const GUIDED_MINUTES = 18;
 
 export const PEEK: { id: string; title: string; blurb: string; href: string }[] = [
   { id: 'payslip', title: 'Payslip simulator', blurb: 'See how a salary becomes take-home pay and plan the rest.', href: '/tools/payslip' },

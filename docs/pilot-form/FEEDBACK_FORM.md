@@ -100,7 +100,7 @@ The guided pilot records, passively and without interrupting people, what each t
 
 **PID.** Your participant ID *(required)*
 - Short answer · Consent and admin
-- Help text: You will see it on the last screen of the Sisi pilot. It looks like P-7K3Q9X. Type NONE if you did not get one.
+- Help text: You will see it on the last screen of the Sisi pilot. It looks like 7K3Q. Type NONE if you did not get one.
 - Why we ask: Links this form to the anonymous in-app results without using a name or email (App participant id)
 
 **Q1.** Do you have your own account with a bank or a mobile-money service?
@@ -226,7 +226,7 @@ The guided pilot records, passively and without interrupting people, what each t
 
 **PID.** Your participant ID *(required)*
 - Short answer · Consent and admin
-- Help text: The same ID as before (looks like P-7K3Q9X). Type NONE if you do not have it.
+- Help text: The same ID as before (looks like 7K3Q). Type NONE if you do not have it.
 - Why we ask: Join to the session data
 
 **D1.** Since the session, how many times have you opened Sisi? *(required)*
