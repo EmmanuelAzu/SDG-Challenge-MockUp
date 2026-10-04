@@ -69,7 +69,7 @@ export const CHAPTERS: Chapter[] = [
       cta: 'Meet my community',
     },
     steps: [
-      { id: 'join', tip: 'Browse the communities and join one that feels right for you. They are practice communities made up for the pilot.', href: '/community' },
+      { id: 'join', tip: 'Browse the communities and join one that feels right for you. Pick one with a Join button (not “Request to join”). They are practice communities made up for the pilot.', href: '/community' },
       { id: 'hello', tip: 'Open that community’s Lounge, accept the guidelines and say hello. Other women reply in a few seconds.' },
       { id: 'buddy', tip: 'Now open Money Buddy and start with a practice buddy. Look at this week’s plan.', href: '/pathways/buddy' },
       { id: 'nudge', tip: 'Send your buddy a friendly nudge and see what happens.', href: '/pathways/buddy' },
