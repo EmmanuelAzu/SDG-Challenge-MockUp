@@ -90,7 +90,6 @@ export default function Guide() {
           <li>Ask them to send the results code before they leave. Check it starts with “SISI”.</li>
           <li>Make sure they have noted their participant ID and know where the feedback form is.</li>
           <li>Ask two questions: “What was the best moment?” and “What would you tell a friend about it?”. Note the answers.</li>
-          <li>Tell them the short follow-up form will reach them in a week.</li>
         </ul>
 
         <h2 className={`mt-5 ${h2}`}>Observation sheet (one per tester)</h2>

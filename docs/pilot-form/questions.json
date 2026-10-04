@@ -29,14 +29,9 @@
    "description": "Thank you for testing Sisi, a money-confidence app for young women, made with PPS Investments.\n\nThere are 18 quick questions, about 4 to 5 minutes. Every question is multiple choice, and each has an optional box if you want to say more. It is not a test of you. We are testing Sisi, and honest answers, including critical ones, help most.\n\nWhat we collect: your answers here. No name, email, ID number or bank details, and no amounts of your own money. The Sisi pilot team uses them to improve the app and to report anonymised, combined results to PPS Investments.\nTaking part is voluntary. You can stop at any time and skip any question you prefer not to answer.\n\nSisi is education, not financial advice.",
    "confirmation": "Thank you! Your feedback helps make Sisi better for other young women."
   },
-  "day7": {
-   "title": "Sisi pilot: one week later",
-   "description": "Thanks for testing Sisi last week. There are 9 quick multiple-choice questions, about 2 minutes, to see whether anything changed for you. Each has an optional box if you want to say more. Please do not include names or amounts. Taking part is voluntary and you can skip any question.",
-   "confirmation": "Thank you! This helps us see whether Sisi makes a real difference after the session."
-  },
   "contact": {
    "title": "Sisi pilot: stay in touch (optional)",
-   "description": "This is a separate form on purpose, so your contact details are never stored with your feedback answers. Only fill it in if you would like to be contacted about the 4-week follow-up or the pilot prize draw. Pilot reward: subject to PPS approval.",
+   "description": "This is a separate form on purpose, so your contact details are never stored with your feedback answers. Only fill it in if you would like to be contacted about the pilot prize draw or future Sisi testing. Pilot reward: subject to PPS approval.",
    "confirmation": "Thank you! We will only use your details for what you ticked."
   }
  },
@@ -100,7 +95,7 @@
    "type": "choice",
    "title": "In the past 3 months, did you put any money aside as savings, even a small amount?",
    "domain": "BEH",
-   "purpose": "SDG 5.a / 4.4 baseline: saving behaviour (compare with the day-7 follow-up)",
+   "purpose": "SDG 5.a / 4.4 baseline: saving behaviour",
    "required": false,
    "help": "",
    "source": "",
@@ -118,7 +113,7 @@
    "type": "choice",
    "title": "How much say do you usually have in big decisions about your money?",
    "domain": "AGY",
-   "purpose": "SDG 5.a baseline: women's say over money (compare with D6 at day 7)",
+   "purpose": "SDG 5.a baseline: women's say over money",
    "required": false,
    "help": "",
    "source": "Draft item for this pilot; check against a validated women's economic empowerment measure before publishing",
@@ -480,190 +475,6 @@
    "section": "Trust and access"
   }
  ],
- "day7": [
-  {
-   "id": "PID",
-   "type": "text",
-   "title": "Your participant ID",
-   "domain": "CONT",
-   "purpose": "Join to the session data",
-   "required": true,
-   "help": "The same ID as before (looks like 7K3Q). Type NONE if you do not have it.",
-   "source": "",
-   "expand": false,
-   "pattern": "^([A-Z0-9]{4}|NONE)$",
-   "section": "One week later"
-  },
-  {
-   "id": "D1",
-   "type": "choice",
-   "title": "Since the session, how many times have you opened Sisi?",
-   "domain": "BEH",
-   "purpose": "Return use",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Not at all",
-    "Once",
-    "2 to 3 times",
-    "4 or more times"
-   ],
-   "section": "One week later"
-  },
-  {
-   "id": "D2",
-   "type": "checkbox",
-   "title": "Since the session, have you… (Tick all that apply)",
-   "domain": "BEH",
-   "purpose": "SDG 5.a / 4.4: behaviour change since the session",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Made or updated a budget",
-    "Set a savings goal",
-    "Put money aside that I would not have saved otherwise",
-    "Started or added to an emergency fund",
-    "Talked about money with someone",
-    "Done a Sisi lesson with a friend",
-    "None of these"
-   ],
-   "other": true,
-   "section": "One week later"
-  },
-  {
-   "id": "D3",
-   "type": "choice",
-   "title": "In the past 7 days, did you put any money aside as savings, even a small amount?",
-   "domain": "BEH",
-   "purpose": "SDG 5.a: savings behaviour (compare with Q2)",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Yes",
-    "No",
-    "Prefer not to say"
-   ],
-   "section": "One week later"
-  },
-  {
-   "id": "D4",
-   "type": "choice",
-   "title": "Which best describes how you planned your money this week?",
-   "domain": "BEH",
-   "purpose": "Budgeting behaviour",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "I kept a written or app budget",
-    "I planned it in my head",
-    "I did not really plan it",
-    "Prefer not to say"
-   ],
-   "section": "One week later"
-  },
-  {
-   "id": "D5",
-   "type": "choice",
-   "title": "Compared with before the session, how confident do you feel now about everyday money decisions?",
-   "domain": "KNW",
-   "purpose": "SDG 4.4 / 5.a: self-efficacy at day 7 (compare with Q14)",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Much more confident",
-    "A bit more confident",
-    "About the same",
-    "A bit less confident",
-    "Much less confident"
-   ],
-   "section": "One week later"
-  },
-  {
-   "id": "D6",
-   "type": "choice",
-   "title": "Have you used what you learned in a real money decision?",
-   "domain": "AGY",
-   "purpose": "SDG 5.a / 4.4: skills applied, and who made the decision (compare with Q3; ask for no amounts or names)",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Yes, I decided on my own",
-    "Yes, together with someone else",
-    "Not yet",
-    "Not sure"
-   ],
-   "section": "One week later"
-  },
-  {
-   "id": "D7",
-   "type": "checkbox",
-   "title": "If you did not use Sisi again, what got in the way? (Tick all that apply)",
-   "domain": "UX",
-   "purpose": "Barriers to return",
-   "required": false,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "I forgot",
-    "I did not have time",
-    "Data costs or connection",
-    "I did not find it useful",
-    "I did not feel safe or comfortable",
-    "Technical problems",
-    "I did use it again"
-   ],
-   "other": true,
-   "section": "One week later"
-  },
-  {
-   "id": "D8",
-   "type": "choice",
-   "title": "Have you told anyone else about Sisi?",
-   "domain": "PREF",
-   "purpose": "Word of mouth (ripple effect)",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Yes, one person",
-    "Yes, more than one person",
-    "No"
-   ],
-   "section": "One week later"
-  },
-  {
-   "id": "D9",
-   "type": "choice",
-   "title": "Since the session, does money feel…",
-   "domain": "IMP",
-   "purpose": "Self-reported change in how manageable money feels",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "More manageable",
-    "About the same",
-    "Less manageable",
-    "Not sure"
-   ],
-   "section": "One week later"
-  }
- ],
  "contact": [
   {
    "id": "C1",
@@ -700,7 +511,6 @@
    "source": "",
    "expand": false,
    "options": [
-    "The 4-week follow-up",
     "The pilot prize draw",
     "Future Sisi testing"
    ],

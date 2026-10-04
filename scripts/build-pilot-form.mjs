@@ -14,11 +14,11 @@ const pillar = { ACC: 'Access and inclusion', KNW: 'Learning and confidence', UX
 const csv = (v) => { const s = Array.isArray(v) ? v.join(' | ') : String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
 const rowsFor = (form, items) => items.map((q) => [form, q.id, q.section, typeLabel[q.type], q.required ? 'yes' : 'no', q.expand ? 'yes' : 'no', q.domain, D.domains[q.domain] ?? '', q.title, (q.options ?? []).map(optText).concat(q.rows ? ['ROWS: ' + q.rows.join(' / '), 'COLUMNS: ' + q.cols.join(' / ')] : []), q.purpose, q.source ?? ''].map(csv).join(','));
 const head = ['form', 'id', 'section', 'type', 'required', 'optional_expansion', 'domain', 'candidate_sdg_targets', 'question', 'options', 'purpose', 'source_or_validation'];
-fs.writeFileSync(`${dir}/codebook.csv`, [head.join(','), ...rowsFor('feedback', D.main), ...rowsFor('day7', D.day7), ...rowsFor('contact', D.contact)].join('\n') + '\n');
+fs.writeFileSync(`${dir}/codebook.csv`, [head.join(','), ...rowsFor('feedback', D.main), ...rowsFor('contact', D.contact)].join('\n') + '\n');
 
 /* ---------- Apps Script ---------- */
 const gs = `/**
- * Creates the three Sisi pilot Google Forms in your Google account.
+ * Creates the two Sisi pilot Google Forms in your Google account.
  * HOW TO RUN: go to script.google.com > New project > paste this whole file > Save >
  * choose "createPilotForms" in the toolbar > Run > approve the permissions.
  * The links to edit and share each form appear in View > Logs (the forms are also in your Drive).
@@ -29,16 +29,14 @@ const gs = `/**
  */
 const INCLUDE_EXPANSIONS = true;
 
-const DATA = ${JSON.stringify({ sectionHelp: D.sectionHelp, forms: D.forms, main: D.main, day7: D.day7, contact: D.contact })};
+const DATA = ${JSON.stringify({ sectionHelp: D.sectionHelp, forms: D.forms, main: D.main, contact: D.contact })};
 
 function createPilotForms() {
   const out = {
     feedback: build_(DATA.forms.main, DATA.main),
-    day7: build_(DATA.forms.day7, DATA.day7),
     contact: build_(DATA.forms.contact, DATA.contact),
   };
   Logger.log('Feedback form (share this one): ' + out.feedback.publish + '\\n  edit: ' + out.feedback.edit);
-  Logger.log('Day-7 follow-up (send a week later): ' + out.day7.publish + '\\n  edit: ' + out.day7.edit);
   Logger.log('Contact form (optional, separate on purpose): ' + out.contact.publish + '\\n  edit: ' + out.contact.edit);
   Logger.log('Tip: in each form open Responses > Link to Sheets so answers collect in one spreadsheet.');
   return out;
@@ -126,7 +124,7 @@ const qMd = (q) => {
 const formMd = (title, meta, items) => `### ${title}\n\n**Form title:** ${meta.title}\n\n**Opening text:**\n\n${meta.description.split('\n\n').map((p) => `> ${p.replace(/\n/g, ' ')}`).join('\n\n')}\n\n` + groups(items).map((g) => `#### ${g.section}${D.sectionHelp[g.section] ? `\n*${D.sectionHelp[g.section]}*` : ''}\n\n` + g.items.map(qMd).join('\n\n')).join('\n\n') + `\n\n**Confirmation message:** ${meta.confirmation}\n`;
 
 const idsByDomain = {};
-[...D.main, ...D.day7].forEach((q) => { if (q.domain !== 'CONT') (idsByDomain[q.domain] ??= []).push(q.id); });
+[...D.main].forEach((q) => { if (q.domain !== 'CONT') (idsByDomain[q.domain] ??= []).push(q.id); });
 const gist = { KNW: 'People feel more able to handle money decisions', UX: 'The content and tools are clear to the intended reader', ACC: 'Who is left out by data cost, connection, device, language or accessibility', BEH: 'Baseline and change in saving, budgeting and account ownership', IMP: 'Which outcomes people believe Sisi supports', TRUST: 'Whether Sisi is trusted and safe, a precondition for any impact', PREF: 'What to keep, change, cut and build next', DEM: 'Whether the pilot reached the women it is meant for', FEAT: 'Which features people loved, liked, disliked or skipped, so you know what to keep, fix or cut', AGY: 'Whether young women have a say over their money, and whether that grows', REL: 'Whether the content and tone speak to women, not just to anyone' };
 const sdgTable = ['| Evidence area | Questions | SDG targets informed | What it lets us say |', '|---|---|---|---|', ...['KNW', 'UX', 'FEAT', 'REL', 'AGY', 'BEH', 'IMP', 'TRUST', 'ACC', 'PREF', 'DEM'].map((d) => `| ${pillar[d]} | ${(idsByDomain[d] ?? []).join(', ')} | ${D.domains[d]} | ${gist[d]} |`)].join('\n');
 
@@ -143,8 +141,8 @@ Status: draft for PPS review. Generated from \`questions.json\`, which is the so
 
 **Which SDGs this serves.** Your **primary goals are SDG 4 (Quality Education) and SDG 5 (Gender Equality)**. **SDG 10 (Reduced Inequalities) is a byproduct**: it is not measured with questions of its own but through **equity cuts**, comparing results by age, situation, data cost, shared or monitored phones and language to show whether the women who benefit are the ones usually left out. Age band, situation and budgeting experience come from the optional profile at the start of the in-app pilot, joined by participant ID, so they are not asked twice.
 
-- **SDG 4:** 4.6 literacy and numeracy (Q6, Q7), 4.4 skills applied (Q14, D5, D6), 4.5 equal access (Q8, Q18).
-- **SDG 5:** 5.a economic resources and financial services (Q1, Q2, Q3, Q15, D2, D3, D6), 5.b technology (Q18), and safe, relevant participation for women (Q8, Q17).
+- **SDG 4:** 4.6 literacy and numeracy (Q6, Q7), 4.4 skills applied (Q14), 4.5 equal access (Q8, Q18).
+- **SDG 5:** 5.a economic resources and financial services (Q1, Q2, Q3, Q15), 5.b technology (Q18), and safe, relevant participation for women (Q8, Q17).
 - **SDG 10 (byproduct):** the in-app age and situation, Q18, and the language and cost answers used as cuts.
 
 ## 1. What this pack contains
@@ -152,15 +150,14 @@ Status: draft for PPS review. Generated from \`questions.json\`, which is the so
 | File | What it is |
 |---|---|
 | \`FEEDBACK_FORM.md\` / \`.pdf\` | This document: every question, why it is asked |
-| \`create-forms.gs\` | A Google Apps Script that **builds all three forms for you**. Paste into script.google.com and press Run |
+| \`create-forms.gs\` | A Google Apps Script that **builds both forms for you**. Paste into script.google.com and press Run |
 | \`codebook.csv\` | One row per question for analysis (id, type, options, evidence area, SDG target, source) |
 | \`questions.json\` | The single source of truth. Edit it and run \`node scripts/build-pilot-form.mjs\` |
 
-Three forms, on purpose:
+Two forms, on purpose:
 
 1. **Pilot feedback form**: consent, participant ID, 18 questions (single choice, tick-all, or grid), each with the optional expansion box. Given straight after the session.
-2. **Day-7 follow-up**: participant ID and ${D.day7.length - 1} multiple-choice questions, about ${minutes(D.day7)} minutes. Sent a week later. It asks what people did, not just what they know, which is your best evidence of behaviour change.
-3. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Contact details have to be typed, so this one is not multiple choice.
+2. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Contact details have to be typed, so this one is not multiple choice.
 
 ## 2. Evidence areas and SDG mapping (SDG 4 and 5 primary, SDG 10 byproduct)
 
@@ -190,23 +187,20 @@ The guided pilot records, passively and without interrupting people, what each t
 3. Replace the opening text with the PPS-approved consent and privacy wording if it differs. Confirm POPIA responsibilities with PPS.
 4. Add the PPS logo or a header image through the form theme if you wish.
 5. Paste the published feedback link into \`FEEDBACK_FORM_URL\` in \`lib/pilot/instruments.ts\`. The pilot's last screen then shows an "Open the feedback form" button.
-6. Calendar-remind yourself to send the day-7 link.
 
 ## 6. The questions
 
 ${formMd('Form 1: Pilot feedback form', D.forms.main, D.main)}
 
-${formMd('Form 2: Day-7 follow-up', D.forms.day7, D.day7)}
-
-${formMd('Form 3: Contact form (optional, separate)', D.forms.contact, D.contact)}
+${formMd('Form 2: Contact form (optional, separate)', D.forms.contact, D.contact)}
 
 ## 7. Analysis plan (short)
 
 **Features and experience.** For each feature, put side by side: whether testers finished it and how long it took (from the app), their one-tap reaction after the chapter (from the app), and Q4/Q5 (loved or liked versus did not like) and Q6 (ease). Where they disagree, read the optional boxes: that is usually where the real problem is. Q11 and Q12 rank what to keep and what to fix; Q13 settles whether points and badges stay on by default.
 
-**SDG 4 evidence (education).** The in-app quiz score (what people knew after the lesson) and the self-reported confidence change (Q14, D5) are the evidence of learning, with Q7 (percent who choose the correct description of Sisi), Q6 (understanding the lesson and the words) and D6 (skills used in a real decision at day 7).
+**SDG 4 evidence (education).** The in-app quiz score (what people knew after the lesson) and the self-reported confidence change (Q14) are the evidence of learning, with Q7 (percent who choose the correct description of Sisi), Q6 (understanding the lesson and the words) and Q15 (what people expect learning like this to help them do).
 
-**SDG 5 evidence (gender equality).** Baseline: Q1 (account), Q2 (saving), Q3 (say over money). Change at day 7: D2 and D3 (actions and saving), D6 (decided on my own or together). Conditions: Q8 (spoke to women like me), Q17 (safety), Q18 (phone access barriers), Q15 (benefits people expect, including saying no to money requests and asking for fair pay).
+**SDG 5 evidence (gender equality).** Baseline: Q1 (account), Q2 (saving), Q3 (say over money). There is no follow-up survey, so these are a baseline snapshot, not a measured change; say so in the report. Conditions: Q8 (spoke to women like me), Q17 (safety), Q18 (phone access barriers), Q15 (benefits people expect, including saying no to money requests and asking for fair pay).
 
 **SDG 10 (byproduct).** Cut Q4 to Q6, Q8, Q14 and Q17 by the in-app age band and situation and by the Q18 barriers (data cost, language, shared or monitored phone). Report whether the gaps are small or large. That is the evidence that Sisi is reaching women who are usually left out.
 
@@ -229,4 +223,4 @@ h1{font-size:19pt;color:#AD1457;margin:0 0 4mm}h2{font-size:14pt;color:#AD1457;b
 table{border-collapse:collapse;width:100%;margin:2mm 0;font-size:8.8pt}th{background:#FCE4EF;text-align:left}td,th{border:.3mm solid #F48FB1;padding:1.4mm 2mm;vertical-align:top}
 blockquote{margin:1mm 0;padding:1mm 3mm;border-left:1mm solid #F48FB1;background:#FFF5F9}code{background:#EFE7FB;padding:0 1mm;border-radius:1mm;font-size:8.8pt}ul{margin:1mm 0 2mm 5mm;padding:0}li{margin:.4mm 0}p{margin:0 0 2mm}
 </style></head><body>${parts.join('\n')}</body></html>`);
-console.log(JSON.stringify({ items: nMain, questions: nMain - 2, withExpansion: nExp, minMain: minutes(D.main), minDay7: minutes(D.day7) }));
+console.log(JSON.stringify({ items: nMain, questions: nMain - 2, withExpansion: nExp, minMain: minutes(D.main) }));

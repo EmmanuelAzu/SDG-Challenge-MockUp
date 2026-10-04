@@ -21,9 +21,9 @@ Primary goals: **SDG 4 (Quality Education)** and **SDG 5 (Gender Equality)**. **
 
 | SDG | What the pilot gives you |
 |---|---|
-| 4.6 literacy and numeracy, 4.4 skills | Quiz score after the lesson, budget scenario success, understandability and confidence (Google Form), skills used in real decisions at day 7 |
+| 4.6 literacy and numeracy, 4.4 skills | Quiz score after the lesson, budget scenario success, understandability and confidence (Google Form), confidence change and what learners expect to do with it |
 | 4.5 equal access | Access barriers: data cost, connection, shared phone, language, accessibility |
-| 5.a economic resources and financial services | Account ownership, saving, say over money (baseline and day 7), perceived benefits |
+| 5.a economic resources and financial services | Account ownership, saving, say over money (baseline snapshot), perceived benefits |
 | 5.b technology | Phone access and whether someone else controls or checks the phone |
 | 5 safe, relevant participation | Comfort and safety in the community, whether Sisi speaks to women like them |
 | 10.2 (byproduct) | Every result cut by age, situation, data cost, language and phone access |
@@ -54,8 +54,8 @@ The first version asked a before/after knowledge check, a 1 to 7 ease rating aft
 
 - **In the app (passive):** as listed above. Nothing interrupts the experience.
 - **Google Form** (`docs/pilot-form/`): 20 items, all multiple choice, each with an optional expansion box: baseline (account, saving, say over money), experience of each guided feature, what they liked and disliked, forced choices on what is most useful and what to change first, understanding of what Sisi is for, whether it spoke to women like them, confidence change, expected benefits, safety, and access barriers.
-- **Day-7 follow-up** (Google Form, 10 items): what they did since, savings, confidence, whether they used what they learned and decided alone or with someone.
-- The two join on the **participant ID**, which the app shows on its last screen.
+- There is no follow-up survey (team decision): one feedback form is the only survey. Baseline items (saving, say over money) are a snapshot, not a measured change.
+- The form and the in-app record join on the **participant ID**, which the app shows on its last screen.
 
 ## 5. Decision rules (proposed, written before any data)
 

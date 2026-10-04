@@ -20,8 +20,8 @@ main = [
  # About you (baseline). Age band, situation and experience come from the optional profile in the app, joined by participant ID.
  q("Q1", "choice", "Do you have your own account with a bank or a mobile-money service?", "BEH", "SDG 5.a baseline: access to financial services",
    options=["Yes, a bank account", "Yes, mobile money only", "Yes, both", "No", PNS], source="Concept follows Global Findex account ownership; wording is ours"),
- q("Q2", "choice", "In the past 3 months, did you put any money aside as savings, even a small amount?", "BEH", "SDG 5.a / 4.4 baseline: saving behaviour (compare with the day-7 follow-up)", options=["Yes, regularly", "Yes, sometimes", "No", PNS]),
- q("Q3", "choice", "How much say do you usually have in big decisions about your money?", "AGY", "SDG 5.a baseline: women's say over money (compare with D6 at day 7)",
+ q("Q2", "choice", "In the past 3 months, did you put any money aside as savings, even a small amount?", "BEH", "SDG 5.a / 4.4 baseline: saving behaviour", options=["Yes, regularly", "Yes, sometimes", "No", PNS]),
+ q("Q3", "choice", "How much say do you usually have in big decisions about your money?", "AGY", "SDG 5.a baseline: women's say over money",
    options=["I decide on my own", "I decide together with family or a partner", "Other people mostly decide for me", "It depends", PNS], source="Draft item for this pilot; check against a validated women's economic empowerment measure before publishing"),
  # Features
  q("Q4", "grid", "How was your experience with each of these?", "FEAT", "Experience of the six guided features, side by side (compare with what they actually did and how long each chapter took)",
@@ -59,27 +59,10 @@ main = [
    options=["Data cost", "A weak connection", "Sharing a phone", "Someone else controlling or checking my phone", "The language", "Not having time", "Worry about privacy", "Hard to read or tap (text size, colours, buttons)", "Nothing"]),
 ]
 
-day7 = [
- q("PID", "text", "Your participant ID", "CONT", "Join to the session data", required=True, help="The same ID as before (looks like 7K3Q). Type NONE if you do not have it.", pattern=r"^([A-Z0-9]{4}|NONE)$"),
- q("D1", "choice", "Since the session, how many times have you opened Sisi?", "BEH", "Return use", options=["Not at all", "Once", "2 to 3 times", "4 or more times"], required=True),
- q("D2", "checkbox", "Since the session, have you… (Tick all that apply)", "BEH", "SDG 5.a / 4.4: behaviour change since the session", required=True, other=True,
-   options=["Made or updated a budget", "Set a savings goal", "Put money aside that I would not have saved otherwise", "Started or added to an emergency fund", "Talked about money with someone", "Done a Sisi lesson with a friend", "None of these"]),
- q("D3", "choice", "In the past 7 days, did you put any money aside as savings, even a small amount?", "BEH", "SDG 5.a: savings behaviour (compare with Q2)", options=["Yes", "No", PNS], required=True),
- q("D4", "choice", "Which best describes how you planned your money this week?", "BEH", "Budgeting behaviour", options=["I kept a written or app budget", "I planned it in my head", "I did not really plan it", PNS], required=True),
- q("D5", "choice", "Compared with before the session, how confident do you feel now about everyday money decisions?", "KNW", "SDG 4.4 / 5.a: self-efficacy at day 7 (compare with Q14)", required=True,
-   options=["Much more confident", "A bit more confident", "About the same", "A bit less confident", "Much less confident"]),
- q("D6", "choice", "Have you used what you learned in a real money decision?", "AGY", "SDG 5.a / 4.4: skills applied, and who made the decision (compare with Q3; ask for no amounts or names)", required=True,
-   options=["Yes, I decided on my own", "Yes, together with someone else", "Not yet", "Not sure"]),
- q("D7", "checkbox", "If you did not use Sisi again, what got in the way? (Tick all that apply)", "UX", "Barriers to return", other=True,
-   options=["I forgot", "I did not have time", "Data costs or connection", "I did not find it useful", "I did not feel safe or comfortable", "Technical problems", "I did use it again"]),
- q("D8", "choice", "Have you told anyone else about Sisi?", "PREF", "Word of mouth (ripple effect)", options=["Yes, one person", "Yes, more than one person", "No"], required=True),
- q("D9", "choice", "Since the session, does money feel…", "IMP", "Self-reported change in how manageable money feels", required=True,
-   options=["More manageable", "About the same", "Less manageable", "Not sure"]),
-]
 contact = [
  q("C1", "text", "Your first name or nickname", "CONT", "Contact", required=True, expand=False),
  q("C2", "text", "Your email address or WhatsApp number", "CONT", "Contact channel", required=True, help="Use only one.", expand=False),
- q("C3", "checkbox", "What may we contact you about? (Tick all that apply)", "CONT", "Purpose limitation", required=True, expand=False, options=["The 4-week follow-up", "The pilot prize draw", "Future Sisi testing"]),
+ q("C3", "checkbox", "What may we contact you about? (Tick all that apply)", "CONT", "Purpose limitation", required=True, expand=False, options=["The pilot prize draw", "Future Sisi testing"]),
  q("C4", "choice", "Do you agree that we store your contact details only for the reasons you ticked, and delete them when the pilot ends?", "CONT", "POPIA purpose and retention", required=True, expand=False, options=[{"v": "Yes, I agree", "go": "continue"}, {"v": "No", "go": "submit"}]),
 ]
 SECT = {"CONSENT": "Welcome and consent", "PID": "About you", "Q1": "About you", "Q2": "About you", "Q3": "About you",
@@ -88,7 +71,6 @@ SECT = {"CONSENT": "Welcome and consent", "PID": "About you", "Q1": "About you",
   "Q9": "What you liked and prefer", "Q10": "What you liked and prefer", "Q11": "What you liked and prefer", "Q12": "What you liked and prefer", "Q13": "What you liked and prefer",
   "Q14": "Learning and what is next", "Q15": "Learning and what is next", "Q16": "Learning and what is next", "Q17": "Trust and access", "Q18": "Trust and access"}
 for it in main: it["section"] = SECT[it["id"]]
-for it in day7: it["section"] = "One week later"
 for it in contact: it["section"] = "Stay in touch"
 SECTION_HELP = {"About you": "Everything except your participant ID is optional. Choose Prefer not to say or skip anything you like.", "Your experience of the features": "Think about what you just did in the pilot. Skip a row if you did not try it.", "Understanding": "Two quick questions about Sisi itself.", "What you liked and prefer": "Be as honest as you like. Critical answers are the most useful.", "Learning and what is next": "A few questions about what changed for you and what would help.", "Trust and access": "Last section. Thank you for sticking with us.", "One week later": "", "Stay in touch": ""}
 forms = dict(
@@ -96,8 +78,7 @@ forms = dict(
     "What we collect: your answers here. No name, email, ID number or bank details, and no amounts of your own money. The Sisi pilot team uses them to improve the app and to report anonymised, combined results to PPS Investments.\n"
     "Taking part is voluntary. You can stop at any time and skip any question you prefer not to answer.\n\nSisi is education, not financial advice."),
     confirmation="Thank you! Your feedback helps make Sisi better for other young women."),
-  day7=dict(title="Sisi pilot: one week later", description="Thanks for testing Sisi last week. There are 9 quick multiple-choice questions, about 2 minutes, to see whether anything changed for you. Each has an optional box if you want to say more. Please do not include names or amounts. Taking part is voluntary and you can skip any question.", confirmation="Thank you! This helps us see whether Sisi makes a real difference after the session."),
-  contact=dict(title="Sisi pilot: stay in touch (optional)", description="This is a separate form on purpose, so your contact details are never stored with your feedback answers. Only fill it in if you would like to be contacted about the 4-week follow-up or the pilot prize draw. Pilot reward: subject to PPS approval.", confirmation="Thank you! We will only use your details for what you ticked."),
+  contact=dict(title="Sisi pilot: stay in touch (optional)", description="This is a separate form on purpose, so your contact details are never stored with your feedback answers. Only fill it in if you would like to be contacted about the pilot prize draw or future Sisi testing. Pilot reward: subject to PPS approval.", confirmation="Thank you! We will only use your details for what you ticked."),
 )
-json.dump(dict(sectionHelp=SECTION_HELP, domains=SDG, forms=forms, main=main, day7=day7, contact=contact, expandLabel="Want to tell us more? (optional)"), open("docs/pilot-form/questions.json", "w"), indent=1, ensure_ascii=False)
-print(len(main), len(day7), len(contact), "questions in main (incl. consent and ID):", len(main))
+json.dump(dict(sectionHelp=SECTION_HELP, domains=SDG, forms=forms, main=main, contact=contact, expandLabel="Want to tell us more? (optional)"), open("docs/pilot-form/questions.json", "w"), indent=1, ensure_ascii=False)
+print(len(main), len(contact), "questions in main (incl. consent and ID):", len(main))
