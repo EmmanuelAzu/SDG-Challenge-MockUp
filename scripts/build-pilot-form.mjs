@@ -29,6 +29,15 @@ const gs = `/**
  */
 const INCLUDE_EXPANSIONS = true;
 
+/**
+ * EXISTING_FORM_ID: leave '' to create a brand-new form (new link, nothing shared).
+ * To UPDATE a form you already created and shared (same link, same sharing and linked sheet), paste its ID here.
+ * The ID is the long string in the edit link: docs.google.com/forms/d/<THIS PART>/edit
+ * The script then clears that form's questions and rebuilds them. Do this BEFORE you collect real responses:
+ * deleting questions from a form that already has answers detaches those answers from their columns.
+ */
+const EXISTING_FORM_ID = '';
+
 const DATA = ${JSON.stringify({ sectionHelp: D.sectionHelp, forms: D.forms, main: D.main })};
 
 function createPilotForms() {
@@ -41,7 +50,14 @@ function createPilotForms() {
 }
 
 function build_(meta, items) {
-  const form = FormApp.create(meta.title);
+  let form;
+  if (EXISTING_FORM_ID) {
+    form = FormApp.openById(EXISTING_FORM_ID);
+    form.setTitle(meta.title);
+    form.getItems().reverse().forEach(function (it) { form.deleteItem(it); });
+  } else {
+    form = FormApp.create(meta.title);
+  }
   form.setDescription(meta.description)
     .setConfirmationMessage(meta.confirmation)
     .setProgressBar(true)
