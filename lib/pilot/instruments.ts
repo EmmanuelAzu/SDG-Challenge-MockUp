@@ -135,6 +135,9 @@ export const CORE = MISSIONS.filter((m) => m.core);
 export const EXTRA = MISSIONS.filter((m) => !m.core);
 export const TIME_BUDGET_MIN = 10;
 
+/** Paste the published Google Form link here once it exists (see docs/pilot-form). Empty hides the button. */
+export const FEEDBACK_FORM_URL = '';
+
 /** Quick-start communities offered to testers (no approval needed). */
 export const QUICK_COMMUNITIES = ['wits', 'uj', 'student-savers', 'first-salary-club', 'invest-curious', 'side-hustle-sisters'];
 

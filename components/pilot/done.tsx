@@ -5,7 +5,7 @@ import { Copy, Download, Mail, MessageCircle } from 'lucide-react';
 import { Bloom } from '@/components/bloom';
 import { encodeRun } from '@/lib/pilot/analysis';
 import { scoreCheck, totalMs } from '@/lib/pilot/analysis';
-import { KNOWLEDGE } from '@/lib/pilot/instruments';
+import { FEEDBACK_FORM_URL, KNOWLEDGE } from '@/lib/pilot/instruments';
 import type { PilotRun } from '@/lib/world/types';
 import { mmss } from './use-pilot';
 
@@ -28,6 +28,13 @@ export function Done({ run }: { run: PilotRun }) {
         <p className="text-sm">Money check: <b>{pre?.score ?? '–'}/{KNOWLEDGE.length}</b> before, <b>{post?.score ?? '–'}/{KNOWLEDGE.length}</b> after.</p>
         {t != null && <p className="text-sm">Time: <b>{mmss(t)}</b></p>}
         <p className="mt-1 text-xs text-plum-500">A short session only shows what you picked up today, not how you will do later.</p>
+      </section>
+
+      <section className="mt-4 rounded-card bg-white p-4 text-left ring-1 ring-pink-100" data-testid="participant-id">
+        <h2 className="font-display text-lg font-semibold">Your participant ID</h2>
+        <p className="font-mono text-2xl font-semibold text-pink-700">{run.id}</p>
+        <p className="text-xs text-plum-500">It is random and has nothing to do with your name. Write it on the feedback form so we can match your answers.</p>
+        {FEEDBACK_FORM_URL && <a href={FEEDBACK_FORM_URL} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block rounded-input bg-pink-600 px-5 py-2.5 text-sm font-semibold text-white">Open the feedback form</a>}
       </section>
 
       <section className="mt-4 rounded-card bg-lavender-100 p-4 text-left">
