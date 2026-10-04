@@ -9,8 +9,8 @@ const config: Config = {
         plum: { 900: '#2A1433', 500: '#6E5A7A' },
         lavender: { 100: '#EFE7FB', 600: '#7E57C2' },
         mint: { 100: '#E2F4EC', 700: '#0F7B5F' },
-        gold: { 500: '#F2B33D' },
-        coral: { 600: '#E5484D' },
+        gold: { 100: '#FDF0D3', 500: '#F2B33D' },
+        coral: { 100: '#FDE4E5', 600: '#E5484D' },
       },
       fontFamily: {
         display: ['var(--font-fraunces)', 'Georgia', 'serif'],

@@ -50,3 +50,9 @@
 - Money Buddy: invite links are stateless-per-browser (the mock world is shared across tabs of one browser), so a "second device" is a second tab signed in as another demo persona. A practice (simulated) buddy is available and always labelled; it answers a nudge after ~2.5s and ticks off one item.
 - Buddy invite hand-off uses a `next` query param stashed in sessionStorage so sign-up/onboarding returns to the invite page.
 - Rewards: claims are reviewed only by `pps_admin`; facilitators see the console but not claims. Approving or paying moves no money. Weekly-draw winners are deterministic per set of entrants. All reward UI carries "Pilot reward — subject to PPS approval."
+
+## Talk to someone, Support, FAQ
+- Help pages live outside the app shell (`/help/*`) so Support works signed-out and carries no nav. Support is entered with `replace` links, has a sticky Quick exit (also Esc twice) that `location.replace`s to a neutral site, and page-view analytics are dropped on that route via `SafeAnalytics`.
+- Safety numbers are well-known South African lines but ship **unverified** (visible flag) until a PPS admin ticks "verified" in `/admin/safety`. I could not verify them from here; please check each before any real use.
+- Added a demo persona "Ayanda" (role `professional`) who answers help requests; PPS admins can too. Max 3 open requests, 48 h target shown, general-education notice on every answer.
+- FAQ is `lib/content/faq.ts` (searchable accordion); figures in it match the spec's points table only. WORLD_VERSION is now 5 (stored demo data resets once).

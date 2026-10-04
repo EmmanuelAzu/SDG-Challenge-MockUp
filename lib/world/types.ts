@@ -70,6 +70,10 @@ export type InvestState = { affordability: Record<string, string>; monthly: numb
 
 export type PayslipRun = { id: string; gross: number; retirementPct: number; allocation: Record<BudgetCategory, number>; at: ISO };
 
+export type HelpRequest = { id: string; userId: string; kind: 'question' | 'call'; topic: string; body: string; windows: string[]; status: 'open' | 'answered' | 'closed'; answer: string; answeredBy: string | null; at: ISO; answeredAt: ISO | null };
+export type SafetyGroup = 'emergency' | 'gbv' | 'counselling' | 'student';
+export type SafetyResource = { id: string; group: SafetyGroup; name: string; description: string; phone: string; hours: string; verified: boolean };
+
 export type BuddyItem = { id: string; title: string; kind: 'action' | 'manual'; lessonId?: string };
 export type BuddyPlan = { weekKey: string; weekStart: ISO; items: BuddyItem[]; done: Record<string, string[]> };
 export type BuddyPair = { id: string; inviterId: string; inviteeId: string | null; code: string; status: 'pending' | 'active' | 'ended'; sim: boolean; createdAt: ISO; plans: BuddyPlan[]; nudges: { fromId: string; at: ISO }[]; jointAt: ISO | null };
@@ -125,6 +129,8 @@ export type World = {
   draws: Draw[];
   goals: SavingsGoal[];
   invest: Record<string, InvestState>;
+  helpRequests: HelpRequest[];
+  safety: SafetyResource[];
   notifications: Notification[];
   analytics: AnalyticsEvent[];
 };

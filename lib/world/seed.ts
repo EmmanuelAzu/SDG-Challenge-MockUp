@@ -1,3 +1,4 @@
+import { SAFETY_DEFAULTS } from '@/lib/content/safety';
 import { ANNOUNCEMENTS, CHALLENGE_SEEDS, CHAT_POOLS, CIRCLE_SEEDS, COMMUNITY_SEEDS, COMMUNITY_TOPIC, EVENT_SEEDS, FEED_TEMPLATES, MEMBER_NAMES, NOTE_PRESETS, REACTIONS } from '@/lib/content/community-data';
 import { COURSES } from '@/lib/content';
 import { TRACKS } from '@/lib/content/life-tracks';
@@ -7,7 +8,7 @@ import { isoWeekKey, sastDate } from '@/lib/time';
 import { weekStart as weekStartOf } from '@/lib/engine/leaderboard';
 import type { Message, PointEvent, User, World } from './types';
 
-export const WORLD_VERSION = 4;
+export const WORLD_VERSION = 5;
 export const DEMO_PASSWORD = 'SisiDemo2026!';
 const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'];
 
@@ -15,6 +16,7 @@ export const PERSONAS = [
   { id: 'u-nomsa', email: 'nomsa@demo.sisi.app', label: 'Nomsa', blurb: 'Member, mid-journey' },
   { id: 'u-new', email: 'new@demo.sisi.app', label: 'New member', blurb: 'Live onboarding' },
   { id: 'u-thandi', email: 'thandi@demo.sisi.app', label: 'Thandi', blurb: 'Facilitator' },
+  { id: 'u-pro', email: 'pro@demo.sisi.app', label: 'Ayanda', blurb: 'PPS educator, answers questions' },
   { id: 'u-admin', email: 'admin@demo.sisi.app', label: 'Admin', blurb: 'PPS staff console' },
 ] as const;
 
@@ -55,6 +57,7 @@ export function buildWorld(now = new Date()): World {
   users['u-nomsa'] = base('u-nomsa', 'nomsa@demo.sisi.app', 'Nomsa Dlamini', { nickname: 'Nomsa', showOnLeaderboard: true, shareMilestones: true, color: '#D81B60' });
   users['u-new'] = base('u-new', 'new@demo.sisi.app', '', { lifeTrack: null, goals: [], consentedAt: null, onboardedAt: null, color: '#7E57C2' });
   users['u-thandi'] = base('u-thandi', 'thandi@demo.sisi.app', 'Thandi Mokoena', { role: 'facilitator', nickname: 'Thandi', shareMilestones: true, color: '#0F7B5F' });
+  users['u-pro'] = base('u-pro', 'pro@demo.sisi.app', 'Ayanda Khumalo', { role: 'professional', nickname: 'Ayanda', color: '#7E57C2' });
   users['u-admin'] = base('u-admin', 'admin@demo.sisi.app', 'Sisi Admin', { role: 'pps_admin', nickname: 'Admin', color: '#AD1457' });
 
   const members = MEMBER_NAMES.map((name, i) => {
@@ -240,6 +243,10 @@ export function buildWorld(now = new Date()): World {
   const challengeDone: World['challengeDone'] = [];
   challenges.forEach((c, ci) => members.slice(ci * 3, ci * 3 + 7).forEach((m) => challengeDone.push({ challengeId: c.id, userId: m, at: iso(daysAgo(ci * 7 + 1)) })));
 
+  const helpRequests: World['helpRequests'] = [
+    { id: 'help-1', userId: 'u-nomsa', kind: 'question', topic: 'Saving', body: 'Is it better to pay off my store card first or build an emergency fund?', windows: [], status: 'answered', answer: 'A small emergency buffer first (even one month of basics), then put extra towards the account with the highest interest. Store cards are usually the most expensive. This is general education, not personal advice.', answeredBy: 'u-pro', at: iso(daysAgo(5)), answeredAt: iso(daysAgo(4)) },
+    { id: 'help-2', userId: 'u-nomsa', kind: 'question', topic: 'Investing', body: 'What does a unit trust actually hold?', windows: [], status: 'open', answer: '', answeredBy: null, at: iso(daysAgo(1)), answeredAt: null },
+  ];
   const world: World = {
     version: WORLD_VERSION, clockOffsetMs: 0, users, communities, communityMembers, circles, circleMembers, lessonProgress, actionCompletions,
     milestonesDone: { 'u-nomsa': { 'cash-flow-check': iso(daysAgo(3)) } },
@@ -253,7 +260,7 @@ export function buildWorld(now = new Date()): World {
       { id: 't-3', userId: members[2], body: 'Doing my first tax return', voters: members.slice(4, 7), at: iso(daysAgo(3)) },
     ],
     shares: [], channels, messages, reactions: [], reports: [], blocks: [], mutes: [], reads,
-    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone, seasons, payslipRuns: {}, buddies, claims: [], draws: [], askedShare: { 'u-nomsa': true },
+    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone, seasons, payslipRuns: {}, buddies, claims: [], draws: [], helpRequests, safety: SAFETY_DEFAULTS.map((r) => ({ ...r })), askedShare: { 'u-nomsa': true },
     // Nomsa's private money data: a budget and two goals (one 60% done)
     budgets: { 'u-nomsa': { template: 'Allowance', income: 4200, lines: { rent: 1000, transport: 420, groceries: 1000, utilities: 420, family: 0, emergency: 420, investing: 0, fun: 420 }, savedAt: iso(daysAgo(9)) } },
     goals: [

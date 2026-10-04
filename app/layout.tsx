@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Fraunces, Plus_Jakarta_Sans } from 'next/font/google';
-import { Analytics } from '@vercel/analytics/next';
+import { SafeAnalytics } from '@/components/safe-analytics';
 import { CelebrationProvider } from '@/components/celebration/provider';
 import './globals.css';
 
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${fraunces.variable} ${jakarta.variable}`}>
       <body>
         <CelebrationProvider>{children}</CelebrationProvider>
-        <Analytics />
+        <SafeAnalytics />
       </body>
     </html>
   );
