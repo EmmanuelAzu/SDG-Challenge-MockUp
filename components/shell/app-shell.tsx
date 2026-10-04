@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, Bell, Gift, Home, User, Users } from 'lucide-react';
+import { BookOpen, Bell, ChevronDown, ChevronUp, Gift, Home, User, Users } from 'lucide-react';
 import { HelpSheet } from '@/components/help-sheet';
 import { DemoTools } from './demo-tools';
 import { AppContext } from './app-context';
@@ -19,6 +19,9 @@ const NAV = [
 /** Client-side guard: no session → login; not onboarded → onboarding. Renders a skeleton until the world has loaded. */
 export function AppShell({ children, requireOnboarded = true }: { children: React.ReactNode; requireOnboarded?: boolean }) {
   const router = useRouter();
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => { try { setCollapsed(localStorage.getItem('sisi.nav.collapsed') === '1'); } catch {} }, []);
+  const toggleNav = () => setCollapsed((c) => { try { localStorage.setItem('sisi.nav.collapsed', c ? '0' : '1'); } catch {} return !c; });
   const w = useWorld();
   const sid = useSessionId();
   const ctx = useMe();
@@ -38,13 +41,16 @@ export function AppShell({ children, requireOnboarded = true }: { children: Reac
 
   return (
     <AppContext.Provider value={{ ...ctx, now }}>
-      <div className="min-h-screen pb-24 md:pb-0">
+      <div className={`min-h-screen md:pb-0 ${collapsed ? 'pb-14' : 'pb-24'}`}>
         <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-pink-100 bg-white md:static md:border-b md:border-t-0">
-          <ul className="mx-auto flex max-w-3xl items-center justify-around py-2">
-            {NAV.map(({ href, label, Icon }) => (
-              <li key={href}><Link href={href} className="flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium text-plum-500 hover:text-pink-700"><Icon size={22} aria-hidden /> {label}</Link></li>
-            ))}
-          </ul>
+          <div className="mx-auto flex max-w-3xl items-center">
+            <ul className={`flex flex-1 items-center justify-around ${collapsed ? 'py-1' : 'py-2'}`}>
+              {NAV.map(({ href, label, Icon }) => (
+                <li key={href}><Link href={href} aria-label={collapsed ? label : undefined} title={label} className="flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium text-plum-500 hover:text-pink-700"><Icon size={22} aria-hidden />{!collapsed && <span>{label}</span>}</Link></li>
+              ))}
+            </ul>
+            <button onClick={toggleNav} aria-expanded={!collapsed} aria-label={collapsed ? 'Expand navigation labels' : 'Collapse navigation labels'} className="mr-2 rounded-full p-2 text-plum-500 hover:bg-pink-100">{collapsed ? <ChevronUp size={18} /> : <ChevronDown size={18} />}</button>
+          </div>
         </nav>
         <header className="mx-auto flex max-w-3xl items-center justify-end gap-3 px-4 pt-3">
           {staff && <Link href="/admin" className="rounded-full bg-lavender-100 px-3 py-1 text-xs font-semibold text-lavender-600">Staff console</Link>}
