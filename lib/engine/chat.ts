@@ -20,7 +20,7 @@ export function ensureChannel(w: World, kind: Channel['kind'], refId: string): C
 export function canAccess(w: World, userId: string, ch: Channel): boolean {
   if (ch.kind === 'circle') return isCircleMember(w, ch.refId, userId);
   if (ch.kind === 'community') return isActiveMember(w, ch.refId, userId);
-  return false;
+  return w.buddies.some((p) => p.id === ch.refId && p.status === 'active' && (p.inviterId === userId || p.inviteeId === userId));
 }
 
 /** The agreement everyone accepts before their first message in a Circle (or the community lounge). */

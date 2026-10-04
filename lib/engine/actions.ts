@@ -6,6 +6,7 @@ import { evaluateBadges } from './badges';
 import { notify, track, uid } from './helpers';
 import { lessonKey, syncMilestones } from './milestones';
 import { FEEDBACK_PER_WEEK, POINTS } from './points';
+import { syncBuddy } from './buddy';
 import { postMilestones } from './feed';
 import { levelFor } from './levels';
 import { checkWeeklyTarget, weeklyFor } from './weeklyTarget';
@@ -17,6 +18,7 @@ const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'
 export function afterEarn(w: World, userId: string, now: Date): { badges: EarnedBadge[]; milestones: string[] } {
   checkWeeklyTarget(w, userId, now);
   const milestones = syncMilestones(w, userId, now);
+  syncBuddy(w, userId, now);
   const badges = evaluateBadges(w, userId, now);
   return { badges, milestones };
 }

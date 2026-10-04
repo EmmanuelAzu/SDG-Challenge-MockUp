@@ -7,6 +7,7 @@ import { playerFor } from '@/lib/engine/player';
 import { firstName } from '@/lib/engine/helpers';
 import { shouldAskShare } from '@/lib/engine/feed';
 import { realResults } from '@/lib/engine/goals';
+import { JOINT_WEEKS_NEEDED, jointWeeks, pairOf } from '@/lib/engine/buddy';
 import { stepsDone } from '@/lib/engine/invest';
 import { rand } from '@/lib/money';
 import { update } from '@/lib/world/store';
@@ -18,6 +19,8 @@ export default function HomePage() {
   const toReward = Math.min(journey.doneCount, 3);
   const money = realResults(w, me.id);
   const inv = w.invest[me.id];
+  const buddyPair = pairOf(w, me.id);
+  const buddyLine = !buddyPair ? 'Pair up with a friend' : buddyPair.status === 'pending' ? 'Waiting for your buddy' : `${jointWeeks(w, buddyPair, now)} of ${JOINT_WEEKS_NEEDED} joint weeks`;
   const chip = 'flex items-center gap-1 rounded-full bg-pink-100 px-3 py-1 text-sm font-semibold text-pink-700';
 
   return (
@@ -91,7 +94,7 @@ export default function HomePage() {
       <h2 className="mt-8 font-display text-xl font-semibold">Your pathways</h2>
       <ul className="mt-3 grid gap-3 sm:grid-cols-3">
         <li><Link href="/pathways/milestones" className="block rounded-card bg-pink-100 p-4"><b className="font-display text-pink-700">Money Milestones</b><span className="mt-1 block text-sm">{journey.doneCount} of 5 done</span></Link></li>
-        <li className="rounded-card bg-lavender-100 p-4"><b className="font-display text-lavender-600">Money Buddy</b><span className="mt-1 block text-sm">Coming soon</span></li>
+        <li><Link href="/pathways/buddy" className="block rounded-card bg-lavender-100 p-4"><b className="font-display text-lavender-600">Money Buddy</b><span className="mt-1 block text-sm">{buddyLine}</span></Link></li>
         <li><Link href="/pathways/invest-her" className="block rounded-card bg-mint-100 p-4"><b className="font-display text-mint-700">Invest HER</b><span className="mt-1 block text-sm">{inv?.finishedAt ? 'Finished 🎉' : inv ? `${stepsDone(inv)} of 4 steps` : 'Start a guided, simulated first step'}</span></Link></li>
       </ul>
 

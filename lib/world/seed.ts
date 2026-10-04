@@ -2,9 +2,12 @@ import { ANNOUNCEMENTS, CHALLENGE_SEEDS, CHAT_POOLS, CIRCLE_SEEDS, COMMUNITY_SEE
 import { COURSES } from '@/lib/content';
 import { TRACKS } from '@/lib/content/life-tracks';
 import { DEFAULT_REMINDER_DAYS } from '@/lib/engine/actions';
+import { runWeeklyDraw } from '@/lib/engine/rewards';
+import { isoWeekKey, sastDate } from '@/lib/time';
+import { weekStart as weekStartOf } from '@/lib/engine/leaderboard';
 import type { Message, PointEvent, User, World } from './types';
 
-export const WORLD_VERSION = 3;
+export const WORLD_VERSION = 4;
 export const DEMO_PASSWORD = 'SisiDemo2026!';
 const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'];
 
@@ -225,7 +228,19 @@ export function buildWorld(now = new Date()): World {
     });
   });
 
-  return {
+  // Nomsa's Money Buddy (simulated Lerato): last week's plan was finished together, so one joint week is already banked
+  const lastWeekDate = new Date(now.getTime() - 7 * 86400_000);
+  const lastItems = [{ id: 'm:win', title: 'Share one money win with your buddy', kind: 'manual' as const }, { id: 'm:notes', title: 'Compare notes: what surprised you this week?', kind: 'manual' as const }, { id: 'm:check', title: 'Check in with each other mid-week', kind: 'manual' as const }];
+  const buddyChannel = { id: 'chan-pair-seed', kind: 'buddy' as const, refId: 'pair-seed' };
+  channels.push(buddyChannel);
+  ['Ready for this week’s plan? 💪', 'Yes! Let us both finish by Friday', 'Deal 💗'].forEach((body, k) => messages.push({ id: `msg-buddy-${k}`, channelId: buddyChannel.id, userId: k === 1 ? 'm-0' : 'u-nomsa', body: k === 0 ? body : body, replyTo: null, kind: 'user', pinned: false, deleted: false, at: iso(new Date(now.getTime() - (3 - k) * 3 * 3600_000)) }));
+  reads[`u-nomsa:${buddyChannel.id}`] = iso(now);
+  const buddies: World['buddies'] = [{ id: 'pair-seed', inviterId: 'u-nomsa', inviteeId: 'm-0', code: 'seedbuddy', status: 'active', sim: true, createdAt: iso(daysAgo(21)), nudges: [], jointAt: null, plans: [{ weekKey: isoWeekKey(sastDate(lastWeekDate)), weekStart: weekStartOf(lastWeekDate), items: lastItems, done: { 'u-nomsa': lastItems.map((i) => i.id), 'm-0': lastItems.map((i) => i.id) } }] }];
+  // sims have done the last two weekly challenges, so there is a prize draw to look at
+  const challengeDone: World['challengeDone'] = [];
+  challenges.forEach((c, ci) => members.slice(ci * 3, ci * 3 + 7).forEach((m) => challengeDone.push({ challengeId: c.id, userId: m, at: iso(daysAgo(ci * 7 + 1)) })));
+
+  const world: World = {
     version: WORLD_VERSION, clockOffsetMs: 0, users, communities, communityMembers, circles, circleMembers, lessonProgress, actionCompletions,
     milestonesDone: { 'u-nomsa': { 'cash-flow-check': iso(daysAgo(3)) } },
     pointEvents: events, userBadges,
@@ -238,7 +253,7 @@ export function buildWorld(now = new Date()): World {
       { id: 't-3', userId: members[2], body: 'Doing my first tax return', voters: members.slice(4, 7), at: iso(daysAgo(3)) },
     ],
     shares: [], channels, messages, reactions: [], reports: [], blocks: [], mutes: [], reads,
-    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone: [], seasons, askedShare: { 'u-nomsa': true },
+    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone, seasons, payslipRuns: {}, buddies, claims: [], draws: [], askedShare: { 'u-nomsa': true },
     // Nomsa's private money data: a budget and two goals (one 60% done)
     budgets: { 'u-nomsa': { template: 'Allowance', income: 4200, lines: { rent: 1000, transport: 420, groceries: 1000, utilities: 420, family: 0, emergency: 420, investing: 0, fun: 420 }, savedAt: iso(daysAgo(9)) } },
     goals: [
@@ -249,4 +264,6 @@ export function buildWorld(now = new Date()): World {
     notifications: [{ id: 'n-seed-1', userId: 'u-nomsa', kind: 'welcome', title: 'Welcome back, Nomsa', body: 'You are 60 points from Bud level. One lesson gets you most of the way.', href: '/home', at: iso(daysAgo(0)), read: false }],
     analytics: [],
   };
+  runWeeklyDraw(world, now);
+  return world;
 }

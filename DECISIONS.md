@@ -44,3 +44,9 @@
 - Goal Getter = a 0-point `goal_reached` flag event, like the other badge flags. Reaching a goal never earns points.
 - Invest HER completes when: readiness answered, all 3 explainers opened, the simulator saved, and at least 3 of 4 checklist items ticked. The readiness check is a guide with friendly tips, never advice, and stores no amounts.
 - Compound maths: monthly compounding, contributions at month end (R200/month, 10 years, 8% = R36,589). Template incomes in the budget builder are examples only.
+
+## Payslip simulator, Money Buddy, rewards
+- Tax figures live in `config/tax-za.ts` and are marked `verified: false`; the UI shows "Illustrative figures" until someone confirms them against SARS.
+- Money Buddy: invite links are stateless-per-browser (the mock world is shared across tabs of one browser), so a "second device" is a second tab signed in as another demo persona. A practice (simulated) buddy is available and always labelled; it answers a nudge after ~2.5s and ticks off one item.
+- Buddy invite hand-off uses a `next` query param stashed in sessionStorage so sign-up/onboarding returns to the invite page.
+- Rewards: claims are reviewed only by `pps_admin`; facilitators see the console but not claims. Approving or paying moves no money. Weekly-draw winners are deterministic per set of entrants. All reward UI carries "Pilot reward — subject to PPS approval."

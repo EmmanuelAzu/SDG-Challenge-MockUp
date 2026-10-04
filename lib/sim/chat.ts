@@ -19,6 +19,7 @@ export type PlannedReply = { delayMs: number; userId: string; body: string; typi
 export function simMembers(w: World, channelId: string): string[] {
   const ch = w.channels.find((c) => c.id === channelId);
   if (!ch) return [];
+  if (ch.kind === 'buddy') { const p = w.buddies.find((x) => x.id === ch.refId && x.status === 'active'); return p ? [p.inviterId, p.inviteeId].filter((id): id is string => !!id && !!w.users[id]?.sim) : []; }
   const ids = ch.kind === 'circle' ? w.circleMembers.filter((m) => m.circleId === ch.refId).map((m) => m.userId) : w.communityMembers.filter((m) => m.communityId === ch.refId && m.status === 'active').map((m) => m.userId);
   return ids.filter((id) => w.users[id]?.sim);
 }
@@ -31,7 +32,7 @@ export function planReplies(w: World, msg: Message): PlannedReply[] {
   const ch = w.channels.find((c) => c.id === msg.channelId)!;
   const communitySlug = w.communities.find((c) => c.id === (ch.kind === 'community' ? ch.refId : w.circles.find((x) => x.id === ch.refId)?.communityId))?.slug ?? '';
   const topic = KEYWORDS.find(([re]) => re.test(msg.body))?.[1] ?? COMMUNITY_TOPIC[communitySlug] ?? 'general';
-  const pool = GREETING.test(msg.body) ? ['Welcome!! 🌸', 'Hi sisi! So glad you are here', 'Heyy 💗 welcome'] : [...CHAT_POOLS[topic], ...(h % 3 === 0 ? FALLBACK : [])];
+  const pool = ch.kind === 'buddy' ? CHAT_POOLS.buddy : GREETING.test(msg.body) ? ['Welcome!! 🌸', 'Hi sisi! So glad you are here', 'Heyy 💗 welcome'] : [...CHAT_POOLS[topic], ...(h % 3 === 0 ? FALLBACK : [])];
   const first = people[h % people.length];
   const out: PlannedReply[] = [{ delayMs: 2500 + (h % 3000), typingMs: 1800, userId: first, body: pool[h % pool.length], reactWith: h % 4 === 0 ? CHAT_EMOJI[h % CHAT_EMOJI.length] : undefined }];
   if (people.length > 1 && h % 5 < 2) {

@@ -68,6 +68,15 @@ export type Deposit = { id: string; amount: number; at: ISO };
 export type SavingsGoal = { id: string; userId: string; name: string; emoji: string; target: number; dueOn: string | null; deposits: Deposit[]; createdAt: ISO; reachedAt: ISO | null };
 export type InvestState = { affordability: Record<string, string>; monthly: number; years: number; rate: number; explainersSeen: string[]; simulated: boolean; simRuns: number; checklist: string[]; startedAt: ISO; finishedAt: ISO | null };
 
+export type PayslipRun = { id: string; gross: number; retirementPct: number; allocation: Record<BudgetCategory, number>; at: ISO };
+
+export type BuddyItem = { id: string; title: string; kind: 'action' | 'manual'; lessonId?: string };
+export type BuddyPlan = { weekKey: string; weekStart: ISO; items: BuddyItem[]; done: Record<string, string[]> };
+export type BuddyPair = { id: string; inviterId: string; inviteeId: string | null; code: string; status: 'pending' | 'active' | 'ended'; sim: boolean; createdAt: ISO; plans: BuddyPlan[]; nudges: { fromId: string; at: ISO }[]; jointAt: ISO | null };
+
+export type Claim = { id: string; userId: string; rewardSlug: string; status: 'claimed' | 'approved' | 'rejected' | 'paid'; choice: 'cash' | 'credit'; cash: number; credit: number; refKey: string; note: string; at: ISO; updatedAt: ISO };
+export type Draw = { id: string; challengeId: string; weekKey: string; entrants: string[]; winners: string[]; prizes: number; prize: number; at: ISO };
+
 export type Notification = { id: string; userId: string; kind: string; title: string; body: string; href: string; at: ISO; read: boolean; key?: string };
 export type AnalyticsEvent = { id: string; userId: string; name: string; props: Record<string, string | number | boolean>; at: ISO };
 
@@ -110,6 +119,10 @@ export type World = {
   seasons: CampusSeason[];
   askedShare: Record<string, boolean>;
   budgets: Record<string, Budget>;
+  payslipRuns: Record<string, PayslipRun[]>;
+  buddies: BuddyPair[];
+  claims: Claim[];
+  draws: Draw[];
   goals: SavingsGoal[];
   invest: Record<string, InvestState>;
   notifications: Notification[];

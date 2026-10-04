@@ -25,7 +25,7 @@ export default function Tools() {
         {cards.map(({ href, Icon, title, blurb, tone }) => (
           <li key={href}><Link href={href} className="flex h-full gap-3 rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-card ${tone}`}><Icon size={22} aria-hidden /></span><span><b className="block font-display text-lg">{title}</b><span className="text-sm text-plum-500">{blurb}</span></span></Link></li>
         ))}
-        <li><div className="flex h-full gap-3 rounded-card bg-white p-4 opacity-70 ring-1 ring-pink-100"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-card bg-pink-50 text-pink-700"><Receipt size={22} aria-hidden /></span><span><b className="block font-display text-lg">First payslip simulator</b><span className="text-sm text-plum-500">Coming next.</span></span></div></li>
+        <li><Link href="/tools/payslip" className="flex h-full gap-3 rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-card bg-lavender-100 text-lavender-600"><Receipt size={22} aria-hidden /></span><span><b className="block font-display text-lg">First payslip simulator</b><span className="text-sm text-plum-500">{w.payslipRuns[me.id]?.length ? 'You have a saved scenario.' : 'See what comes off your pay, then allocate the rest.'}</span></span></Link></li>
       </ul>
       <footer className="mt-10 text-xs text-plum-500">Sisi provides financial education, not financial advice.</footer>
     </div>

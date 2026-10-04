@@ -2,8 +2,13 @@ import type { World } from '@/lib/world/types';
 import { CHAT_POOLS, COMMUNITY_TOPIC } from '@/lib/content/community-data';
 import { sastDate, isoWeekKey } from '@/lib/time';
 import { award } from './award';
+import { currentChallenge } from './rewards';
 import { evaluateBadges } from './badges';
 import { circlesOf } from './community';
+import { CHALLENGE_SEEDS } from '@/lib/content/community-data';
+import { currentPlan, itemDone, syncBuddy } from './buddy';
+import { runWeeklyDraw } from './rewards';
+import { weekStart } from './leaderboard';
 import { fmtWhen } from './events';
 import { postMilestones } from './feed';
 import { notify, uid } from './helpers';
@@ -29,6 +34,23 @@ export function simulateDay(w: World, now: Date) {
       evaluateBadges(w, u.id, now);
     }
   }
+  // sims join this week's challenge now and then, and sim buddies chip away at the weekly plan
+  const ch0 = currentChallenge(w, now);
+  if (ch0) for (const u of Object.values(w.users)) {
+    if (u.sim && !w.challengeDone.some((d) => d.challengeId === ch0.id && d.userId === u.id) && unit(`${u.id}:${date}:challenge`) < 0.12) {
+      w.challengeDone.push({ challengeId: ch0.id, userId: u.id, at: iso });
+      award(w, { userId: u.id, source: 'challenge', sourceId: ch0.id, points: ch0.points, now });
+    }
+  }
+  for (const pair of w.buddies) {
+    if (pair.status !== 'active' || !pair.sim || !pair.inviteeId) continue;
+    const plan = currentPlan(w, pair, now);
+    const sim = pair.inviteeId;
+    const next = plan.items.find((i) => !itemDone(w, plan, sim, i));
+    if (next && unit(`${pair.id}:${date}:buddy`) < 0.5) (plan.done[sim] ??= []).push(next.id);
+    syncBuddy(w, pair.inviterId, now);
+  }
+
   // a little chatter in each channel
   for (const ch of w.channels) {
     if (unit(`${ch.id}:${date}:chat`) > 0.55) continue;
@@ -40,13 +62,27 @@ export function simulateDay(w: World, now: Date) {
   }
 }
 
+/** A new weekly challenge appears each Monday, rotating through the content list. */
+export function ensureWeeklyChallenge(w: World, now: Date) {
+  const monday = weekStart(now).slice(0, 10);
+  if (w.challenges.some((c) => c.weekStart === monday)) return;
+  const n = Math.floor(new Date(`${monday}T00:00:00Z`).getTime() / (7 * 86400_000));
+  const seed = CHALLENGE_SEEDS[n % CHALLENGE_SEEDS.length];
+  w.challenges.push({ id: `ch-${monday}`, communityId: null, ...seed, weekStart: monday });
+}
+
 const isoWeekday = (d: string) => ((new Date(`${d}T12:00:00Z`).getUTCDay() + 6) % 7) + 1;
 
 /** The single daily job (18:00 SAST): reminders, the 1st-of-month Circle Cup, Campus Cup at season end. Idempotent. */
 export function dailyJob(w: World, now: Date) {
   const date = sastDate(now);
-  const out = { reminders: 0, nudges: 0, circleCup: [] as string[], campusCup: [] as string[] };
+  const out = { reminders: 0, nudges: 0, draws: 0, circleCup: [] as string[], campusCup: [] as string[] };
   const until = new Date(now.getTime() + 24 * 3600_000).toISOString();
+
+  // 0) make sure this week has a challenge, then draw last week's prize winners
+  ensureWeeklyChallenge(w, now);
+  const drawn = runWeeklyDraw(w, now);
+  out.draws = drawn.length;
 
   // 1) in-app reminders for sessions and bookings in the next 24 hours
   for (const s of w.sessions) {

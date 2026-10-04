@@ -62,6 +62,10 @@ export const ANNOUNCEMENTS: Record<string, string[]> = {
 export const CHALLENGE_SEEDS = [
   { title: 'Track every rand for 3 days', description: 'Note down what you spend for three days. No judgement, just noticing.', points: 20 },
   { title: 'Name your savings goal', description: 'Pick one thing you are saving for and tell your Circle what it is (not the amount!).', points: 20 },
+  { title: 'Find one leak', description: 'Scan last month’s statement and circle one thing you forgot you were paying for.', points: 20 },
+  { title: 'Teach a friend one money word', description: 'Pick a term from Money words and explain it to someone in your own words.', points: 20 },
+  { title: 'Set up a tiny automatic saving', description: 'Even R50. Move it the day after payday.', points: 20 },
+  { title: 'Ask one fee question', description: 'Find out the total yearly fee on one account or product you use.', points: 20 },
 ];
 
 export const MEMBER_NAMES = [
@@ -85,6 +89,8 @@ export const CHAT_POOLS: Record<string, string[]> = {
   hustle: ['I finally wrote my first invoice, it looked so professional', 'Price for your time, not just your materials', 'Keep business and personal money separate if you can', 'Side income may be taxable, check current SARS rules', 'Raised my prices by 10% and nobody complained 🙌', 'I use a simple spreadsheet to track what I earn and what I spend on materials', 'Invoices on time means paid on time, it is wild'],
   rent: ['Do not forget the deposit, utilities and transport in the flat budget', 'We split electricity by usage, fewer arguments', 'Keep proof of every rent payment', 'Moving out cost more than I planned, the workshop checklist helped', 'Make sure the lease says who pays what, it saved us an argument', 'Ask about the deposit refund rules before you sign', 'Our house fund pot covers surprises like a geyser repair'],
 };
+
+CHAT_POOLS.buddy = ['Just finished my part of the plan 💪', 'Want to compare notes tonight?', 'I did mine on the bus, three minutes is real', 'How is your week going?', 'Proud of you for sticking with it 💗', 'Let us both finish by Friday?', 'I found the lesson a bit tricky, did you?', 'Nudge received! On it 😄'];
 
 export const COMMUNITY_TOPIC: Record<string, keyof typeof CHAT_POOLS> = {
   wits: 'student', uj: 'student', 'pps-yp': 'payslip', 'first-salary-club': 'payslip', 'student-savers': 'student', 'invest-curious': 'invest', 'side-hustle-sisters': 'hustle',

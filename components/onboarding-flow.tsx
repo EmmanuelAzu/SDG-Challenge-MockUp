@@ -57,7 +57,9 @@ export function OnboardingFlow({ communities, presetCommunity, defaultName }: { 
     try {
       const earned = update((w, now) => completeOnboarding(w, meId, { displayName: name, nickname: nick, communityId: community, joinCode: code || undefined, quiz: quiz as QuizAnswers, confidence: conf }, now));
       celebrate(earned);
-      router.replace('/home');
+      let next = '/home';
+      try { const n = sessionStorage.getItem('sisi.next'); if (n?.startsWith('/')) { next = n; sessionStorage.removeItem('sisi.next'); } } catch {}
+      router.replace(next);
     } catch {
       setError('Something went wrong. Check your answers and try again.');
     }

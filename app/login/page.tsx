@@ -10,6 +10,7 @@ function LoginForm() {
   const params = useSearchParams();
   const community = params.get('community');
   const ref = params.get('ref');
+  const next = params.get('next');
   const [mode, setMode] = useState<'in' | 'up'>(params.get('mode') === 'up' ? 'up' : 'in');
   const [error, setError] = useState('');
 
@@ -23,12 +24,14 @@ function LoginForm() {
       const r = update((w, now) => createAccount(w, { email, password, displayName: String(f.get('name') ?? ''), ref }, now));
       if (!r.ok) return setError(r.error);
       setSession(r.id);
+      if (next?.startsWith('/')) try { sessionStorage.setItem('sisi.next', next); } catch {}
       router.replace(`/onboarding${community ? `?community=${community}` : ''}`);
     } else {
       const id = signIn(getWorld()!, email, password);
       if (!id) return setError('That email and password don’t match. Check them and try again, or use a demo account.');
       setSession(id);
-      router.replace(getWorld()!.users[id].onboardedAt ? (community ? `/community/${community}` : '/home') : '/onboarding');
+      if (next?.startsWith('/')) try { sessionStorage.setItem('sisi.next', next); } catch {}
+      router.replace(getWorld()!.users[id].onboardedAt ? (next?.startsWith('/') ? next : community ? `/community/${community}` : '/home') : '/onboarding');
     }
   }
 
