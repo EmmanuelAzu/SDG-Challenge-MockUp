@@ -84,3 +84,4 @@
 
 ## One feedback form only
 - The day-7 follow-up form is dropped; the pilot has one Google feedback form (20 items) plus the optional separate contact form. Baseline items (saving, say over money) are now a snapshot, not a measured change, and the analysis plan says so. Removed from the Apps Script, codebook, form pack, tester PDF, the facilitator guide page and PILOT.md.
+- The separate contact form (form 2) is also dropped. The feedback form is now the only Google Form and collects no names, emails or phone numbers. Anything that needs contact details (a prize draw, future testing) must be handled outside the pilot forms.

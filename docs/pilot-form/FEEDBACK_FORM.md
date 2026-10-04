@@ -19,14 +19,13 @@ Status: draft for PPS review. Generated from `questions.json`, which is the sour
 | File | What it is |
 |---|---|
 | `FEEDBACK_FORM.md` / `.pdf` | This document: every question, why it is asked |
-| `create-forms.gs` | A Google Apps Script that **builds all three forms for you**. Paste into script.google.com and press Run |
+| `create-forms.gs` | A Google Apps Script that **builds the form for you**. Paste into script.google.com and press Run |
 | `codebook.csv` | One row per question for analysis (id, type, options, evidence area, SDG target, source) |
 | `questions.json` | The single source of truth. Edit it and run `node scripts/build-pilot-form.mjs` |
 
-Two forms, on purpose:
+There is one form:
 
 1. **Pilot feedback form**: consent, participant ID, 18 questions (single choice, tick-all, or grid), each with the optional expansion box. Given straight after the session.
-2. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Contact details have to be typed, so this one is not multiple choice.
 
 ## 2. Evidence areas and SDG mapping (SDG 4 and 5 primary, SDG 10 byproduct)
 
@@ -59,19 +58,19 @@ The guided pilot records, passively and without interrupting people, what each t
 - **No income amounts, ever.** We only ask whether people have an account or save, never how much.
 - **"Prefer not to say"** on every question about the person. Only consent and the participant ID are required in the feedback form.
 - **Women-specific on purpose**: Q3 asks about say over money, Q8 whether Sisi spoke to women like them, Q17 safety, and Q18 includes shared or monitored phones, because these are the SDG 5 conditions the product has to meet.
-- **Anonymity**: contact details live in their own form.
+- **Anonymity**: the form collects no names, emails or phone numbers.
 
 ## 5. Before you publish
 
-1. Run `create-forms.gs` and open each form's edit link. Preview on a phone and time it.
-2. In each form: Responses → Link to Sheets. Keep "Collect email addresses" **off** (the script does).
+1. Run `create-forms.gs` and open the form's edit link. Preview on a phone and time it.
+2. In the form: Responses → Link to Sheets. Keep "Collect email addresses" **off** (the script does).
 3. Replace the opening text with the PPS-approved consent and privacy wording if it differs. Confirm POPIA responsibilities with PPS.
 4. Add the PPS logo or a header image through the form theme if you wish.
 5. Paste the published feedback link into `FEEDBACK_FORM_URL` in `lib/pilot/instruments.ts`. The pilot's last screen then shows an "Open the feedback form" button.
 
 ## 6. The questions
 
-### Form 1: Pilot feedback form
+### The pilot feedback form
 
 **Form title:** Sisi pilot feedback
 
@@ -210,38 +209,6 @@ The guided pilot records, passively and without interrupting people, what each t
 - Why we ask: SDG 5.b / 4.5: access barriers, including the gender digital divide (equity cuts for SDG 10.2)
 
 **Confirmation message:** Thank you! Your feedback helps make Sisi better for other young women.
-
-
-### Form 2: Contact form (optional, separate)
-
-**Form title:** Sisi pilot: stay in touch (optional)
-
-**Opening text:**
-
-> This is a separate form on purpose, so your contact details are never stored with your feedback answers. Only fill it in if you would like to be contacted about the pilot prize draw or future Sisi testing. Pilot reward: subject to PPS approval.
-
-#### Stay in touch
-
-**C1.** Your first name or nickname *(required)*
-- Short answer · Consent and admin
-- Why we ask: Contact
-
-**C2.** Your email address or WhatsApp number *(required)*
-- Short answer · Consent and admin
-- Help text: Use only one.
-- Why we ask: Contact channel
-
-**C3.** What may we contact you about? (Tick all that apply) *(required)*
-- Multiple choice (tick all that apply) · Consent and admin
-- Options: The pilot prize draw · Future Sisi testing
-- Why we ask: Purpose limitation
-
-**C4.** Do you agree that we store your contact details only for the reasons you ticked, and delete them when the pilot ends? *(required)*
-- Multiple choice (one answer) · Consent and admin
-- Options: Yes, I agree · No *(ends the form)*
-- Why we ask: POPIA purpose and retention
-
-**Confirmation message:** Thank you! We will only use your details for what you ticked.
 
 
 ## 7. Analysis plan (short)

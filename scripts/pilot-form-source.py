@@ -59,26 +59,18 @@ main = [
    options=["Data cost", "A weak connection", "Sharing a phone", "Someone else controlling or checking my phone", "The language", "Not having time", "Worry about privacy", "Hard to read or tap (text size, colours, buttons)", "Nothing"]),
 ]
 
-contact = [
- q("C1", "text", "Your first name or nickname", "CONT", "Contact", required=True, expand=False),
- q("C2", "text", "Your email address or WhatsApp number", "CONT", "Contact channel", required=True, help="Use only one.", expand=False),
- q("C3", "checkbox", "What may we contact you about? (Tick all that apply)", "CONT", "Purpose limitation", required=True, expand=False, options=["The pilot prize draw", "Future Sisi testing"]),
- q("C4", "choice", "Do you agree that we store your contact details only for the reasons you ticked, and delete them when the pilot ends?", "CONT", "POPIA purpose and retention", required=True, expand=False, options=[{"v": "Yes, I agree", "go": "continue"}, {"v": "No", "go": "submit"}]),
-]
 SECT = {"CONSENT": "Welcome and consent", "PID": "About you", "Q1": "About you", "Q2": "About you", "Q3": "About you",
   "Q4": "Your experience of the features", "Q5": "Your experience of the features", "Q6": "Your experience of the features",
   "Q7": "Understanding", "Q8": "Understanding",
   "Q9": "What you liked and prefer", "Q10": "What you liked and prefer", "Q11": "What you liked and prefer", "Q12": "What you liked and prefer", "Q13": "What you liked and prefer",
   "Q14": "Learning and what is next", "Q15": "Learning and what is next", "Q16": "Learning and what is next", "Q17": "Trust and access", "Q18": "Trust and access"}
 for it in main: it["section"] = SECT[it["id"]]
-for it in contact: it["section"] = "Stay in touch"
 SECTION_HELP = {"About you": "Everything except your participant ID is optional. Choose Prefer not to say or skip anything you like.", "Your experience of the features": "Think about what you just did in the pilot. Skip a row if you did not try it.", "Understanding": "Two quick questions about Sisi itself.", "What you liked and prefer": "Be as honest as you like. Critical answers are the most useful.", "Learning and what is next": "A few questions about what changed for you and what would help.", "Trust and access": "Last section. Thank you for sticking with us.", "One week later": "", "Stay in touch": ""}
 forms = dict(
   main=dict(title="Sisi pilot feedback", description=("Thank you for testing Sisi, a money-confidence app for young women, made with PPS Investments.\n\nThere are 18 quick questions, about 4 to 5 minutes. Every question is multiple choice, and each has an optional box if you want to say more. It is not a test of you. We are testing Sisi, and honest answers, including critical ones, help most.\n\n"
     "What we collect: your answers here. No name, email, ID number or bank details, and no amounts of your own money. The Sisi pilot team uses them to improve the app and to report anonymised, combined results to PPS Investments.\n"
     "Taking part is voluntary. You can stop at any time and skip any question you prefer not to answer.\n\nSisi is education, not financial advice."),
     confirmation="Thank you! Your feedback helps make Sisi better for other young women."),
-  contact=dict(title="Sisi pilot: stay in touch (optional)", description="This is a separate form on purpose, so your contact details are never stored with your feedback answers. Only fill it in if you would like to be contacted about the pilot prize draw or future Sisi testing. Pilot reward: subject to PPS approval.", confirmation="Thank you! We will only use your details for what you ticked."),
 )
-json.dump(dict(sectionHelp=SECTION_HELP, domains=SDG, forms=forms, main=main, contact=contact, expandLabel="Want to tell us more? (optional)"), open("docs/pilot-form/questions.json", "w"), indent=1, ensure_ascii=False)
-print(len(main), len(contact), "questions in main (incl. consent and ID):", len(main))
+json.dump(dict(sectionHelp=SECTION_HELP, domains=SDG, forms=forms, main=main, expandLabel="Want to tell us more? (optional)"), open("docs/pilot-form/questions.json", "w"), indent=1, ensure_ascii=False)
+print(len(main), "questions in main (incl. consent and ID):", len(main))

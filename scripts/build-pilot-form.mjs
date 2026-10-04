@@ -14,11 +14,11 @@ const pillar = { ACC: 'Access and inclusion', KNW: 'Learning and confidence', UX
 const csv = (v) => { const s = Array.isArray(v) ? v.join(' | ') : String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
 const rowsFor = (form, items) => items.map((q) => [form, q.id, q.section, typeLabel[q.type], q.required ? 'yes' : 'no', q.expand ? 'yes' : 'no', q.domain, D.domains[q.domain] ?? '', q.title, (q.options ?? []).map(optText).concat(q.rows ? ['ROWS: ' + q.rows.join(' / '), 'COLUMNS: ' + q.cols.join(' / ')] : []), q.purpose, q.source ?? ''].map(csv).join(','));
 const head = ['form', 'id', 'section', 'type', 'required', 'optional_expansion', 'domain', 'candidate_sdg_targets', 'question', 'options', 'purpose', 'source_or_validation'];
-fs.writeFileSync(`${dir}/codebook.csv`, [head.join(','), ...rowsFor('feedback', D.main), ...rowsFor('contact', D.contact)].join('\n') + '\n');
+fs.writeFileSync(`${dir}/codebook.csv`, [head.join(','), ...rowsFor('feedback', D.main)].join('\n') + '\n');
 
 /* ---------- Apps Script ---------- */
 const gs = `/**
- * Creates the two Sisi pilot Google Forms in your Google account.
+ * Creates the Sisi pilot Google Forms in your Google account.
  * HOW TO RUN: go to script.google.com > New project > paste this whole file > Save >
  * choose "createPilotForms" in the toolbar > Run > approve the permissions.
  * The links to edit and share each form appear in View > Logs (the forms are also in your Drive).
@@ -29,16 +29,14 @@ const gs = `/**
  */
 const INCLUDE_EXPANSIONS = true;
 
-const DATA = ${JSON.stringify({ sectionHelp: D.sectionHelp, forms: D.forms, main: D.main, contact: D.contact })};
+const DATA = ${JSON.stringify({ sectionHelp: D.sectionHelp, forms: D.forms, main: D.main })};
 
 function createPilotForms() {
   const out = {
     feedback: build_(DATA.forms.main, DATA.main),
-    contact: build_(DATA.forms.contact, DATA.contact),
   };
   Logger.log('Feedback form (share this one): ' + out.feedback.publish + '\\n  edit: ' + out.feedback.edit);
-  Logger.log('Contact form (optional, separate on purpose): ' + out.contact.publish + '\\n  edit: ' + out.contact.edit);
-  Logger.log('Tip: in each form open Responses > Link to Sheets so answers collect in one spreadsheet.');
+  Logger.log('Tip: in the form open Responses > Link to Sheets so answers collect in one spreadsheet.');
   return out;
 }
 
@@ -150,14 +148,13 @@ Status: draft for PPS review. Generated from \`questions.json\`, which is the so
 | File | What it is |
 |---|---|
 | \`FEEDBACK_FORM.md\` / \`.pdf\` | This document: every question, why it is asked |
-| \`create-forms.gs\` | A Google Apps Script that **builds both forms for you**. Paste into script.google.com and press Run |
+| \`create-forms.gs\` | A Google Apps Script that **builds the form for you**. Paste into script.google.com and press Run |
 | \`codebook.csv\` | One row per question for analysis (id, type, options, evidence area, SDG target, source) |
 | \`questions.json\` | The single source of truth. Edit it and run \`node scripts/build-pilot-form.mjs\` |
 
-Two forms, on purpose:
+There is one form:
 
 1. **Pilot feedback form**: consent, participant ID, 18 questions (single choice, tick-all, or grid), each with the optional expansion box. Given straight after the session.
-2. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Contact details have to be typed, so this one is not multiple choice.
 
 ## 2. Evidence areas and SDG mapping (SDG 4 and 5 primary, SDG 10 byproduct)
 
@@ -178,21 +175,19 @@ The guided pilot records, passively and without interrupting people, what each t
 - **No income amounts, ever.** We only ask whether people have an account or save, never how much.
 - **"Prefer not to say"** on every question about the person. Only consent and the participant ID are required in the feedback form.
 - **Women-specific on purpose**: Q3 asks about say over money, Q8 whether Sisi spoke to women like them, Q17 safety, and Q18 includes shared or monitored phones, because these are the SDG 5 conditions the product has to meet.
-- **Anonymity**: contact details live in their own form.
+- **Anonymity**: the form collects no names, emails or phone numbers.
 
 ## 5. Before you publish
 
-1. Run \`create-forms.gs\` and open each form's edit link. Preview on a phone and time it.
-2. In each form: Responses → Link to Sheets. Keep "Collect email addresses" **off** (the script does).
+1. Run \`create-forms.gs\` and open the form's edit link. Preview on a phone and time it.
+2. In the form: Responses → Link to Sheets. Keep "Collect email addresses" **off** (the script does).
 3. Replace the opening text with the PPS-approved consent and privacy wording if it differs. Confirm POPIA responsibilities with PPS.
 4. Add the PPS logo or a header image through the form theme if you wish.
 5. Paste the published feedback link into \`FEEDBACK_FORM_URL\` in \`lib/pilot/instruments.ts\`. The pilot's last screen then shows an "Open the feedback form" button.
 
 ## 6. The questions
 
-${formMd('Form 1: Pilot feedback form', D.forms.main, D.main)}
-
-${formMd('Form 2: Contact form (optional, separate)', D.forms.contact, D.contact)}
+${formMd('The pilot feedback form', D.forms.main, D.main)}
 
 ## 7. Analysis plan (short)
 

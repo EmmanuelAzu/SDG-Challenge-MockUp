@@ -28,11 +28,6 @@
    "title": "Sisi pilot feedback",
    "description": "Thank you for testing Sisi, a money-confidence app for young women, made with PPS Investments.\n\nThere are 18 quick questions, about 4 to 5 minutes. Every question is multiple choice, and each has an optional box if you want to say more. It is not a test of you. We are testing Sisi, and honest answers, including critical ones, help most.\n\nWhat we collect: your answers here. No name, email, ID number or bank details, and no amounts of your own money. The Sisi pilot team uses them to improve the app and to report anonymised, combined results to PPS Investments.\nTaking part is voluntary. You can stop at any time and skip any question you prefer not to answer.\n\nSisi is education, not financial advice.",
    "confirmation": "Thank you! Your feedback helps make Sisi better for other young women."
-  },
-  "contact": {
-   "title": "Sisi pilot: stay in touch (optional)",
-   "description": "This is a separate form on purpose, so your contact details are never stored with your feedback answers. Only fill it in if you would like to be contacted about the pilot prize draw or future Sisi testing. Pilot reward: subject to PPS approval.",
-   "confirmation": "Thank you! We will only use your details for what you ticked."
   }
  },
  "main": [
@@ -473,70 +468,6 @@
    ],
    "other": true,
    "section": "Trust and access"
-  }
- ],
- "contact": [
-  {
-   "id": "C1",
-   "type": "text",
-   "title": "Your first name or nickname",
-   "domain": "CONT",
-   "purpose": "Contact",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": false,
-   "section": "Stay in touch"
-  },
-  {
-   "id": "C2",
-   "type": "text",
-   "title": "Your email address or WhatsApp number",
-   "domain": "CONT",
-   "purpose": "Contact channel",
-   "required": true,
-   "help": "Use only one.",
-   "source": "",
-   "expand": false,
-   "section": "Stay in touch"
-  },
-  {
-   "id": "C3",
-   "type": "checkbox",
-   "title": "What may we contact you about? (Tick all that apply)",
-   "domain": "CONT",
-   "purpose": "Purpose limitation",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": false,
-   "options": [
-    "The pilot prize draw",
-    "Future Sisi testing"
-   ],
-   "section": "Stay in touch"
-  },
-  {
-   "id": "C4",
-   "type": "choice",
-   "title": "Do you agree that we store your contact details only for the reasons you ticked, and delete them when the pilot ends?",
-   "domain": "CONT",
-   "purpose": "POPIA purpose and retention",
-   "required": true,
-   "help": "",
-   "source": "",
-   "expand": false,
-   "options": [
-    {
-     "v": "Yes, I agree",
-     "go": "continue"
-    },
-    {
-     "v": "No",
-     "go": "submit"
-    }
-   ],
-   "section": "Stay in touch"
   }
  ],
  "expandLabel": "Want to tell us more? (optional)"
