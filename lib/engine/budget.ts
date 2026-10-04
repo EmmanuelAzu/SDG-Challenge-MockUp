@@ -21,6 +21,7 @@ export const TEMPLATES: Template[] = [
   { id: 'nsfas', name: 'NSFAS / bursary', blurb: 'A funded living allowance', income: 3500, pct: { rent: 0, transport: 10, groceries: 30, utilities: 10, family: 5, emergency: 10, investing: 0, fun: 10 } },
   { id: 'part-time', name: 'Part-time work', blurb: 'Shifts, tutoring or a side hustle', income: 4500, pct: { rent: 30, transport: 12, groceries: 20, utilities: 8, family: 5, emergency: 10, investing: 3, fun: 7 } },
   { id: 'first-salary', name: 'First salary', blurb: 'Your first net pay', income: 12000, pct: { rent: 30, transport: 10, groceries: 15, utilities: 8, family: 7, emergency: 10, investing: 10, fun: 8 } },
+  { id: 'workshop', name: 'Workshop scenario', blurb: 'R3,500 in, R3,600 out. Can you save for a R1,500 laptop?', income: 3500, pct: { rent: 34.2857, transport: 22.8571, groceries: 20, utilities: 8.5714, family: 0, emergency: 0, investing: 0, fun: 17.1429 } },
 ];
 
 export const emptyLines = (): Record<BudgetCategory, number> => ({ rent: 0, transport: 0, groceries: 0, utilities: 0, family: 0, emergency: 0, investing: 0, fun: 0 });

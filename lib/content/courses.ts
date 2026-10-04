@@ -240,6 +240,129 @@ const RAW: RawCourse[] = [
       },
     ],
   },
+  {
+    slug: 'money-matters', title: 'Money Matters', topic: 'Money basics', level: 'Starter', milestone: null,
+    lessons: [
+      {
+        slug: 'money-words', title: 'Money words that matter', durationSec: 160,
+        takeaway: 'A few plain-words definitions make every money decision easier.',
+        cards: [
+          { title: 'If someone gave you R10,000 today…', body: 'Would you spend it, keep it for a rainy day, or make it grow? There is no wrong answer. It simply shows how you think about money, and financial literacy gives you the tools to choose on purpose.' },
+          { title: 'Money in, money out', body: 'Income is the money you earn from work, a business, a bursary or an allowance. Expenses are what you spend it on, like food, transport, rent and airtime.' },
+          { title: 'Saving, interest and debt', body: 'Savings are money you keep aside instead of spending. Interest is the extra you earn when you save, and the extra you pay when you borrow. Debt is money you owe, like a loan or a card balance.' },
+          { title: 'Inflation, assets and compounding', body: 'Inflation is the rise in prices over time, so the same R20 buys less than it used to. An asset is something you own that can earn money or grow in value. Compounding is when your earnings start earning too.' },
+        ],
+        quiz: [
+          { prompt: 'Inflation means…', options: ['Your salary goes up every year', 'Prices rise over time, so money buys less', 'Interest paid by a bank', 'Money you owe'], correct: 1, explanation: 'Inflation is the general rise in prices over time.' },
+          { prompt: 'Interest is…', options: ['Always a bad thing', 'Only for banks', 'Costly when you owe money and helpful when it grows your savings', 'The same as income'], correct: 2, explanation: 'It works against you on debt and for you on savings.' },
+          { prompt: 'True or false: credit cards are free money.', options: ['True', 'False. You pay it back, often with interest'], correct: 1, explanation: 'Credit is borrowed money, so you repay it, usually with interest.' },
+        ],
+        action: { title: 'Write your own one-line meaning of income and expenses', description: 'Use examples from your life, like your allowance or your airtime.' },
+      },
+      {
+        slug: 'now-now-stack-it-grow-it', title: 'Now-Now, Stack It, Grow It', durationSec: 190,
+        takeaway: 'Match each goal to the right bucket: spend it, stack it or grow it.',
+        cards: [
+          { title: 'R10,000 lands in your account. Now what?', body: 'Most of us do one of three things: spend it, save it or grow it. All three are useful. The skill is knowing which money belongs where.' },
+          { title: 'Spend: “Now-Now”', body: 'Now-Now money covers today’s needs and wants: food, transport, airtime, a movie with friends. These are goals within about 0 to 12 months. Before you spend, ask: do I need this, or do I just want it right now?' },
+          { title: 'Save: “Stack It”', body: 'Stacking is setting money aside for short and medium-term goals in a low-risk, easy-access place like a savings account. Start small: even R100 a month builds the habit. An emergency fund is money you stack for surprises like a broken phone or a medical bill. Over time, aim for 3 to 6 months of basic living costs.' },
+          { title: 'Borrow or save? The laptop example', body: 'A laptop costs R1,500. Borrow it and repay over 12 months with 15% interest added: R1,725 in total, so R225 more. Or save R150 a month for 12 months: you have R1,800, buy it cash and still have R300 left. Example only: real loans quote interest in different ways, so always ask for the total you will repay.' },
+          { title: 'Grow: “Grow It”', body: 'Growing is investing for long-term goals, 5 years or more, like a home or retirement. Investments can grow faster than prices rise, but they can also fall and nothing is guaranteed. Illustration: R150 a month for a year at an assumed 8% a year is about R1,870, and left alone for 5 more years about R2,700. It is an assumption, not a forecast.' },
+          { title: 'Give your goal a number and a date', body: '“Save some money” is hard to follow. “Save R3,000 in 6 months for a laptop for my studies” is a goal you can track. Make it Specific, Measurable, Achievable, Relevant and Time-bound: a SMART goal.' },
+        ],
+        quiz: [
+          { prompt: 'Which bucket fits “new sneakers next month”?', options: ['Now-Now (spend)', 'Stack It (save)', 'Grow It (invest)', 'None of them'], correct: 0, explanation: 'Something you want within the next year that you will spend on is a Now-Now goal.' },
+          { prompt: 'In the laptop example, why did saving cost less than borrowing?', options: ['There was no interest to pay', 'Saving is taxed less', 'Laptops get cheaper each month', 'Banks lend for free'], correct: 0, explanation: 'Borrowing added R225 of interest. Saving added none.' },
+          { prompt: 'An emergency fund is best used for…', options: ['A sale on sneakers', 'An unexpected, necessary cost like a broken phone you need for study', 'A holiday', 'A friend’s gift'], correct: 1, explanation: 'Emergencies are urgent, unexpected and necessary.' },
+        ],
+        action: { title: 'Sort one goal into Now-Now, Stack It or Grow It', description: 'Pick something you want and decide which bucket it belongs in, and by when.' },
+      },
+      {
+        slug: 'assets-risk-reward', title: 'Assets, risk and reward', durationSec: 185,
+        takeaway: 'An asset earns money or grows in value. The safer it is, the smaller the growth you can expect.',
+        cards: [
+          { title: 'Not everything expensive is an asset', body: 'An asset earns money or grows in value. A flat you rent out earns rent. A bicycle you rent out earns money. A phone or a car used only for yourself usually loses value and costs money to keep.' },
+          { title: 'Four common asset types', body: 'Cash and money market: very low risk, very low growth, for the short term. Bonds: you lend to a government or company for interest, low to medium risk. Property: medium to high risk, with rent and possible growth, slower to sell. Shares: part-ownership of a company, high risk and high potential growth, for the long term.' },
+          { title: 'Risk and reward travel together', body: 'The safer an investment, the smaller the growth you can usually expect. The riskier it is, the bigger the potential growth and the bigger the ups and downs. Money you need within a year belongs somewhere safe. Money you will not touch for 5 years or more can ride out the ups and downs.' },
+          { title: 'Where to invest', body: 'A savings account is a safe parking spot that will not lose money but will not grow much. A unit trust or ETF pools many people’s money, managed by a professional, and gives you a slice of shares, bonds, property or cash. A TFSA is a tax-free container for either. Check SARS for the current limits.' },
+        ],
+        quiz: [
+          { prompt: 'Which is most likely an asset?', options: ['A new phone for yourself', 'A car used only for personal trips', 'A flat you rent out', 'Designer sneakers'], correct: 2, explanation: 'It earns rental income and can grow in value.' },
+          { prompt: 'Which usually has the highest potential growth and the biggest ups and downs?', options: ['Cash', 'Bonds', 'Property', 'Shares'], correct: 3, explanation: 'Shares carry the most risk and the most potential reward over the long term.' },
+          { prompt: 'A TFSA is best described as…', options: ['A guaranteed return', 'A tax-free container for savings or investments', 'A type of loan', 'A bank card'], correct: 1, explanation: 'It is the wrapper. What goes inside it is your choice.' },
+        ],
+        action: { title: 'Name one asset you own or could own, and how risky it is', description: 'Use the four types above. Be honest about how soon you might need the money.' },
+      },
+      {
+        slug: 'start-early', title: 'Starting early beats starting big', durationSec: 195,
+        takeaway: 'Time does a lot of the work. Start small, start early and keep going.',
+        cards: [
+          { title: 'R500 a month. Three people. Very different endings.', body: 'Joshua, Aisha and Sipho each plan to retire at 60. Each puts away R500 a month. The only difference is when they start.' },
+          { title: 'Compounding, in plain words', body: 'Compounding means you earn on your savings and on the earnings you already made. Think of planting a tree: the longer it grows, the more fruit it makes, and the fruit grows more trees.' },
+          { title: 'What starting early does', body: 'At an assumed 8% a year: Joshua starts at 20 and has about R1.75 million at 60. Aisha starts at 30 and has about R745,000. Sipho starts at 40 and has about R295,000. Joshua paid in R240,000 and Sipho R120,000, so Joshua paid in R120,000 more but ends with about six times as much. Illustration only. Real returns vary and are not guaranteed.' },
+          { title: 'Why not just keep cash?', body: 'Prices rise over time. What R20 bought at the tuck shop when you started school buys less today. If your money is not growing, it quietly loses buying power, which is why long-term money usually needs to grow faster than prices.' },
+          { title: 'How to start now', body: 'Start a savings habit with whatever you can afford. Open a TFSA when you are able. Set one long-term SMART goal. Save or invest regularly: consistency matters more than the amount. Raise it as your income grows. Pay your future self first.' },
+        ],
+        quiz: [
+          { prompt: 'Joshua paid in twice as much as Sipho but ended with about…', options: ['Twice as much', 'Three times as much', 'Six times as much', 'The same'], correct: 2, explanation: 'Extra years of compounding add far more than the extra deposits.' },
+          { prompt: 'Why can keeping all your money in cash cost you over many years?', options: ['Banks charge no fees', 'Prices rise, so the same rand buys less', 'Cash is illegal to keep', 'Interest is always negative'], correct: 1, explanation: 'Inflation reduces what money can buy.' },
+          { prompt: 'What matters most when you are just starting out?', options: ['Starting with a large amount', 'Starting early and being consistent', 'Waiting for a perfect time', 'Picking the riskiest option'], correct: 1, explanation: 'Time and consistency do much of the work.' },
+        ],
+        action: { title: 'Retirement goal starter', description: 'Pick an age you would like to retire and a monthly amount you could start with. Only you see this.' },
+      },
+      {
+        slug: 'smart-goals', title: 'SMART goals that stick', durationSec: 175,
+        takeaway: 'A goal with a number and a date is one you can track and reach.',
+        cards: [
+          { title: '“Save some money” is not a plan', body: 'Goals give your money a job. Instead of spending without thinking, a clear goal helps you decide what each rand is for. Saving gets easier when you know what you are saving for.' },
+          { title: 'S, M and A', body: 'Specific: what exactly do you want, like a school uniform? Measurable: how much will it cost, like R1,200? Achievable: can you realistically afford it, like R200 a month for six months?' },
+          { title: 'R and T', body: 'Relevant: why does it matter to you? Time-bound: by when? For example, “by the start of next term”. If you can measure it, you can track it. If you can track it, you can reach it.' },
+          { title: 'Short, medium and long term', body: 'Short term is 0 to 12 months, like saving R3,000 for an emergency fund in six months. Medium term is 1 to 5 years, like saving R30,000 for a car deposit in two years. Long term is 5 years or more, like buying a home. Write one of each.' },
+          { title: 'Put your goal in your budget', body: 'Every goal needs a monthly amount. For example, R300 a month for six months to buy a camera. Check in weekly, review monthly, and celebrate each time you stick to it.' },
+        ],
+        quiz: [
+          { prompt: 'Which is the strongest money goal?', options: ['Save more', 'Save R3,000 in 6 months for a laptop', 'Be rich someday', 'Stop wasting money'], correct: 1, explanation: 'It is specific, measurable and has a deadline.' },
+          { prompt: 'R200 a month for 6 months adds up to…', options: ['R600', 'R1,200', 'R2,000', 'R12,000'], correct: 1, explanation: '200 × 6 = R1,200.' },
+          { prompt: 'The T in SMART stands for…', options: ['Tough', 'Time-bound', 'Tax', 'Typical'], correct: 1, explanation: 'A goal needs a date.' },
+        ],
+        action: { title: 'Write one short, one medium and one long-term goal', description: 'Use the Savings goals tool. Give each a number and a date.' },
+      },
+      {
+        slug: 'payslip-walkthrough', title: 'Read a payslip line by line', durationSec: 180,
+        takeaway: 'Gross is not net. Take-home pay is gross minus deductions, and some deductions are protection for you.',
+        cards: [
+          { title: 'Why does R11,500 become R9,819.25?', body: 'A payslip is more than proof of payment. It shows what you earned, what was taken off and what you actually take home. Understanding it ends the “where did my money go?” confusion.' },
+          { title: 'Earnings', body: 'Gross earnings are your basic salary plus things like overtime or bonuses. In our sample, the basic salary is R11,500. Gross is the number before anything is taken off.' },
+          { title: 'Deductions', body: 'In the sample: PAYE tax R260.75, UIF R120, medical aid R750 and pension R550. Together that is R1,680.75. The exact amounts on your own payslip will differ, because tax depends on current SARS tables.' },
+          { title: 'Net pay is the number to budget with', body: 'R11,500 minus R1,680.75 is R9,819.25. That is what lands in your bank account. Gross is not net. Deductions reduce the total.' },
+          { title: 'Losses or protection?', body: 'UIF is like a parachute if you lose your job. Pension is income you are building for later. Medical aid is health cover. Think of them as forced savings and protection, not just money lost. Also check your leave balances: annual, family responsibility and special leave.' },
+        ],
+        quiz: [
+          { prompt: 'A payslip shows gross R11,500 and total deductions R1,680.75. What is the net pay?', options: ['R13,180.75', 'R10,319.25', 'R9,819.25', 'R9,500'], correct: 2, explanation: '11,500 − 1,680.75 = R9,819.25.' },
+          { prompt: 'Which deduction builds income for when you stop working?', options: ['UIF', 'Pension', 'PAYE', 'Overtime'], correct: 1, explanation: 'Pension contributions are saved for retirement.' },
+          { prompt: 'UIF is best described as…', options: ['A fee for your bank', 'Protection if you lose your job', 'A savings account', 'A bonus'], correct: 1, explanation: 'It supports you if you are unemployed or on certain leave.' },
+        ],
+        action: { title: 'Try the Payslip simulator with a salary of your choice', description: 'It uses illustrative figures and never your real details.' },
+      },
+      {
+        slug: 'budget-scenario', title: 'The R3,500 laptop budget', durationSec: 185,
+        takeaway: 'A budget is not about restriction. It is about knowing where your money goes so you can aim it.',
+        cards: [
+          { title: 'R3,500 in. R3,600 out.', body: 'You get R3,500 a month from a bursary or part-time job. You want a R1,500 laptop. Your spending today: rent or board R1,200, transport R800, food R700, airtime and data R300, entertainment R400 and clothing R200. That is R3,600: R100 more than you earn, with nothing saved.' },
+          { title: 'Needs and wants', body: 'Needs are essentials: rent, food, transport, electricity. Wants are nice-to-haves: entertainment, fashion, fast food. Some things depend on context. Airtime for studying may be a need; extra data for streaming is a want.' },
+          { title: 'The 50/30/20 guide', body: 'A starting guide: about 50% of take-home for needs, 30% for wants and 20% for savings and paying off debt. It is a guideline, not a strict rule. Your numbers will shift with your situation.' },
+          { title: 'One way to fix it', body: 'Trim wants first: entertainment and clothing from R600 to R400, data from R300 to R250, and look for savings in transport, say R100. The total falls to R3,250. That leaves R250: R150 for the laptop and R100 as a cushion. Everyone’s trade-offs differ. This is one example.' },
+          { title: 'Make it stick', body: 'Check in weekly: am I on plan? Review monthly: did I overspend, and what do I change? Celebrate every time you stick to it. A budget gives you control and freedom.' },
+        ],
+        quiz: [
+          { prompt: 'You earn R3,500 and spend R3,600. What is true?', options: ['You saved R100', 'You are R100 short, so you borrow or dip into savings', 'You are exactly on budget', 'You have R3,600 left'], correct: 1, explanation: 'Spending is more than income by R100.' },
+          { prompt: 'In 50/30/20, the 20% is for…', options: ['Needs', 'Wants', 'Savings and paying off debt', 'Taxes only'], correct: 2, explanation: 'It is for your future self and debt repayment.' },
+          { prompt: 'A budget is mainly about…', options: ['Never having fun', 'Knowing where your money goes so you stay in control', 'Spending more', 'Avoiding all saving'], correct: 1, explanation: 'It is a plan that gives you control and reduces stress.' },
+        ],
+        action: { title: 'Build the R3,500 scenario in the Budget builder', description: 'Choose the Workshop scenario template and aim to save at least R150 without spending more than R3,500.' },
+      },
+    ],
+  },
 ];
 
 const FSCA = { title: 'FSCA: consumer education', url: 'https://www.fsca.co.za/' };
@@ -261,6 +384,13 @@ const SOURCES: Record<string, { title: string; url?: string }[]> = {
   'first-month-plan': [TREASURY],
   'scam-smart': [FSCA, { title: 'Banking Association South Africa', url: 'https://www.banking.org.za/' }],
   'student-accounts': [{ title: 'Banking Association South Africa', url: 'https://www.banking.org.za/' }],
+  'money-words': [FSCA, TREASURY],
+  'now-now-stack-it-grow-it': [FSCA, { title: 'National Credit Regulator', url: 'https://www.ncr.org.za/' }],
+  'assets-risk-reward': [FSCA, SARS],
+  'start-early': [FSCA, SARS],
+  'smart-goals': [FSCA],
+  'payslip-walkthrough': [SARS, { title: 'Department of Employment and Labour: UIF', url: 'https://www.labour.gov.za/' }],
+  'budget-scenario': [TREASURY, FSCA],
 };
 
 /** Hook-first openers: the first card must earn the next 30 seconds. */
@@ -287,6 +417,11 @@ const CALLOUTS: Record<string, Record<number, string>> = {
   'tfsa-plain-words': { 3: 'If you open a TFSA, then check the current SARS limits and the provider’s fees first.' },
   'compound-growth': { 3: 'If someone promises a fixed high return with no risk, then treat it as a scam warning.' },
   'fees-quiet-thief': { 2: 'If a provider cannot tell you the total yearly fee, then do not invest with them yet.' },
+  'now-now-stack-it-grow-it': { 2: 'If it is urgent, unexpected and necessary, then it is an emergency. Otherwise it can wait.', 3: 'If you can wait, then saving usually costs less than borrowing.', 5: 'If you can measure it, then you can track it. If you can track it, then you can reach it.' },
+  'assets-risk-reward': { 2: 'If you will need the money within a year, then keep it somewhere safe, not in shares.', 3: 'If someone promises high returns with no risk, then treat it as a scam warning.' },
+  'start-early': { 2: 'If you start earlier, then time does more of the work, even with the same monthly amount.' },
+  'payslip-walkthrough': { 3: 'If your net pay is lower than you expected, then check each deduction line before you panic.' },
+  'budget-scenario': { 3: 'If your spending is higher than your income, then trim wants first and still try to save something.' },
 };
 
 export const COURSES: CourseContent[] = RAW.map((c) => ({

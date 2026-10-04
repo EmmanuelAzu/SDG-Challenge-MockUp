@@ -8,7 +8,7 @@ import { isoWeekKey, sastDate } from '@/lib/time';
 import { weekStart as weekStartOf } from '@/lib/engine/leaderboard';
 import type { Message, PointEvent, User, World } from './types';
 
-export const WORLD_VERSION = 6;
+export const WORLD_VERSION = 7;
 export const DEMO_PASSWORD = 'SisiDemo2026!';
 const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'];
 
@@ -273,7 +273,7 @@ export function buildWorld(now = new Date()): World {
       { id: 't-3', userId: members[2], body: 'Doing my first tax return', voters: members.slice(4, 7), at: iso(daysAgo(3)) },
     ],
     shares: [], channels, messages, reactions: [], reports: [], blocks: [], mutes: [], reads,
-    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone, seasons, payslipRuns: {}, buddies, claims: [], draws: [], friendships, helpRequests, safety: SAFETY_DEFAULTS.map((r) => ({ ...r })), askedShare: { 'u-nomsa': true },
+    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone, seasons, payslipRuns: {}, buddies, claims: [], draws: [], friendships, pilot: {}, pilotImports: [], helpRequests, safety: SAFETY_DEFAULTS.map((r) => ({ ...r })), askedShare: { 'u-nomsa': true },
     // Nomsa's private money data: a budget and two goals (one 60% done)
     budgets: { 'u-nomsa': { template: 'Allowance', income: 4200, lines: { rent: 1000, transport: 420, groceries: 1000, utilities: 420, family: 0, emergency: 420, investing: 0, fun: 420 }, savedAt: iso(daysAgo(9)) } },
     goals: [

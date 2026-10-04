@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { BookOpen, Bell, ChevronDown, ChevronUp, Gift, Home, User, Users } from 'lucide-react';
 import { HelpSheet } from '@/components/help-sheet';
 import { DemoTools } from './demo-tools';
+import { PilotBanner } from '@/components/pilot/pilot-banner';
 import { AppContext } from './app-context';
 import { useMe, useSessionId, useWorld } from '@/lib/world/hooks';
 
@@ -41,6 +42,7 @@ export function AppShell({ children, requireOnboarded = true }: { children: Reac
 
   return (
     <AppContext.Provider value={{ ...ctx, now }}>
+      <PilotBanner />
       <div className={`min-h-screen md:pb-0 ${collapsed ? 'pb-14' : 'pb-24'}`}>
         <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-20 border-t border-pink-100 bg-white md:static md:border-b md:border-t-0">
           <div className="mx-auto flex max-w-3xl items-center">

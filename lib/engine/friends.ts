@@ -102,8 +102,11 @@ export function simFriendActivity(w: World, now: Date) {
     const author = w.users[p.userId];
     if (!author || author.sim || p.communityId !== null || p.kind === 'announcement') continue;
     if (now.getTime() - new Date(p.at).getTime() > 3 * day) continue;
-    for (const fid of friendIds(w, p.userId)) {
-      if (!w.users[fid]?.sim || hash(`${p.id}:${fid}`) % 3 !== 0) continue;
+    const sims = friendIds(w, p.userId).filter((f) => w.users[f]?.sim);
+    // a recent post always gets at least one friend's reaction; others join in now and then
+    const first = [...sims].sort((a, b) => hash(`${p.id}:${a}`) - hash(`${p.id}:${b}`))[0];
+    for (const fid of sims) {
+      if (fid !== first && hash(`${p.id}:${fid}`) % 3 !== 0) continue;
       if (w.feedReactions.some((r) => r.postId === p.id && r.userId === fid)) continue;
       const emoji = EMOJI[hash(`${p.id}:${fid}:e`) % EMOJI.length];
       w.feedReactions.push({ postId: p.id, userId: fid, emoji });

@@ -1,5 +1,5 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { useCelebrate } from '@/components/celebration/provider';
@@ -23,6 +23,11 @@ export default function BudgetPage() {
   const data = useMemo(() => [...CATEGORIES.filter((c) => lines[c.id] > 0).map((c) => ({ name: c.label, value: lines[c.id], color: COLORS[c.id] })), ...(t.left > 0 ? [{ name: 'Left to allocate', value: t.left, color: '#E2F4EC' }] : [])], [lines, t.left]);
 
   const pick = (id: string) => { const tpl = TEMPLATES.find((x) => x.id === id)!; setTemplate(id); setIncome(tpl.income); setLines(linesFromTemplate(tpl, tpl.income)); setMsg(''); };
+  // a link like /tools/budget?template=workshop opens that template (read after mount, when the URL is final)
+  useEffect(() => {
+    const t = TEMPLATES.find((x) => x.id === new URLSearchParams(window.location.search).get('template'));
+    if (t) { setTemplate(t.id); setIncome(t.income); setLines(linesFromTemplate(t, t.income)); }
+  }, []);
   const changeIncome = (v: number) => { const next = clampNum(v, 0, 10_000_000); const tpl = TEMPLATES.find((x) => x.id === template); setIncome(next); if (tpl) setLines(linesFromTemplate(tpl, next)); setMsg(''); };
   const setLine = (id: BudgetCategory, v: number) => { setLines({ ...lines, [id]: clampNum(v, 0, 10_000_000) }); setMsg(''); };
   const save = () => {
@@ -42,6 +47,13 @@ export default function BudgetPage() {
       <p className="text-plum-500">Give every rand a job. Start from a template, then make it yours.</p>
       <p className="mt-2 rounded-input bg-mint-100 px-3 py-2 text-xs text-mint-700">Private to you. Never shared, ranked or sent anywhere.</p>
 
+      {template === 'workshop' && (
+        <div className="mt-3 rounded-card bg-gold-100 p-3 text-sm" data-testid="scenario">
+          <b>Scenario</b>
+          <p>You earn R3,500 a month and currently spend R3,600. You want a R1,500 laptop. Move the sliders so you spend no more than R3,500 and save at least R150 a month (Emergency savings or Investing). Needs are essentials; wants are nice-to-haves.</p>
+          <p className="mt-1 font-semibold">{t.spent <= 3500 && t.saving >= 150 && income === 3500 ? '✓ That works: you spend within your income and save at least R150.' : `Spending ${rand(t.spent)} · saving ${rand(t.saving)}`}</p>
+        </div>
+      )}
       <div className="mt-4 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Template">
         {TEMPLATES.map((x) => <button key={x.id} role="radio" aria-checked={template === x.id} onClick={() => pick(x.id)} className={`rounded-card p-3 text-left ring-1 ${template === x.id ? 'bg-pink-100 ring-pink-600' : 'bg-white ring-pink-100'}`}><b className="block text-sm">{x.name}</b><span className="text-xs text-plum-500">{x.blurb}</span></button>)}
       </div>

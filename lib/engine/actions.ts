@@ -133,7 +133,7 @@ export function joinCommunity(w: World, userId: string, communityId: string, now
   w.communityMembers.push({ communityId, userId, role: 'member', status: c.requiresApproval ? 'pending' : 'active', joinedAt: now.toISOString(), agreedAt: null });
 }
 
-export type OnboardingInput = { displayName: string; nickname: string; communityId: string | null; joinCode?: string; quiz: QuizAnswers; confidence: number[]; };
+export type OnboardingInput = { displayName: string; nickname: string; communityId: string | null; joinCode?: string; quiz: QuizAnswers; confidence: number[]; skipSurvey?: boolean; };
 
 export function completeOnboarding(w: World, userId: string, input: OnboardingInput, now: Date): Earned & { track: string } {
   const u = w.users[userId];
@@ -147,7 +147,7 @@ export function completeOnboarding(w: World, userId: string, input: OnboardingIn
     displayName: input.displayName.trim(), nickname: input.nickname.trim(), goals: [input.quiz.goal], lifeTrack: plan.track,
     weeklyTarget: plan.weeklyTarget, reminderDays: DEFAULT_REMINDER_DAYS[plan.weeklyTarget], consentedAt: now.toISOString(), onboardedAt: u.onboardedAt ?? now.toISOString(),
   } satisfies Partial<User>);
-  if (first) w.surveys.push({ userId, kind: 'pre', answers: input.confidence, at: now.toISOString() });
+  if (first && !input.skipSurvey) w.surveys.push({ userId, kind: 'pre', answers: input.confidence, at: now.toISOString() });
 
   const e = earning(w, userId, now, () => { award(w, { userId, source: 'onboarding', sourceId: 'onboarding', now }); });
   if (first && u.referredBy && w.users[u.referredBy]) {

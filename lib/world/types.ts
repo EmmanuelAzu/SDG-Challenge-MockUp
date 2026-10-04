@@ -70,6 +70,30 @@ export type InvestState = { affordability: Record<string, string>; monthly: numb
 
 export type PayslipRun = { id: string; gross: number; retirementPct: number; allocation: Record<BudgetCategory, number>; at: ISO };
 
+export type PilotCheck = { k: Record<string, number>; c: number[]; at: ISO; ms: number };
+export type PilotMission = { startedAt?: ISO; doneAt?: ISO; auto?: boolean; seq?: number };
+export type PilotSurvey = { umux: [number, number]; nps: number; safety: number | null; understood: number; useful: string; again: 'yes' | 'maybe' | 'no'; liked: string; confusing: string; at: ISO };
+export type PilotFollowUp = { at: ISO; usedAgain: 'yes' | 'no'; did: string[]; c: number[]; changed: string };
+export type PilotRun = {
+  id: string; // anonymous participant id, e.g. P-7K3Q9X
+  userId: string | null; // local account; never exported
+  simulated?: boolean;
+  path: 'quick' | 'full';
+  form: 'A' | 'B'; // parallel form used at pre-test; the other is used at post-test
+  consentAt: ISO;
+  profile: { ageBand: string; status: string; experience: string } | null;
+  device: 'mobile' | 'desktop';
+  stage: 'pre' | 'missions' | 'post' | 'feedback' | 'done';
+  startedAt: ISO;
+  signupMs: number;
+  finishedAt: ISO | null;
+  pre: PilotCheck | null;
+  post: PilotCheck | null;
+  missions: Record<string, PilotMission>;
+  survey: PilotSurvey | null;
+  followUp: PilotFollowUp | null;
+};
+
 export type Friendship = { id: string; fromId: string; toId: string; status: 'pending' | 'accepted'; at: ISO };
 export type HelpRequest = { id: string; userId: string; kind: 'question' | 'call'; topic: string; body: string; windows: string[]; status: 'open' | 'answered' | 'closed'; answer: string; answeredBy: string | null; at: ISO; answeredAt: ISO | null };
 export type SafetyGroup = 'emergency' | 'gbv' | 'counselling' | 'student';
@@ -130,6 +154,8 @@ export type World = {
   draws: Draw[];
   goals: SavingsGoal[];
   invest: Record<string, InvestState>;
+  pilot: Record<string, PilotRun>;
+  pilotImports: PilotRun[];
   friendships: Friendship[];
   helpRequests: HelpRequest[];
   safety: SafetyResource[];

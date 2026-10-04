@@ -62,3 +62,9 @@
 - Simulated friends react to a person's new posts during the daily job.
 - O-Week Starter is a real 3-lesson course (`oweek-starter`: first-month plan, scam-smart, student accounts) with no statistics. Finishing all three records a 0-point `oweek_done` flag that drives the badge. `/join/[slug]` is the O-Week landing for campus communities (auto-joins after sign-up through the existing `community` param).
 - QR poster: `/admin/poster` renders an A4 (1240×1754, 150 dpi) PNG in the browser using the current site origin, so download it from the deployed site for a correct link. `public/qr/wits.png` is a static QR for `https://sdg-challenge-mock-up.vercel.app/join/wits`; regenerate it if the domain changes. WORLD_VERSION is now 6.
+
+## Pilot (10-minute test, evidence plan)
+- Built from the three PPS Money Matters PDFs. Full plan, instruments, decision rules, logistics and a log of errors found in the source material are in `docs/PILOT.md`. Errors fixed in-app: payslip net (R9,819.25, not R10,319.25), Sipho's compounding figure (about R295,000, not R349,101), "R60k more" (R120,000), "5×" (about 6×). No TFSA limits are quoted until PPS checks SARS.
+- Knowledge change is measured with six concepts × two parallel forms, counterbalanced by participant, with "I'm not sure". Task success is observed from real actions. Results travel as an anonymous code the facilitator pastes into Staff console → Pilot results (no backend). Quick start (nickname only) replaces full sign-up inside the 10 minutes; full sign-up is an alternative path timed separately.
+- WORLD_VERSION is 7. Do not bump it during the pilot: it resets every tester's stored data.
+- Fixed a real bug in simulated chat (`>>` on an unsigned hash could give a negative index and crash a reply) and made simulated friend reactions guarantee at least one reaction.

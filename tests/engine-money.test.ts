@@ -21,7 +21,8 @@ describe('budget builder', () => {
   it('every template is within 100% and uses all 8 categories', () => {
     expect(CATEGORIES).toHaveLength(8);
     for (const t of TEMPLATES) {
-      expect(Object.values(t.pct).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(100);
+      // the workshop scenario deliberately overspends (R3,600 on R3,500) so testers have something to fix
+      expect(Object.values(t.pct).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(t.id === 'workshop' ? 103 : 100);
       expect(Object.keys(t.pct).sort()).toEqual(CATEGORIES.map((c) => c.id).sort());
     }
   });

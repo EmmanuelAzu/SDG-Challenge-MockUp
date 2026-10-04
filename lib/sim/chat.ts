@@ -36,8 +36,8 @@ export function planReplies(w: World, msg: Message): PlannedReply[] {
   const first = people[h % people.length];
   const out: PlannedReply[] = [{ delayMs: 2500 + (h % 3000), typingMs: 1800, userId: first, body: pool[h % pool.length], reactWith: h % 4 === 0 ? CHAT_EMOJI[h % CHAT_EMOJI.length] : undefined }];
   if (people.length > 1 && h % 5 < 2) {
-    const second = people[(h >> 3) % people.length];
-    if (second !== first) out.push({ delayMs: 7000 + (h % 4000), typingMs: 2200, userId: second, body: FALLBACK[(h >> 5) % FALLBACK.length] });
+    const second = people[(h >>> 3) % people.length];
+    if (second !== first) out.push({ delayMs: 7000 + (h % 4000), typingMs: 2200, userId: second, body: FALLBACK[(h >>> 5) % FALLBACK.length] });
   }
   return out;
 }
