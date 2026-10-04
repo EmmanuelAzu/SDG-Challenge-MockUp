@@ -5,15 +5,15 @@ const dir = 'docs/pilot-form';
 const D = JSON.parse(fs.readFileSync(`${dir}/questions.json`, 'utf8'));
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const optText = (o) => (typeof o === 'string' ? o : o.v);
-const secs = { choice: 8, checkbox: 14, dropdown: 8, scale: 6, text: 8, paragraph: 30 };
-const est = (q) => (q.type === 'grid' ? 6 + q.rows.length * 4 : secs[q.type] ?? 8) * (q.required && q.type === 'paragraph' ? 1.2 : 1);
-const minutes = (items, pred) => Math.round(items.filter(pred).reduce((a, q) => a + est(q), 0) / 60 * 10) / 10;
-const typeLabel = { choice: 'Multiple choice', checkbox: 'Checkboxes', dropdown: 'Dropdown', scale: 'Linear scale', text: 'Short answer', paragraph: 'Paragraph', grid: 'Multiple-choice grid' };
+const typeLabel = { choice: 'Multiple choice (one answer)', checkbox: 'Multiple choice (tick all that apply)', text: 'Short answer' };
+const secs = { choice: 8, checkbox: 14, text: 8 };
+const minutes = (items) => Math.round(items.reduce((a, q) => a + (secs[q.type] ?? 8), 0) / 6) / 10;
+const pillar = { ACC: 'Access and inclusion', KNW: 'Learning and confidence', UX: 'Ease of use and understandability', PREF: 'Preferences, likes and dislikes', TRUST: 'Trust, privacy and safety', BEH: 'Money behaviour (baseline and change)', DEM: 'Who took part', CONT: 'Consent and admin', IMP: 'Impact and needs' };
 
 /* ---------- codebook ---------- */
 const csv = (v) => { const s = Array.isArray(v) ? v.join(' | ') : String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-const rowsFor = (form, items) => items.map((q) => [form, q.id, `Part ${q.part}`, q.section, typeLabel[q.type], q.required ? 'yes' : 'no', q.priority, q.domain, D.domains[q.domain] ?? '', q.title, (q.options ?? []).map(optText), q.rows ?? '', q.cols ?? (q.scale ? `${q.scale.min} ${q.scale.low} … ${q.scale.max} ${q.scale.high}` : ''), q.purpose, q.source ?? ''].map(csv).join(','));
-const head = ['form', 'id', 'part', 'section', 'type', 'required', 'priority', 'domain', 'candidate_sdg_targets', 'question', 'options', 'grid_rows', 'grid_columns_or_scale', 'purpose', 'source_or_validation'];
+const rowsFor = (form, items) => items.map((q) => [form, q.id, q.section, typeLabel[q.type], q.required ? 'yes' : 'no', q.expand ? 'yes' : 'no', q.domain, D.domains[q.domain] ?? '', q.title, (q.options ?? []).map(optText), q.purpose, q.source ?? ''].map(csv).join(','));
+const head = ['form', 'id', 'section', 'type', 'required', 'optional_expansion', 'domain', 'candidate_sdg_targets', 'question', 'options', 'purpose', 'source_or_validation'];
 fs.writeFileSync(`${dir}/codebook.csv`, [head.join(','), ...rowsFor('feedback', D.main), ...rowsFor('day7', D.day7), ...rowsFor('contact', D.contact)].join('\n') + '\n');
 
 /* ---------- Apps Script ---------- */
@@ -21,21 +21,21 @@ const gs = `/**
  * Creates the three Sisi pilot Google Forms in your Google account.
  * HOW TO RUN: go to script.google.com > New project > paste this whole file > Save >
  * choose "createPilotForms" in the toolbar > Run > approve the permissions.
- * The links to edit and share each form appear in View > Logs (also written to your Drive as forms).
+ * The links to edit and share each form appear in View > Logs (the forms are also in your Drive).
  * Generated from docs/pilot-form/questions.json. Edit that file and regenerate; do not hand-edit this.
  *
- * MAX_PRIORITY shortens the feedback form: 1 = must-have questions only, 2 = recommended, 3 = everything.
+ * INCLUDE_EXPANSIONS: true adds an optional "Want to tell us more?" box under every multiple-choice question.
+ * Set it to false for the shortest on-screen form (questions that allow "Other" keep their write-in option).
  */
-const MAX_PRIORITY = 3;
-const GATE_PART = 6; // questions from this part on are optional and sit behind a "continue?" question
+const INCLUDE_EXPANSIONS = true;
 
 const DATA = ${JSON.stringify({ sectionHelp: D.sectionHelp, forms: D.forms, main: D.main, day7: D.day7, contact: D.contact })};
 
 function createPilotForms() {
   const out = {
-    feedback: build_(DATA.forms.main, DATA.main, true),
-    day7: build_(DATA.forms.day7, DATA.day7, false),
-    contact: build_(DATA.forms.contact, DATA.contact, false),
+    feedback: build_(DATA.forms.main, DATA.main),
+    day7: build_(DATA.forms.day7, DATA.day7),
+    contact: build_(DATA.forms.contact, DATA.contact),
   };
   Logger.log('Feedback form (share this one): ' + out.feedback.publish + '\\n  edit: ' + out.feedback.edit);
   Logger.log('Day-7 follow-up (send a week later): ' + out.day7.publish + '\\n  edit: ' + out.day7.edit);
@@ -44,7 +44,7 @@ function createPilotForms() {
   return out;
 }
 
-function build_(meta, items, withGate) {
+function build_(meta, items) {
   const form = FormApp.create(meta.title);
   form.setDescription(meta.description)
     .setConfirmationMessage(meta.confirmation)
@@ -54,48 +54,30 @@ function build_(meta, items, withGate) {
     .setLimitOneResponsePerUser(false)
     .setShowLinkToRespondAgain(false);
 
-  const keep = items.filter(function (q) { return q.priority <= MAX_PRIORITY; });
   let section = null;
-  let gateDone = false;
-  const hasDeep = withGate && keep.some(function (q) { return q.part >= GATE_PART; });
-
-  keep.forEach(function (q) {
-    if (hasDeep && !gateDone && q.part >= GATE_PART) {
-      addGate_(form);
-      gateDone = true;
-      section = null; // force a fresh page for the first optional section
-    }
+  items.forEach(function (q) {
     if (q.section !== section) {
-      if (section !== null || q.part >= GATE_PART) {
+      if (section !== null) {
         const pb = form.addPageBreakItem().setTitle(q.section);
         if (DATA.sectionHelp[q.section]) pb.setHelpText(DATA.sectionHelp[q.section]);
-      } else if (DATA.sectionHelp[q.section]) {
-        form.addSectionHeaderItem().setTitle(q.section).setHelpText(DATA.sectionHelp[q.section]);
       }
       section = q.section;
     }
     addQuestion_(form, q);
+    if (INCLUDE_EXPANSIONS && q.expand) {
+      form.addParagraphTextItem()
+        .setTitle(q.id + ' · Want to tell us more? (optional)')
+        .setRequired(false);
+    }
   });
   return { publish: form.getPublishedUrl(), edit: form.getEditUrl() };
 }
 
-function addGate_(form) {
-  form.addPageBreakItem()
-    .setTitle('Core feedback done: thank you!')
-    .setHelpText('The next questions are optional. They help us decide what to build next.');
-  const gate = form.addMultipleChoiceItem();
-  gate.setTitle('Would you like to answer a few more optional questions (about 5 minutes)?')
-    .setRequired(true)
-    .setChoices([
-      gate.createChoice('Yes, I will answer more', FormApp.PageNavigationType.CONTINUE),
-      gate.createChoice('No, submit my answers now', FormApp.PageNavigationType.SUBMIT),
-    ]);
-}
-
 function addQuestion_(form, q) {
+  const label = /^(Q|D)\\d+$/.test(q.id) ? q.id + '. ' + q.title : q.title;
   let item;
   switch (q.type) {
-    case 'choice': {
+    case 'choice':
       item = form.addMultipleChoiceItem();
       item.setChoices(q.options.map(function (o) {
         if (typeof o === 'string') return item.createChoice(o);
@@ -103,25 +85,10 @@ function addQuestion_(form, q) {
       }));
       if (q.other) item.showOtherOption(true);
       break;
-    }
     case 'checkbox':
       item = form.addCheckboxItem();
       item.setChoiceValues(q.options);
-      break;
-    case 'dropdown':
-      item = form.addListItem();
-      item.setChoiceValues(q.options);
-      break;
-    case 'scale':
-      item = form.addScaleItem();
-      item.setBounds(q.scale.min, q.scale.max).setLabels(q.scale.low, q.scale.high);
-      break;
-    case 'grid':
-      item = form.addGridItem();
-      item.setRows(q.rows).setColumns(q.cols);
-      break;
-    case 'paragraph':
-      item = form.addParagraphTextItem();
+      if (q.other) item.showOtherOption(true);
       break;
     case 'text':
       item = form.addTextItem();
@@ -135,7 +102,7 @@ function addQuestion_(form, q) {
     default:
       throw new Error('Unknown question type: ' + q.type);
   }
-  item.setTitle(q.title).setRequired(!!q.required);
+  item.setTitle(label).setRequired(!!q.required);
   if (q.help) item.setHelpText(q.help);
   return item;
 }
@@ -143,95 +110,74 @@ function addQuestion_(form, q) {
 fs.writeFileSync(`${dir}/create-forms.gs`, gs);
 
 /* ---------- Markdown + HTML ---------- */
-const groups = (items) => { const m = new Map(); items.forEach((q) => { const k = `${q.part}|${q.section}`; if (!m.has(k)) m.set(k, []); m.get(k).push(q); }); return [...m.entries()].map(([k, v]) => ({ part: Number(k.split('|')[0]), section: k.split('|').slice(1).join('|'), items: v })); };
-const coreMin = minutes(D.main, (q) => q.part < 6); const deepMin = minutes(D.main, (q) => q.part >= 6);
-const p1 = (pr) => D.main.filter((q) => q.priority <= pr);
-const short = minutes(D.main, (q) => q.part < 6 && q.priority <= 1);
-const d7min = minutes(D.day7, () => true);
-const counts = { all: D.main.length, core: D.main.filter((q) => q.part < 6).length, deep: D.main.filter((q) => q.part >= 6).length, p1: p1(1).length, p2: p1(2).length };
-
-const pillar = {
-  ACC: 'Access and inclusion', KNW: 'Learning and understanding', UX: 'Ease of use and understandability', PREF: 'Preferences, likes and dislikes', TRUST: 'Trust, privacy and safety', BEH: 'Money behaviour (baseline and change)', AGY: 'Women’s financial agency', DEM: 'Who took part', CONT: 'Consent and admin', IMP: 'Impact and needs',
-};
-
-function qMd(q) {
-  const lines = [`**${q.id}.** ${q.title}${q.required ? ' *(required)*' : ''}`, `- Type: ${typeLabel[q.type]} · Priority ${q.priority} · Domain: ${pillar[q.domain]}`];
+const groups = (items) => { const m = new Map(); items.forEach((q) => { if (!m.has(q.section)) m.set(q.section, []); m.get(q.section).push(q); }); return [...m.entries()].map(([section, items]) => ({ section, items })); };
+const qMd = (q) => {
+  const lines = [`**${q.id}.** ${q.title}${q.required ? ' *(required)*' : ''}`, `- ${typeLabel[q.type]}${q.expand ? ' + optional “Want to tell us more?” box' : ''} · ${pillar[q.domain]}`];
   if (q.help) lines.push(`- Help text: ${q.help}`);
   if (q.options) lines.push(`- Options: ${q.options.map((o) => optText(o) + (typeof o === 'object' && o.go === 'submit' ? ' *(ends the form)*' : '')).join(' · ')}${q.other ? ' · *Other (write in)*' : ''}`);
-  if (q.rows) lines.push(`- Rows: ${q.rows.join(' · ')}`);
-  if (q.cols) lines.push(`- Columns: ${q.cols.join(' · ')}`);
-  if (q.scale) lines.push(`- Scale: ${q.scale.min} (${q.scale.low}) to ${q.scale.max} (${q.scale.high})`);
-  lines.push(`- Why we ask: ${q.purpose}`);
-  if (q.source) lines.push(`- Source or validity: ${q.source}`);
+  lines.push(`- Why we ask: ${q.purpose}${q.source ? ` (${q.source})` : ''}`);
   return lines.join('\n');
-}
-const formMd = (title, meta, items) => `### ${title}\n\n**Form title:** ${meta.title}\n\n**Opening text:**\n\n> ${meta.description.replace(/\n/g, '\n> ')}\n\n` + groups(items).map((g) => `#### Part ${g.part}: ${g.section}${D.sectionHelp[g.section] ? `\n*${D.sectionHelp[g.section]}*` : ''}\n\n` + g.items.map(qMd).join('\n\n')).join('\n\n') + `\n\n**Confirmation message:** ${meta.confirmation}\n`;
+};
+const formMd = (title, meta, items) => `### ${title}\n\n**Form title:** ${meta.title}\n\n**Opening text:**\n\n${meta.description.split('\n\n').map((p) => `> ${p.replace(/\n/g, ' ')}`).join('\n\n')}\n\n` + groups(items).map((g) => `#### ${g.section}${D.sectionHelp[g.section] ? `\n*${D.sectionHelp[g.section]}*` : ''}\n\n` + g.items.map(qMd).join('\n\n')).join('\n\n') + `\n\n**Confirmation message:** ${meta.confirmation}\n`;
 
-const sdgTable = `| Evidence domain | Questions | Candidate SDG targets (**to confirm**) | What it lets us say |
-|---|---|---|---|
-| Learning and understanding | LC1–LC4, W5, W6 | SDG 4.4 (relevant skills for decent work), 4.6 (literacy and numeracy) | People understand money concepts better and feel more able to act |
-| Ease of use and understandability | UX1–UX9 | SDG 4.6 | Learning content is clear and usable for the intended reader |
-| Access and inclusion | DEM6, PF8, AC1–AC3 | SDG 5.b (enabling technology for women), 10.2 (inclusion of all), 4.5 (equal access to learning) | Who is left out by data cost, device, language or accessibility |
-| Money behaviour | BEH1–BEH5, LC5, W1–W4 | SDG 8.10 (access to financial services; indicator 8.10.2 account ownership), 1.4 (access to financial services and economic resources) | Baseline and change in saving, budgeting, resilience and account ownership |
-| Women’s financial agency | AG1 | SDG 5.a (equal rights to economic resources and financial services), 5.1 | Whether young women feel they have a say over their money |
-| Impact and needs | IM1, IM2, W9 | SDG 8, 4.4, 1.4 | Which outcomes people believe Sisi supports and what to build next |
-| Trust, privacy and safety | TR1–TR3 | SDG 5 (safe participation), 16.10 (access to information) | Whether Sisi is trusted and safe, a precondition for any impact |
-| Preferences, likes and dislikes | LK1–LK6, PF1–PF9, IM3 | (product design, not an SDG outcome) | What to keep, change, cut and build next |
-| Who took part | DEM1–DEM5 | SDG 10.2 | Whether the pilot reached the women it is meant for |`;
+const idsByDomain = {};
+[...D.main, ...D.day7].forEach((q) => { if (q.domain !== 'CONT') (idsByDomain[q.domain] ??= []).push(q.id); });
+const gist = { KNW: 'People feel more able to handle money decisions', UX: 'The content and tools are clear to the intended reader', ACC: 'Who is left out by data cost, connection, device, language or accessibility', BEH: 'Baseline and change in saving, budgeting and account ownership', IMP: 'Which outcomes people believe Sisi supports', TRUST: 'Whether Sisi is trusted and safe, a precondition for any impact', PREF: 'What to keep, change, cut and build next', DEM: 'Whether the pilot reached the women it is meant for' };
+const sdgTable = ['| Evidence area | Questions | Candidate SDG targets (**to confirm**) | What it lets us say |', '|---|---|---|---|', ...Object.keys(gist).map((d) => `| ${pillar[d]} | ${(idsByDomain[d] ?? []).join(', ')} | ${D.domains[d]} | ${gist[d]} |`)].join('\n');
 
-const md = `# Sisi pilot feedback: Google Form pack
+const nMain = D.main.length; const nExp = D.main.filter((q) => q.expand).length;
+const md = `# Sisi pilot feedback: Google Form pack (v2: 20 questions, all multiple choice)
 
-Status: draft v1 for PPS review. Generated from \`questions.json\`. Source of truth for wording is that file.
+Status: draft for PPS review. Generated from \`questions.json\`, which is the source of truth for wording.
 
 ## Read this first
 
-**About the SDGs.** The project brief I was given calls this the "PPS Investments SDG Challenge" but **never names the specific Sustainable Development Goals**, so I do not know which ones your challenge targets. I have not guessed silently. Every question carries an *evidence domain* (such as "money behaviour" or "access and inclusion"), and the table in section 3 maps each domain to the SDG targets that fit a money-confidence app for young women. Those SDG targets are **proposals to confirm**. When you tell me the real goals, only that table changes, not the questions.
+**What changed.** The feedback form now has **${nMain} items in total: consent, participant ID and 18 questions**. Every question is **multiple choice** (one answer, or tick all that apply). Each one has an **optional "Want to tell us more?" box** underneath, so people can expand on an answer without having to. Those boxes are optional add-ons and are not counted in the 20. Taking part needs about **${minutes(D.main)} minutes** of tapping; the optional boxes add time only for people who choose to write.
+
+**About the SDGs.** The brief calls this the "PPS Investments SDG Challenge" but **never names the specific Sustainable Development Goals**, so I do not know which ones your challenge targets. Every question is tagged with an *evidence area* and the table in section 2 maps each area to SDG targets I think fit a money-confidence app for young women. Those targets are **proposals to confirm**. Tell me the real goals and only that table changes.
 
 ## 1. What this pack contains
 
 | File | What it is |
 |---|---|
-| \`FEEDBACK_FORM.md\` / \`.pdf\` | This document: every question, why it is asked, how it maps to evidence |
-| \`create-forms.gs\` | A Google Apps Script that **builds all three forms for you** (sections, validation, the optional-questions gate). Paste into script.google.com and press Run |
-| \`codebook.csv\` | One row per question for analysis (id, type, options, domain, SDG target, source) |
-| \`questions.json\` | The single source of truth. Edit this and regenerate with \`node scripts/build-pilot-form.mjs\` |
+| \`FEEDBACK_FORM.md\` / \`.pdf\` | This document: every question, why it is asked |
+| \`create-forms.gs\` | A Google Apps Script that **builds all three forms for you**. Paste into script.google.com and press Run |
+| \`codebook.csv\` | One row per question for analysis (id, type, options, evidence area, SDG target, source) |
+| \`questions.json\` | The single source of truth. Edit it and run \`node scripts/build-pilot-form.mjs\` |
 
 Three forms, on purpose:
 
-1. **Pilot feedback form** (${counts.all} questions in full). Given straight after the session. *Core part* (Parts 1–5, ${counts.core} questions, about **${coreMin} minutes**) is the evidence you need. *Optional part* (Parts 6–9, ${counts.deep} questions, about **${deepMin} minutes**) sits behind a "continue?" question so tired testers can stop without losing the core data. Estimated times by priority (core / optional part): Priority 1 only **${minutes(D.main, (q) => q.part < 6 && q.priority <= 1)} / ${minutes(D.main, (q) => q.part >= 6 && q.priority <= 1)} min**; priorities 1–2 **${minutes(D.main, (q) => q.part < 6 && q.priority <= 2)} / ${minutes(D.main, (q) => q.part >= 6 && q.priority <= 2)} min**; everything **${coreMin} / ${deepMin} min**. Set \`MAX_PRIORITY\` at the top of the script to 1, 2 or 3 to choose. Times are estimates (about 8 seconds per tap question, 4 per grid row, 30 per written answer); time a real tester before you commit.
-2. **Day-7 follow-up** (${D.day7.length} questions, about **${d7min} minutes**). Sent a week later. Asks what people did, not just what they know. This is your strongest evidence of behaviour change.
-3. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Needed only for the follow-up and any prize draw.
+1. **Pilot feedback form**: consent, participant ID, 18 multiple-choice questions (${nExp} with the optional expansion box). Given straight after the session.
+2. **Day-7 follow-up**: participant ID and ${D.day7.length - 1} multiple-choice questions, about ${minutes(D.day7)} minutes. Sent a week later. It asks what people did, not just what they know, which is your best evidence of behaviour change.
+3. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Contact details have to be typed, so this one is not multiple choice.
 
-## 2. How this fits with the in-app pilot
-
-The app already measures: knowledge change (6 items, 2 parallel forms), confidence, observed task success and time, per-task ease, UMUX-Lite and a recommend score. The Google Form does **not repeat those**. It adds what the app cannot: preferences, likes and dislikes, understandability in their own words, access and inclusion, who took part, money-behaviour baseline, and impact on SDG-relevant outcomes. The two datasets join on the **participant ID** (the app shows it on the last screen; Q "PID" asks for it). The ID is random and anonymous.
-
-## 3. Evidence domains and SDG mapping (candidate targets, to confirm)
+## 2. Evidence areas and SDG mapping (candidate targets, to confirm)
 
 ${sdgTable}
 
-Standards used: concepts for account ownership and emergency resilience follow the Global Findex survey; behaviour and attitude items are adapted from the OECD/INFE financial literacy toolkit. Wording of those items here is **our adaptation**, so verify against the current toolkits before comparing numbers with published benchmarks. The agency items (AG1) are a draft, not a validated scale.
+Concepts for account ownership (Q3) follow the Global Findex survey; the wording is ours. The reduction to 18 questions removed the longer grids and agency items, so women's financial agency (SDG 5.a) is now only covered indirectly (Q13, Q14, Q17). If 5.a is one of your named goals, I would swap one question for a dedicated agency item.
+
+## 3. How it fits with the in-app pilot
+
+The app already measures knowledge change (6 items, two parallel forms), confidence, observed task success and time, **per-task ease**, UMUX-Lite and a recommend score. This form does not repeat those. It adds what the app cannot: understandability of the purpose and the words, likes and dislikes, preferences, who took part, a money-behaviour baseline, perceived benefit, safety and access barriers. The two datasets join on the **participant ID**, which the app shows on its last screen.
 
 ## 4. Design choices
 
-- **Consent first, ID next, nothing sensitive required.** Only consent, the participant ID and a handful of experience questions are required. Everything about the person has "Prefer not to say".
-- **No income amounts, ever.** We ask where money comes from, never how much (matches the app's rule).
-- **Forced choices for preferences.** "Which ONE part was most useful?" and "Change ONE thing first" force trade-offs, which are more informative than rating everything highly.
-- **Likes and dislikes are separate open questions**, each required, so negative feedback is not buried.
-- **"I did not try this" columns** stop people rating features they never used.
-- **Retrospective then/now confidence** (LC1, LC2) gives a second estimate of change that is robust to people re-calibrating what "confident" means after learning something.
-- **Plain language, South African context, one idea per question, balanced scales with labelled ends.**
-- **Anonymity preserved** by splitting contact details into their own form.
-- **Priorities.** Each question has Priority 1 (must keep), 2 (recommended) or 3 (nice to have).
+- **Multiple choice throughout**, so answers can be counted and compared. The optional box under each question keeps the "why" without making it a chore.
+- **Likes and dislikes are separate questions** (Q8, Q9) so negative feedback is not buried, plus two forced choices (Q10 "which ONE part was most useful", Q11 "change ONE thing first") that reveal real priorities.
+- **Comprehension is tested, not asked**: Q5 offers four descriptions of Sisi and one is correct, which checks whether people understood "education, not advice".
+- **No income amounts, ever.** We only ask whether people have an account or save, never how much.
+- **"Prefer not to say"** on every question about the person. Only consent and the participant ID are required in the feedback form.
+- **Anonymity**: contact details live in their own form.
 
 ## 5. Before you publish
 
-1. Run \`create-forms.gs\` and open each form's edit link. Check the order and the "continue?" branch by previewing.
-2. Add the PPS logo and a header image if you like (Form theme).
-3. In each form: Responses → Link to Sheets. Turn **off** "Collect email addresses" (the script already does).
-4. Paste the PPS-approved consent and privacy wording over the opening text if it differs. Confirm POPIA responsibilities with PPS.
-5. Give testers the feedback link right after the session (and put it on the tester guide). Put the **day-7 link** in a calendar reminder.
-6. Test the whole thing yourself on a phone. Time it.
+1. Run \`create-forms.gs\` and open each form's edit link. Preview on a phone and time it.
+2. In each form: Responses → Link to Sheets. Keep "Collect email addresses" **off** (the script does).
+3. Replace the opening text with the PPS-approved consent and privacy wording if it differs. Confirm POPIA responsibilities with PPS.
+4. Add the PPS logo or a header image through the form theme if you wish.
+5. Paste the published feedback link into \`FEEDBACK_FORM_URL\` in \`lib/pilot/instruments.ts\`. The pilot's last screen then shows an "Open the feedback form" button.
+6. Calendar-remind yourself to send the day-7 link.
 
 ## 6. The questions
 
@@ -243,26 +189,26 @@ ${formMd('Form 3: Contact form (optional, separate)', D.forms.contact, D.contact
 
 ## 7. Analysis plan (short)
 
-- **Preference vs non-preference:** LK3 and LK4 (forced choices), PF1 (format), PF3–PF7 (gamification, rewards, social), cross-tabbed by DEM1/DEM2. Read LK1/LK2 open text and code themes (two people code a sample, agree, then code the rest).
-- **Ease and understandability:** UX2 and UX8 against the in-app Single Ease Question; UX1 coded as "correct purpose / partly / wrong".
-- **Learning and confidence:** LC1 vs LC2 (paired), LC4 for new-vs-known content, then the in-app knowledge gain.
-- **SDG outcomes:** BEH1–BEH4 and BEH5 as the baseline profile of who the pilot reached; W2–W4 and W5 at day 7 as change; IM1/IM2 as perceived benefit and need; AG1 as agency. Report descriptively, by subgroup where n allows, and be clear that this is a small, self-selected pilot with no control group.
-- **Equity cut:** compare ease, satisfaction and intent for DEM4/DEM5 (province, area), AC1 (data cost) and PF8 (language) to see who is being left behind.
+- **Preferences:** Q8 and Q9 (tick-lists), Q10 and Q11 (forced choices), Q16 (what brings people back), cut by Q1 and Q2. Read the optional boxes and code themes (two people code a sample, agree, then code the rest).
+- **Understandability and ease:** Q5 (percent who choose the correct description), Q6, Q7, with the in-app per-task ease to locate the hard parts.
+- **Satisfaction and confidence:** Q12, Q13, alongside the in-app knowledge gain.
+- **SDG outcomes:** Q3 and Q4 as the baseline profile, D2 to D4 and D9 at day 7 as change, Q14 as perceived benefit, Q15 against D2 (intention versus action).
+- **Equity:** compare Q6, Q7, Q12 and Q17 for Q18 barriers (data cost, language, shared phone) to see who is being left behind.
+- Say plainly that this is a small, self-selected pilot with no control group.
 `;
 fs.writeFileSync(`${dir}/FEEDBACK_FORM.md`, md);
 
-// HTML for the PDF (simple, print-friendly)
 const mdToHtml = (s) => esc(s)
   .replace(/^# (.*)$/gm, '<h1>$1</h1>').replace(/^## (.*)$/gm, '<h2>$1</h2>').replace(/^### (.*)$/gm, '<h3>$1</h3>').replace(/^#### (.*)$/gm, '<h4>$1</h4>')
   .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\*([^*\n]+)\*/g, '<i>$1</i>').replace(/`([^`]+)`/g, '<code>$1</code>')
   .replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>').replace(/^- (.*)$/gm, '<li>$1</li>').replace(/^\d\. (.*)$/gm, '<li>$1</li>');
-function tableHtml(block) { const rows = block.trim().split('\n').filter((l) => !/^\|[-| ]+\|$/.test(l)); return '<table>' + rows.map((r, i) => `<tr>${r.split('|').slice(1, -1).map((c) => `<${i ? 'td' : 'th'}>${c.trim()}</${i ? 'td' : 'th'}>`).join('')}</tr>`).join('') + '</table>'; }
+const tableHtml = (block) => { const rows = block.trim().split('\n').filter((l) => !/^\|[-| ]+\|$/.test(l)); return '<table>' + rows.map((r, i) => `<tr>${r.split('|').slice(1, -1).map((c) => `<${i ? 'td' : 'th'}>${c.trim()}</${i ? 'td' : 'th'}>`).join('')}</tr>`).join('') + '</table>'; };
 const wrapP = (h) => (/^<(h\d|table|ul|li|blockquote)/.test(h.trim()) ? h : `<p>${h}</p>`);
-const parts = md.split(/\n\n/).map((blk) => (blk.trim().startsWith('|') ? tableHtml(esc(blk).replace(/&amp;/g, '&')) .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>') : mdToHtml(blk).replace(/(<li>[\s\S]*<\/li>)/, '<ul>$1</ul>').replace(/\n/g, '<br>')).replace(/<blockquote><\/blockquote>/g, '<br>').replace(/<\/blockquote><br>(<br>)?<blockquote>/g, '<br><br>')).map(wrapP);
+const parts = md.split(/\n\n/).map((blk) => (blk.trim().startsWith('|') ? tableHtml(esc(blk).replace(/&amp;/g, '&')).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>') : mdToHtml(blk).replace(/(<li>[\s\S]*<\/li>)/, '<ul>$1</ul>').replace(/\n/g, '<br>'))).map(wrapP);
 fs.writeFileSync(`${dir}/FEEDBACK_FORM.html`, `<!doctype html><html><head><meta charset="utf-8"><title>Sisi pilot feedback: Google Form pack</title><style>
-@page{size:A4;margin:16mm 14mm}body{font-family:Arial,Helvetica,sans-serif;font-size:9.6pt;line-height:1.38;color:#2A1433}
-h1{font-size:20pt;color:#AD1457;margin:0 0 4mm}h2{font-size:14pt;color:#AD1457;border-bottom:.4mm solid #F48FB1;padding-bottom:1mm;margin:7mm 0 3mm;page-break-after:avoid}h3{font-size:12.5pt;margin:6mm 0 2mm;background:#FCE4EF;padding:2mm 3mm;border-radius:2mm;page-break-after:avoid}h4{font-size:11pt;margin:5mm 0 1.5mm;color:#7E57C2;page-break-after:avoid}
-table{border-collapse:collapse;width:100%;margin:2mm 0;font-size:8.6pt}th{background:#FCE4EF;text-align:left}td,th{border:.3mm solid #F48FB1;padding:1.4mm 2mm;vertical-align:top}
-blockquote{margin:1mm 0;padding:1mm 3mm;border-left:1mm solid #F48FB1;background:#FFF5F9}code{background:#EFE7FB;padding:0 1mm;border-radius:1mm;font-size:8.6pt}ul{margin:1mm 0 2mm 5mm;padding:0}li{margin:.4mm 0}p{margin:0 0 2mm}
+@page{size:A4;margin:16mm 14mm}body{font-family:Arial,Helvetica,sans-serif;font-size:9.8pt;line-height:1.38;color:#2A1433}
+h1{font-size:19pt;color:#AD1457;margin:0 0 4mm}h2{font-size:14pt;color:#AD1457;border-bottom:.4mm solid #F48FB1;padding-bottom:1mm;margin:7mm 0 3mm;page-break-after:avoid}h3{font-size:12.5pt;margin:6mm 0 2mm;background:#FCE4EF;padding:2mm 3mm;border-radius:2mm;page-break-after:avoid}h4{font-size:11pt;margin:5mm 0 1.5mm;color:#7E57C2;page-break-after:avoid}
+table{border-collapse:collapse;width:100%;margin:2mm 0;font-size:8.8pt}th{background:#FCE4EF;text-align:left}td,th{border:.3mm solid #F48FB1;padding:1.4mm 2mm;vertical-align:top}
+blockquote{margin:1mm 0;padding:1mm 3mm;border-left:1mm solid #F48FB1;background:#FFF5F9}code{background:#EFE7FB;padding:0 1mm;border-radius:1mm;font-size:8.8pt}ul{margin:1mm 0 2mm 5mm;padding:0}li{margin:.4mm 0}p{margin:0 0 2mm}
 </style></head><body>${parts.join('\n')}</body></html>`);
-console.log(JSON.stringify({ counts, coreMin, deepMin, short, d7min }));
+console.log(JSON.stringify({ items: nMain, questions: nMain - 2, withExpansion: nExp, minMain: minutes(D.main), minDay7: minutes(D.day7) }));
