@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { buildWorld } from '@/lib/world/seed';
-import { KNOWLEDGE, MISSIONS, CORE, formFor, otherForm, optionOrder, CONFIDENCE } from '@/lib/pilot/instruments';
-import { anonymise, decodeRun, encodeRun, paired, scoreCheck, summarize, tCrit, toCsv, umuxScore } from '@/lib/pilot/analysis';
+import { KNOWLEDGE, formFor, otherForm, optionOrder } from '@/lib/pilot/instruments';
+import { anonymise, decodeRun, encodeRun, summarize, toCsv } from '@/lib/pilot/analysis';
 import { simulatedRuns } from '@/lib/pilot/sample';
-import { applyDetections, coreComplete, detectable, goToPost, importRuns, quickStart, rateMission, startMission, submitCheck, submitSurvey, allRuns, confirmMission } from '@/lib/engine/pilot';
-import { completeLesson } from '@/lib/engine/actions';
+import { allChaptersDone, allRuns, applyUpdate, chapterIndex, chooseReward, finishRun, importRuns, markSeen, pendingUpdate, quickStart, react, startChapter, stepsDone, peek } from '@/lib/engine/pilot';
+import { CHAPTERS } from '@/lib/pilot/journey';
+import { setWeeklyTargetAction } from '@/lib/engine/settings';
+import { startSimBuddy, nudge } from '@/lib/engine/buddy';
+import { completeAction, completeLesson, submitQuiz } from '@/lib/engine/actions';
 import { saveBudget, linesFromTemplate, TEMPLATES } from '@/lib/engine/budget';
-import { sendMessage } from '@/lib/engine/chat';
 import { communityChannel } from '@/lib/engine/chat';
 import { COURSES } from '@/lib/content';
 
@@ -69,113 +71,129 @@ describe('source-checked content figures', () => {
   });
 });
 
-describe('statistics and scoring', () => {
-  it('UMUX-Lite maps 1–7 pairs to 0–100', () => { expect(umuxScore([1, 1])).toBe(0); expect(umuxScore([7, 7])).toBe(100); expect(umuxScore([5, 6])).toBe(75); });
-  it('paired difference with a t interval', () => {
-    const p = paired([1, 2, 1, 0, 2]);
-    expect(p.mean).toBeCloseTo(1.2); expect(p.n).toBe(5); expect(p.ci[0]).toBeLessThan(p.mean); expect(p.ci[1]).toBeGreaterThan(p.mean);
-    expect(tCrit(4)).toBeCloseTo(2.776, 2);
-  });
-  it('scores a check against the form used at that stage', () => {
-    const run = { form: 'A' as const };
-    const preK = Object.fromEntries(KNOWLEDGE.map((i) => [i.id, i.forms.A.correct]));
-    const postK = Object.fromEntries(KNOWLEDGE.map((i, n) => [i.id, n < 2 ? i.forms.B.correct : -1]));
-    expect(scoreCheck(run, 'pre', { k: preK, c: [3, 3, 3], at: '', ms: 0 })!.score).toBe(6);
-    const post = scoreCheck(run, 'post', { k: postK, c: [3, 3, 3], at: '', ms: 0 })!;
-    expect(post.score).toBe(2); expect(post.notSure).toBe(4);
-    // A-form answers do not score on the B form
-    expect(scoreCheck(run, 'post', { k: preK, c: [3, 3, 3], at: '', ms: 0 })!.score).toBeLessThan(6);
-  });
-});
-
-describe('pilot run', () => {
+describe('guided pilot', () => {
+  const LESSON = 'now-now-stack-it-grow-it';
   const fresh = () => {
     const w = buildWorld(NOW);
     const r = quickStart(w, { nickname: 'Test', communitySlug: 'student-savers', profile: null, device: 'mobile' }, NOW);
     if (!r.ok) throw new Error(r.error);
     return { w, id: r.userId };
   };
-  const answers = (w: ReturnType<typeof fresh>['w'], id: string, right: boolean, which: 'pre' | 'post') => {
-    const run = w.pilot[id]; const f = which === 'pre' ? run.form : otherForm(run.form);
-    return { k: Object.fromEntries(KNOWLEDGE.map((i) => [i.id, right ? i.forms[f].correct : -1])), c: [3, 3, 3], ms: 60000 };
-  };
+  const sync = (w: ReturnType<typeof fresh>['w'], id: string, at: Date) => { if (pendingUpdate(w, id)) applyUpdate(w, id, at); };
 
-  it('quick start creates an onboarded practice account, joins the community and starts at the pre-check', () => {
+  it('has five chapters in Sisi’s loop order', () => { expect(CHAPTERS.map((c) => c.label)).toEqual(['LEARN', 'DO', 'PROGRESS', 'REWARD', 'CONNECT']); });
+  it('quick start creates an onboarded practice account, joins the community and begins the story', () => {
     const { w, id } = fresh();
     expect(w.users[id].onboardedAt).toBeTruthy();
     expect(w.communityMembers.some((m) => m.userId === id)).toBe(true);
-    expect(w.pilot[id]).toMatchObject({ stage: 'pre', path: 'quick' });
-    expect(w.surveys.some((s) => s.userId === id)).toBe(false); // no fake baseline
+    expect(w.pilot[id]).toMatchObject({ stage: 'story', path: 'quick' });
     expect(w.pilot[id].id).toMatch(/^P-[A-Z0-9]{6}$/);
+    expect(chapterIndex(w.pilot[id])).toBe(0);
+    expect(w.surveys.some((s) => s.userId === id)).toBe(false);
   });
   it('rejects bad nicknames and unlisted communities', () => {
     const w = buildWorld(NOW);
     expect(quickStart(w, { nickname: 'a', communitySlug: 'wits', profile: null, device: 'mobile' }, NOW)).toMatchObject({ ok: false });
     expect(quickStart(w, { nickname: 'Test', communitySlug: 'pps-yp', profile: null, device: 'mobile' }, NOW)).toMatchObject({ ok: false });
   });
-  it('validates the pre-check and moves to missions', () => {
-    const { w, id } = fresh();
-    expect(submitCheck(w, id, 'pre', { k: { k1: 0 }, c: [3, 3, 3], ms: 1 }, NOW)).toMatchObject({ ok: false });
-    expect(submitCheck(w, id, 'pre', { ...answers(w, id, false, 'pre'), c: [3, 3, 9] }, NOW)).toMatchObject({ ok: false });
-    expect(submitCheck(w, id, 'pre', answers(w, id, false, 'pre'), NOW)).toMatchObject({ ok: true });
-    expect(w.pilot[id].stage).toBe('missions');
-    expect(submitCheck(w, id, 'pre', answers(w, id, false, 'pre'), NOW)).toMatchObject({ ok: false }); // once only
+  it('LEARN needs the cards, the quiz and the action, in the real app', () => {
+    const { w, id } = fresh(); const run = () => w.pilot[id];
+    startChapter(w, id, 'learn', later(0));
+    expect(Object.values(stepsDone(w, id, run(), 'learn'))).toEqual([false, false, false]);
+    completeLesson(w, id, LESSON, later(1));
+    expect(stepsDone(w, id, run(), 'learn')).toMatchObject({ cards: true, quiz: false, action: false });
+    submitQuiz(w, id, LESSON, [0, 0, 0], later(2));
+    expect(stepsDone(w, id, run(), 'learn').quiz).toBe(true);
+    sync(w, id, later(2)); expect(run().chapters.learn?.doneAt).toBeUndefined();
+    completeAction(w, id, LESSON, 'skipped', later(3));
+    sync(w, id, later(3)); expect(run().chapters.learn?.doneAt).toBeTruthy();
+    expect(run().facts.quizScore).toBeGreaterThanOrEqual(0); expect(run().facts.quizAttempts).toBe(1);
   });
-  it('detects what the tester really did: join, lesson, budget and a community message', () => {
-    const { w, id } = fresh();
-    submitCheck(w, id, 'pre', answers(w, id, false, 'pre'), NOW);
-    expect(detectable(w, id)).toEqual(['join']);
-    applyDetections(w, id, later(0));
-    expect(w.pilot[id].missions.join.doneAt).toBeTruthy();
-
-    startMission(w, id, 'learn', later(1));
-    completeLesson(w, id, 'now-now-stack-it-grow-it', later(3));
-    expect(applyDetections(w, id, later(3))).toContain('learn');
-
-    // a budget that overspends or saves too little does not count
+  it('only the current chapter counts, and only what happens after it starts', () => {
+    const { w, id } = fresh(); const run = () => w.pilot[id];
+    // saving the right budget before chapter 2 has started does nothing
     const tpl = TEMPLATES.find((t) => t.id === 'workshop')!;
-    saveBudget(w, id, { template: 'workshop', income: 3500, lines: linesFromTemplate(tpl, 3500) }, later(4));
-    expect(detectable(w, id)).not.toContain('budget');
-    saveBudget(w, id, { template: 'workshop', income: 3500, lines: { ...linesFromTemplate(tpl, 3500), transport: 600, fun: 450, emergency: 150 } }, later(5)); // 3,600 − 200 −150 + 150 = 3,400 + 150 saving
-    expect(applyDetections(w, id, later(5))).toContain('budget');
-
+    saveBudget(w, id, { template: 'workshop', income: 3500, lines: { ...linesFromTemplate(tpl, 3500), transport: 600, fun: 450, emergency: 150 } }, later(0));
+    sync(w, id, later(0)); expect(run().chapters.do?.doneAt).toBeUndefined();
+    expect(chapterIndex(run())).toBe(0);
+  });
+  it('DO needs a budget that spends within R3,500 and saves at least R150', () => {
+    const { w, id } = fresh(); const run = () => w.pilot[id];
+    startChapter(w, id, 'do', later(0));
+    const tpl = TEMPLATES.find((t) => t.id === 'workshop')!;
+    saveBudget(w, id, { template: 'workshop', income: 3500, lines: linesFromTemplate(tpl, 3500) }, later(1)); // R3,600 out
+    expect(stepsDone(w, id, run(), 'do').budget).toBe(false);
+    saveBudget(w, id, { template: 'workshop', income: 3500, lines: { ...linesFromTemplate(tpl, 3500), transport: 600, fun: 450, emergency: 150 } }, later(2));
+    expect(stepsDone(w, id, run(), 'do').budget).toBe(true);
+    saveBudget(w, id, { template: 'workshop', income: 3500, lines: { ...linesFromTemplate(tpl, 3500), transport: 600, fun: 500 } }, later(3)); // within income but saves nothing
+    expect(stepsDone(w, id, run(), 'do').budget).toBe(false);
+  });
+  it('PROGRESS needs an explicit weekly-target tap', () => {
+    const { w, id } = fresh(); const run = () => w.pilot[id];
+    startChapter(w, id, 'progress', later(0));
+    expect(stepsDone(w, id, run(), 'progress').target).toBe(false);
+    setWeeklyTargetAction(w, id, 3, later(1));
+    expect(stepsDone(w, id, run(), 'progress').target).toBe(true);
+  });
+  it('REWARD records the choice and nothing real is claimed', () => {
+    const { w, id } = fresh();
+    chooseReward(w, id, 'credit', later(0));
+    expect(w.pilot[id].facts.rewardChoice).toBe('credit');
+    expect(w.claims.filter((c) => c.userId === id)).toHaveLength(0);
+    expect(stepsDone(w, id, w.pilot[id], 'reward').choose).toBe(true);
+  });
+  it('CONNECT needs a message in a community channel, a buddy and a nudge', () => {
+    const { w, id } = fresh(); const run = () => w.pilot[id];
+    for (const c of CHAPTERS.slice(0, 4)) run().chapters[c.id] = { startedAt: later(0).toISOString(), doneAt: later(0).toISOString(), seen: true };
+    startChapter(w, id, 'connect', later(0));
+    expect(Object.values(stepsDone(w, id, run(), 'connect'))).toEqual([false, false, false]);
     const comm = w.communities.find((c) => c.slug === 'student-savers')!;
-    expect(detectable(w, id)).not.toContain('community');
     const ch = communityChannel(w, comm.id)!;
-    w.messages.push({ id: 'm1', channelId: ch.id, userId: id, body: 'Hi!', replyTo: null, kind: 'user', pinned: false, deleted: false, at: later(6).toISOString() });
-    expect(applyDetections(w, id, later(6))).toContain('community');
-    expect(coreComplete(w.pilot[id])).toBe(true);
+    w.messages.push({ id: 'm1', channelId: ch.id, userId: id, body: 'Hi!', replyTo: null, kind: 'user', pinned: false, deleted: false, at: later(1).toISOString() });
+    const r = startSimBuddy(w, id, later(2)); if (!r.ok) throw new Error('x');
+    expect(stepsDone(w, id, run(), 'connect')).toMatchObject({ hello: true, buddy: true, nudge: false });
+    nudge(w, id, r.pair.id, later(3));
+    expect(stepsDone(w, id, run(), 'connect').nudge).toBe(true);
+    expect(run().facts.messageSent).toBeFalsy(); sync(w, id, later(3));
+    expect(run().chapters.connect?.doneAt).toBeTruthy(); expect(run().facts).toMatchObject({ messageSent: true, buddyStarted: true, nudged: true });
   });
-  it('full path to a finished, exportable record', async () => {
-    const { w, id } = fresh();
-    const run = () => w.pilot[id];
-    submitCheck(w, id, 'pre', answers(w, id, false, 'pre'), NOW);
-    CORE.forEach((m, j) => { run().missions[m.id] = { startedAt: later(j).toISOString(), doneAt: later(j + 1).toISOString(), auto: true }; });
-    expect(goToPost(w, id)).toMatchObject({ ok: false }); // not rated yet
-    CORE.forEach((m) => rateMission(w, id, m.id, 6));
-    expect(goToPost(w, id)).toMatchObject({ ok: true });
-    expect(submitCheck(w, id, 'post', answers(w, id, true, 'post'), later(8))).toMatchObject({ ok: true });
-    expect(submitSurvey(w, id, { umux: [6, 7], nps: 9, safety: null, understood: 0, useful: 'The lesson', again: 'yes', liked: 'x', confusing: '' }, later(10))).toMatchObject({ ok: false }); // community done, so safety required
-    expect(submitSurvey(w, id, { umux: [6, 7], nps: 9, safety: 5, understood: 0, useful: 'The lesson', again: 'yes', liked: 'x', confusing: '' }, later(10))).toMatchObject({ ok: true });
-    expect(run().stage).toBe('done');
-
+  it('the whole story ends in an anonymous, exportable record that holds no message text or amounts', async () => {
+    const { w, id } = fresh(); const run = () => w.pilot[id];
+    const tpl = TEMPLATES.find((t) => t.id === 'workshop')!;
+    const comm = w.communities.find((c) => c.slug === 'student-savers')!;
+    CHAPTERS.forEach((c, i) => {
+      startChapter(w, id, c.id, later(i * 3));
+      if (c.id === 'learn') { completeLesson(w, id, LESSON, later(i * 3 + 1)); submitQuiz(w, id, LESSON, [1, 0, 1], later(i * 3 + 1)); completeAction(w, id, LESSON, 'done', later(i * 3 + 1)); }
+      if (c.id === 'do') saveBudget(w, id, { template: 'workshop', income: 3500, lines: { ...linesFromTemplate(tpl, 3500), transport: 600, fun: 450, emergency: 150 } }, later(i * 3 + 1));
+      if (c.id === 'progress') setWeeklyTargetAction(w, id, 2, later(i * 3 + 1));
+      if (c.id === 'reward') chooseReward(w, id, 'cash', later(i * 3 + 1));
+      if (c.id === 'connect') {
+        w.messages.push({ id: 'm1', channelId: communityChannel(w, comm.id)!.id, userId: id, body: 'A very private message about my rent', replyTo: null, kind: 'user', pinned: false, deleted: false, at: later(i * 3 + 1).toISOString() });
+        const r = startSimBuddy(w, id, later(i * 3 + 1)); if (r.ok) nudge(w, id, r.pair.id, later(i * 3 + 1));
+      }
+      sync(w, id, later(i * 3 + 2));
+      expect(run().chapters[c.id]?.doneAt).toBeTruthy();
+      react(w, id, c.id, 1); markSeen(w, id, c.id);
+    });
+    expect(allChaptersDone(run())).toBe(true); expect(chapterIndex(run())).toBe(CHAPTERS.length);
+    peek(w, id, 'payslip');
+    expect(finishRun(w, id, later(16))).toMatchObject({ ok: true });
     const code = await encodeRun(run());
-    expect(code.startsWith('SISI')).toBe(true);
+    expect(code.startsWith('SISI3.') || code.startsWith('SISI1.')).toBe(true);
+    const text = JSON.stringify(anonymise(run()));
+    expect(text).not.toContain('private message'); expect(text).not.toContain('"userId":"u-');
     const back = await decodeRun(code);
-    expect(back).not.toBeNull();
-    expect(back!.userId).toBeNull();
-    expect(JSON.stringify(back)).not.toContain(id.replace('P-', 'u-'));
-    expect(JSON.stringify(anonymise(run()))).not.toContain('"userId":"u-');
+    expect(back).toMatchObject({ userId: null, stage: 'done', peeked: ['payslip'] });
+    expect(back!.facts).toMatchObject({ budgetOk: true, rewardChoice: 'cash', weeklyTarget: 2, messageSent: true, buddyStarted: true, nudged: true });
     const s = summarize([back!]);
-    expect(s.knowledge.mean).toBe(6); expect(s.time.median).toBeCloseTo(10, 5);
-    expect(await decodeRun('SISI2.garbage')).toBeNull(); expect(await decodeRun('hello')).toBeNull();
+    expect(s.done).toBe(1); expect(s.chapters.every((c) => c.finished === 1)).toBe(true);
+    expect(await decodeRun('SISI2.old')).toBeNull(); expect(await decodeRun('hello')).toBeNull();
   });
-  it('support and rewards are self-confirmed; automatic missions cannot be self-confirmed', () => {
+  it('cannot finish before all five chapters are done', () => {
     const { w, id } = fresh();
-    confirmMission(w, id, 'support', NOW); confirmMission(w, id, 'learn', NOW);
-    expect(w.pilot[id].missions.support.doneAt).toBeTruthy(); expect(w.pilot[id].missions.learn).toBeUndefined();
+    expect(finishRun(w, id, NOW)).toMatchObject({ ok: false });
   });
-  it('imports dedupe by participant and prefer the finished record', async () => {
+  it('imports dedupe by participant', () => {
     const w = buildWorld(NOW);
     const [a] = simulatedRuns(1, NOW);
     expect(importRuns(w, [a]).added).toBe(1);
@@ -187,19 +205,18 @@ describe('pilot run', () => {
 describe('dashboard maths on simulated data', () => {
   const runs = simulatedRuns(40, NOW);
   const s = summarize(runs);
-  it('flags small and exploratory samples', () => { expect(summarize(runs.slice(0, 5)).small).toBe(true); expect(summarize(runs.slice(0, 20)).exploratory).toBe(true); expect(s.exploratory).toBe(false); });
-  it('computes gains, completion and decision rules', () => {
-    expect(s.n).toBe(40); expect(s.knowledge.n).toBe(40); expect(s.knowledge.mean).toBeGreaterThan(0.5);
-    expect(s.knowledge.improved + s.knowledge.same + s.knowledge.declined).toBe(40);
-    expect(s.verdicts).toHaveLength(9); expect(s.missions.filter((m) => m.core)).toHaveLength(4);
-    expect(s.knowledge.byItem).toHaveLength(6); expect(s.knowledge.byForm).toHaveLength(2);
+  it('flags small and exploratory samples and withholds verdicts for tiny ones', () => {
+    expect(summarize(runs.slice(0, 5)).small).toBe(true); expect(summarize(runs.slice(0, 20)).exploratory).toBe(true); expect(s.exploratory).toBe(false);
+    expect(summarize(runs.slice(0, 3)).verdicts.every((v) => v.pass === null)).toBe(true);
+  });
+  it('summarises completion, time, quiz, budget, reward choice and connection', () => {
+    expect(s.n).toBe(40); expect(s.done).toBe(40); expect(s.chapters).toHaveLength(5);
+    expect(s.verdicts.map((v) => v.id)).toEqual(['completion', 'time', 'quiz', 'budget', 'connect', 'reactions']);
+    expect(s.facts.reward.cash + s.facts.reward.credit).toBe(40); expect(s.facts.quiz.n).toBe(40);
   });
   it('CSV has a header, one row per participant and no account ids or emails', () => {
-    const csv = toCsv(runs);
-    const lines = csv.split('\n');
-    expect(lines).toHaveLength(41);
-    expect(lines[0].split(',').length).toBeGreaterThan(60);
+    const csv = toCsv(runs); const lines = csv.split('\n');
+    expect(lines).toHaveLength(41); expect(lines[0]).toContain('learn_done'); expect(lines[0]).toContain('reward_choice');
     expect(csv).not.toMatch(/@|u-[a-z0-9]{3,}/i);
   });
-  it('mission and confidence definitions line up with the instruments', () => { expect(MISSIONS.filter((m) => m.core)).toHaveLength(4); expect(CONFIDENCE).toHaveLength(3); });
 });

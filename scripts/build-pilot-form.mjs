@@ -139,7 +139,7 @@ Status: draft for PPS review. Generated from \`questions.json\`, which is the so
 
 **What this is.** The feedback form has **20 items in total: consent, participant ID and 18 questions**. Every question is **multiple choice**: single answer, tick-all-that-apply, or a **multiple-choice grid** (Google's name for one question that asks the same choice for several rows, used so we can ask about every feature without 12 separate questions). Each question has an **optional "Want to tell us more?" box** underneath. Those boxes are optional add-ons and are not counted in the 20. Taking part needs about **${minutes(D.main)} minutes** of tapping.
 
-**Feature and experience questions (Q4 to Q6, plus Q11 and Q13).** Q4 covers the four core features (join a community, the lesson, the budget task, the community chat and feed), Q5 the extras (payslip simulator, Money Buddy, Letterbox, Invest HER, Talk to someone, Support, Rewards, points and badges), and Q6 ease of use and understanding for each core feature plus navigation. Q11 (most useful), Q12 (change first) and Q13 (points and badges) say what people prefer and what puts them off.
+**Feature and experience questions (Q4 to Q6, plus Q11 and Q13).** Q4 covers the six guided features (the lesson and quiz, the coached budget task, progress, the reward choice, the community chat and Money Buddy), Q5 the extras testers peeked at (payslip simulator, Letterbox, Invest HER, events, Talk to someone, Support, points and badges), and Q6 ease of use and understanding for each guided feature plus navigation. Q11 (most useful), Q12 (change first) and Q13 (points and badges) say what people prefer and what puts them off.
 
 **Which SDGs this serves.** Your **primary goals are SDG 4 (Quality Education) and SDG 5 (Gender Equality)**. **SDG 10 (Reduced Inequalities) is a byproduct**: it is not measured with questions of its own but through **equity cuts**, comparing results by age, situation, data cost, shared or monitored phones and language to show whether the women who benefit are the ones usually left out. Age band, situation and budgeting experience come from the optional profile at the start of the in-app pilot, joined by participant ID, so they are not asked twice.
 
@@ -170,12 +170,12 @@ Concepts for account ownership (Q3) follow the Global Findex survey; the wording
 
 ## 3. How it fits with the in-app pilot
 
-The app already measures knowledge change (6 items, two parallel forms), confidence, observed task success and time, **per-task ease**, UMUX-Lite and a recommend score. This form does not repeat those. It adds what the app cannot: understandability of the purpose and the words, likes and dislikes, preferences, who took part, a money-behaviour baseline, perceived benefit, safety and access barriers. The two datasets join on the **participant ID**, which the app shows on its last screen.
+The guided pilot records, passively and without interrupting people, what each tester actually did: which chapters they finished, how long each took, their quiz score, whether the budget scenario worked, their weekly target, which reward they chose, whether they said hello and started a Money Buddy, and one optional emoji reaction per chapter. This form does not repeat any of that. It adds what the app cannot: understandability of the purpose and the words, likes and dislikes, preferences, who took part, a money-behaviour baseline, perceived benefit, safety and access barriers. The two datasets join on the **participant ID**, which the app shows on its last screen. **Not measured in the app any more:** a before/after knowledge check. The lesson quiz shows what people knew after the lesson, not how much they gained. If you need evidence of learning gain for SDG 4, either add before/after items to this form (the six parallel-form items are kept in \`lib/pilot/instruments.ts\`) or accept the self-reported confidence change (Q14) as the proxy.
 
 ## 4. Design choices
 
 - **Multiple choice throughout**, so answers can be counted and compared. The optional box under each question keeps the "why" without making it a chore. Three grids (Q4, Q5, Q6) cover every feature in three questions. If you would rather have strictly single-answer questions, ask me and I will split the grids.
-- **Triangulated with the app.** The app records what testers actually did (success, time) and a 1 to 7 ease rating after each task. Q4 to Q6 add their own judgement of the same features, so you can see where behaviour and opinion disagree.
+- **Triangulated with the app.** The app records what testers actually did and how long each chapter took. Q4 to Q6 add their own judgement of the same features, so you can see where behaviour and opinion disagree.
 - **Likes and dislikes are separate questions** (Q9, Q10) so negative feedback is not buried, plus two forced choices (Q11 "which ONE part was most useful", Q12 "change ONE thing first") that reveal real priorities.
 - **Comprehension is tested, not asked**: Q7 offers four descriptions of Sisi and one is correct, which checks whether people understood "education, not advice".
 - **No income amounts, ever.** We only ask whether people have an account or save, never how much.
@@ -202,9 +202,9 @@ ${formMd('Form 3: Contact form (optional, separate)', D.forms.contact, D.contact
 
 ## 7. Analysis plan (short)
 
-**Features and experience.** For each feature, put side by side: in-app success rate and median time, in-app ease (1 to 7), and Q4/Q5 (loved or liked versus did not like) and Q6 (ease). Where they disagree, read the optional boxes: that is usually where the real problem is. Q11 and Q12 rank what to keep and what to fix; Q13 settles whether points and badges stay on by default.
+**Features and experience.** For each feature, put side by side: whether testers finished it and how long it took (from the app), their one-tap reaction after the chapter (from the app), and Q4/Q5 (loved or liked versus did not like) and Q6 (ease). Where they disagree, read the optional boxes: that is usually where the real problem is. Q11 and Q12 rank what to keep and what to fix; Q13 settles whether points and badges stay on by default.
 
-**SDG 4 evidence (education).** The in-app knowledge gain (6 items, parallel forms) is the headline. Support it with Q7 (percent who choose the correct description of Sisi), Q6 (understanding the lesson and the words), Q14 and D5 (confidence), and D6 (skills used in a real decision at day 7).
+**SDG 4 evidence (education).** The in-app quiz score (what people knew after the lesson) and the self-reported confidence change (Q14, D5) are the evidence of learning, with Q7 (percent who choose the correct description of Sisi), Q6 (understanding the lesson and the words) and D6 (skills used in a real decision at day 7).
 
 **SDG 5 evidence (gender equality).** Baseline: Q1 (account), Q2 (saving), Q3 (say over money). Change at day 7: D2 and D3 (actions and saving), D6 (decided on my own or together). Conditions: Q8 (spoke to women like me), Q17 (safety), Q18 (phone access barriers), Q15 (benefits people expect, including saying no to money requests and asking for fair pay).
 

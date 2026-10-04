@@ -70,28 +70,27 @@ export type InvestState = { affordability: Record<string, string>; monthly: numb
 
 export type PayslipRun = { id: string; gross: number; retirementPct: number; allocation: Record<BudgetCategory, number>; at: ISO };
 
-export type PilotCheck = { k: Record<string, number>; c: number[]; at: ISO; ms: number };
-export type PilotMission = { startedAt?: ISO; doneAt?: ISO; auto?: boolean; seq?: number };
-export type PilotSurvey = { umux: [number, number]; nps: number; safety: number | null; understood: number; useful: string; again: 'yes' | 'maybe' | 'no'; liked: string; confusing: string; at: ISO };
-export type PilotFollowUp = { at: ISO; usedAgain: 'yes' | 'no'; did: string[]; c: number[]; changed: string };
+export type ChapterId = 'learn' | 'do' | 'progress' | 'reward' | 'connect';
+export type PilotChapter = { startedAt?: ISO; doneAt?: ISO; seen?: boolean; reaction?: 1 | 2 | 3 };
+/** What the tester did, recorded passively. No amounts they type, no message text. */
+export type PilotFacts = {
+  quizScore?: number | null; quizAttempts?: number; budgetOk?: boolean; weeklyTarget?: number; rewardChoice?: 'cash' | 'credit';
+  messageSent?: boolean; buddyStarted?: boolean; nudged?: boolean; points?: number; level?: string; badges?: string[];
+};
 export type PilotRun = {
   id: string; // anonymous participant id, e.g. P-7K3Q9X
   userId: string | null; // local account; never exported
   simulated?: boolean;
-  path: 'quick' | 'full';
-  form: 'A' | 'B'; // parallel form used at pre-test; the other is used at post-test
+  path: 'quick' | 'account';
   consentAt: ISO;
   profile: { ageBand: string; status: string; experience: string } | null;
   device: 'mobile' | 'desktop';
-  stage: 'pre' | 'missions' | 'post' | 'feedback' | 'done';
+  stage: 'story' | 'done';
   startedAt: ISO;
-  signupMs: number;
   finishedAt: ISO | null;
-  pre: PilotCheck | null;
-  post: PilotCheck | null;
-  missions: Record<string, PilotMission>;
-  survey: PilotSurvey | null;
-  followUp: PilotFollowUp | null;
+  chapters: Partial<Record<ChapterId, PilotChapter>>;
+  facts: PilotFacts;
+  peeked: string[]; // optional extras they opened (self-reported taps)
 };
 
 export type Friendship = { id: string; fromId: string; toId: string; status: 'pending' | 'accepted'; at: ISO };

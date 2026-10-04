@@ -9,6 +9,8 @@ import { setWeeklyTargetAction } from '@/lib/engine/settings';
 import { CREDIT_BONUS, PILOT_LABEL, amounts, claimReward, eligibility, REWARDS, type RewardView } from '@/lib/engine/rewards';
 import { BADGES } from '@/lib/content';
 import { update } from '@/lib/world/store';
+import { chapterIndex } from '@/lib/engine/pilot';
+import { CHAPTERS } from '@/lib/pilot/journey';
 
 const REWARDS_TITLE: Record<string, string> = Object.fromEntries(REWARDS.map((r) => [r.slug, r.title]));
 const LABEL: Record<string, string> = { lesson: 'Lesson', quiz: 'Quiz passed', action: 'Action done', weekly_target: 'Weekly target hit', onboarding: 'Welcome', session: 'Session', event: 'Event check-in', challenge: 'Challenge', buddy: 'Buddy week', feedback: 'Feedback' };
@@ -28,6 +30,13 @@ export default function Rewards() {
   return (
     <div>
       <h1 className="font-display text-3xl font-semibold">Rewards</h1>
+      {w.pilot[me.id] && CHAPTERS[chapterIndex(w.pilot[me.id])]?.id === 'progress' && (
+        <div className="mt-3 flex items-start gap-3 rounded-card bg-lavender-100 p-3" data-testid="progress-coach">
+          <span className="text-xl" aria-hidden>🌸</span>
+          <div><p className="text-[11px] font-semibold uppercase tracking-wide text-lavender-600">Sisi says</p>
+            <p className="text-sm">This is your garden. Your level grows as you learn, and the badges are things you have earned. Scroll to <b>My weekly target</b> and pick how many days a week feels doable. You will not lose anything if you miss a day.</p></div>
+        </div>
+      )}
       {me.focusMode ? (
         <>
           <p className="text-plum-500">Focus mode is on. Your progress still counts.</p>
@@ -50,7 +59,7 @@ export default function Rewards() {
           <div className="mt-3 flex gap-2" role="img" aria-label="Last 12 weeks: target hit, partly hit or missed">{p.weekly.history.map((h, i) => <span key={h.weekKey} title={h.weekKey} className={dot(h, i === p.weekly.history.length - 1)} />)}</div>
           <p className="mt-2 text-xs text-plum-500">Dark = target hit · light = some days · pale = a quiet week. Missing a day never resets anything.</p>
           <div className="mt-3 flex items-center gap-2 text-sm"><span className="font-medium">My weekly target:</span>
-            {[1, 2, 3].map((n) => <button key={n} aria-pressed={me.weeklyTarget === n} onClick={() => update((x) => setWeeklyTargetAction(x, me.id, n as 1 | 2 | 3))} className={`h-9 w-9 rounded-full border font-semibold ${me.weeklyTarget === n ? 'border-pink-600 bg-pink-600 text-white' : 'border-pink-300 bg-white'}`}>{n}</button>)}
+            {[1, 2, 3].map((n) => <button key={n} aria-pressed={me.weeklyTarget === n} onClick={() => update((x, now) => setWeeklyTargetAction(x, me.id, n as 1 | 2 | 3, now))} className={`h-9 w-9 rounded-full border font-semibold ${me.weeklyTarget === n ? 'border-pink-600 bg-pink-600 text-white' : 'border-pink-300 bg-white'}`}>{n}</button>)}
             <span className="text-plum-500">days a week</span></div>
 
           <h2 className="mt-8 font-display text-xl font-semibold">Badges</h2>

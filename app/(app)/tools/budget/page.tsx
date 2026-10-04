@@ -7,6 +7,8 @@ import { useApp } from '@/components/shell/app-context';
 import { CATEGORIES, TEMPLATES, linesFromTemplate, saveBudget, totals, emptyLines } from '@/lib/engine/budget';
 import { clampNum, rand } from '@/lib/money';
 import { update } from '@/lib/world/store';
+import { chapterIndex } from '@/lib/engine/pilot';
+import { CHAPTERS } from '@/lib/pilot/journey';
 import type { BudgetCategory } from '@/lib/world/types';
 
 const COLORS: Record<BudgetCategory, string> = { rent: '#D81B60', transport: '#7E57C2', groceries: '#0F7B5F', utilities: '#F2B33D', family: '#F48FB1', emergency: '#34B38A', investing: '#6E5A7A', fun: '#AD1457' };
@@ -47,6 +49,19 @@ export default function BudgetPage() {
       <p className="text-plum-500">Give every rand a job. Start from a template, then make it yours.</p>
       <p className="mt-2 rounded-input bg-mint-100 px-3 py-2 text-xs text-mint-700">Private to you. Never shared, ranked or sent anywhere.</p>
 
+      {template === 'workshop' && w.pilot[me.id] && CHAPTERS[chapterIndex(w.pilot[me.id])]?.id === 'do' && (() => {
+        const over = t.spent - income; const need = Math.max(0, 150 - t.saving);
+        const tip = income !== 3500 ? 'Keep the income at R3,500: that is her real monthly income.'
+          : over > 0 ? `She is spending ${rand(over)} more than she earns. Start with the wants (Fun) before the needs.`
+          : need > 0 ? `Good, she is within R3,500. Now move ${rand(need)} more into Emergency savings so she saves at least R150 a month.`
+          : 'That works: she spends within her income and saves at least R150. Tap Save to lock it in.';
+        return (
+          <div className="mt-3 flex items-start gap-3 rounded-card bg-lavender-100 p-3" data-testid="budget-coach">
+            <span className="text-xl" aria-hidden>🌸</span>
+            <div><p className="text-[11px] font-semibold uppercase tracking-wide text-lavender-600">Sisi coaches</p><p className="text-sm">{tip}</p>
+              <p className="mt-1 text-xs text-plum-500">Rule of thumb: about half for needs, a third for wants, the rest for saving. A guide, not a law.</p></div>
+          </div>);
+      })()}
       {template === 'workshop' && (
         <div className="mt-3 rounded-card bg-gold-100 p-3 text-sm" data-testid="scenario">
           <b>Scenario</b>

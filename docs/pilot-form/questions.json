@@ -137,16 +137,18 @@
    "type": "grid",
    "title": "How was your experience with each of these?",
    "domain": "FEAT",
-   "purpose": "Experience of the four core features, side by side (compare with the in-app success, time and ease per mission)",
+   "purpose": "Experience of the six guided features, side by side (compare with what they actually did and how long each chapter took)",
    "required": false,
    "help": "",
    "source": "",
    "expand": true,
    "rows": [
-    "Joining a community",
-    "The lesson (Now-Now, Stack It, Grow It)",
-    "The budget task",
-    "The community chat and feed"
+    "The lesson and its quiz",
+    "The coached budget task",
+    "Your progress (Bloom, badges, weekly target)",
+    "Choosing a reward",
+    "The community chat",
+    "Money Buddy"
    ],
    "cols": [
     "Loved it",
@@ -160,21 +162,20 @@
   {
    "id": "Q5",
    "type": "grid",
-   "title": "And the extras, if you tried them?",
+   "title": "And the extras you peeked at, if any?",
    "domain": "FEAT",
-   "purpose": "Experience of the optional features (which to keep, fix or cut)",
+   "purpose": "Experience of the features they peeked at (which to keep, fix or cut)",
    "required": false,
    "help": "",
    "source": "",
    "expand": true,
    "rows": [
     "Payslip simulator",
-    "Money Buddy",
     "Letterbox (friends)",
     "Invest HER (simulation)",
+    "Events and calendar",
     "Talk to someone",
     "Support page and Quick exit",
-    "Rewards",
     "Points and badges"
    ],
    "cols": [
@@ -197,10 +198,12 @@
    "source": "",
    "expand": true,
    "rows": [
-    "Joining a community",
-    "Understanding the lesson",
+    "Understanding the lesson and quiz",
     "Doing the budget task",
+    "Understanding my progress and weekly target",
+    "Choosing a reward",
     "Using the community chat",
+    "Using Money Buddy",
     "Finding my way around the app"
    ],
    "cols": [
@@ -262,8 +265,9 @@
    "source": "",
    "expand": true,
    "options": [
-    "The short, clear lesson",
-    "The budget task",
+    "The short, clear lesson and quiz",
+    "The coached budget task",
+    "Seeing my progress",
     "The community and chat",
     "The friendly tone",
     "Points, badges or rewards",
@@ -309,16 +313,15 @@
    "source": "",
    "expand": true,
    "options": [
-    "The lesson",
-    "The budget task",
+    "The lesson and quiz",
+    "The coached budget task",
+    "Seeing my progress",
+    "The reward choice",
     "The community chat",
-    "Events",
     "Money Buddy",
     "Letterbox (friends)",
     "Payslip simulator",
     "Invest HER (simulation)",
-    "Talk to someone",
-    "Rewards",
     "None of them"
    ],
    "section": "What you liked and prefer"

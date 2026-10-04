@@ -8,7 +8,7 @@ import { isoWeekKey, sastDate } from '@/lib/time';
 import { weekStart as weekStartOf } from '@/lib/engine/leaderboard';
 import type { Message, PointEvent, User, World } from './types';
 
-export const WORLD_VERSION = 7;
+export const WORLD_VERSION = 8;
 export const DEMO_PASSWORD = 'SisiDemo2026!';
 const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'];
 

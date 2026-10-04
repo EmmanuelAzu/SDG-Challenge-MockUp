@@ -1,5 +1,6 @@
 /**
- * Pilot instruments: every question the pilot asks, with where it comes from.
+ * Knowledge items kept for reference. The guided pilot no longer asks them in the app: the Google Form carries opinions,
+ * the lesson quiz carries what testers actually knew, and these items are available if you add a before/after check later.
  * Draft instruments: item quality (difficulty, discrimination) is checked on pilot data. See docs/PILOT.md.
  * Knowledge items are source-checked against the PPS Money Matters facilitator guide, booklet and slides.
  */
@@ -74,66 +75,11 @@ export const CONFIDENCE = [
   'I know how to start saving for an emergency.',
 ];
 
-/** Single Ease Question (Sauro): 1 = very difficult, 7 = very easy. Asked once after each mission. */
-export const SEQ_PROMPT = 'Overall, how easy or difficult was that?';
-
-/** UMUX-Lite (Lewis et al., 2013), 7-point agree/disagree, wording adapted to Sisi. */
-export const UMUX = ['Sisi has the features I need to learn about money.', 'Sisi is easy to use.'];
-
-export const NPS_PROMPT = 'How likely are you to recommend Sisi to a friend?';
-export const SAFETY_PROMPT = 'I felt comfortable taking part in the community.';
-
-export const UNDERSTOOD = {
-  prompt: 'Which best describes Sisi?',
-  options: ['Education about money, not personal financial advice', 'Personal financial advice', 'A bank', 'A loan provider'],
-  correct: 0,
-};
-
-export const USEFUL = ['The lesson', 'The budget tool', 'The community', 'None of them'];
-export const AGAIN: { id: 'yes' | 'maybe' | 'no'; label: string }[] = [{ id: 'yes', label: 'Yes' }, { id: 'maybe', label: 'Maybe' }, { id: 'no', label: 'No' }];
-
 export const PROFILE = {
   ageBand: ['18–20', '21–23', '24–26', 'Other'],
   status: ['Student', 'Working', 'Both', 'Neither'],
   experience: ['New to budgeting', 'Tried it a bit', 'I budget regularly'],
 };
-
-/** Day-7 follow-up (behaviour, not just knowledge). */
-export const FOLLOW_DID = ['Made or updated a budget', 'Set a savings goal', 'Saved money I would not have saved otherwise', 'Talked about money with someone', 'Opened Sisi again'];
-
-export type MissionDef = {
-  id: string; title: string; minutes: number; core: boolean; verb: string;
-  steps: string[]; success: string; href: string; auto: boolean; hint?: string;
-};
-
-export const MISSIONS: MissionDef[] = [
-  { id: 'join', title: 'Join a community', minutes: 1, core: true, verb: 'Joined', href: '/pilot', auto: true,
-    steps: ['Pick the community that feels most like you.', 'You are in. That counts as done.'], success: 'You joined a community.' },
-  { id: 'learn', title: 'Learn: Now-Now, Stack It, Grow It', minutes: 2, core: true, verb: 'Finished', href: '/learn/money-matters/now-now-stack-it-grow-it', auto: true,
-    steps: ['Read the six cards, tapping Next.', 'The quick quiz afterwards is optional. Skip it to stay on time.'], success: 'You finished the lesson.' },
-  { id: 'budget', title: 'Fix the R3,500 budget', minutes: 2, core: true, verb: 'Saved', href: '/tools/budget?template=workshop', auto: true,
-    hint: 'Needs are essentials like rent, food and transport. Wants are nice-to-haves. Surplus = income − spending.',
-    steps: ['You earn R3,500 a month and spend R3,600. You want a R1,500 laptop.', 'Move the sliders so you spend no more than R3,500 and save at least R150 a month (emergency savings or investing).', 'Tap Save my budget.'], success: 'You saved a budget that spends no more than R3,500 and saves at least R150.' },
-  { id: 'community', title: 'Say hello in your community', minutes: 1, core: true, verb: 'Posted', href: '/community', auto: true,
-    steps: ['Open your community and its Lounge chat.', 'Accept the guidelines, then send one friendly message, or react to a post in Feed.', 'Please do not share personal details.'], success: 'You sent a message or reacted to a post.' },
-  { id: 'payslip', title: 'Payslip simulator', minutes: 2, core: false, verb: 'Saved', href: '/tools/payslip', auto: true,
-    steps: ['Pick a salary, set your retirement slider and share out the rest.', 'Save the scenario.'], success: 'You saved a payslip scenario.' },
-  { id: 'buddy', title: 'Money Buddy', minutes: 1, core: false, verb: 'Started', href: '/pathways/buddy', auto: true,
-    steps: ['Try with a practice buddy.', 'Look at this week’s plan and nudge your buddy.'], success: 'You started a pairing.' },
-  { id: 'letterbox', title: 'Letterbox (friends)', minutes: 1, core: false, verb: 'Added', href: '/letterbox', auto: true,
-    steps: ['Search for a nickname and add a friend, or accept a request.'], success: 'You have a friend in Letterbox.' },
-  { id: 'invest', title: 'Invest HER (simulation)', minutes: 2, core: false, verb: 'Started', href: '/pathways/invest-her', auto: true,
-    steps: ['Start the guided simulation. No real money is involved.'], success: 'You started the simulation.' },
-  { id: 'talk', title: 'Talk to someone', minutes: 1, core: false, verb: 'Asked', href: '/help/talk', auto: true,
-    steps: ['Ask a money question to a person.', 'Do not include personal details.'], success: 'You sent a question.' },
-  { id: 'support', title: 'Find Support (and Quick exit)', minutes: 1, core: false, verb: 'Opened', href: '/help/support', auto: false,
-    steps: ['Open Help, then Support. Spot the Quick exit button.', 'Do not tap the numbers. This page is private and is never tracked.'], success: 'You found the Support page.' },
-  { id: 'rewards', title: 'Rewards', minutes: 1, core: false, verb: 'Looked', href: '/rewards', auto: false,
-    steps: ['Open Rewards and read how a reward could be earned.'], success: 'You looked at Rewards.' },
-];
-export const CORE = MISSIONS.filter((m) => m.core);
-export const EXTRA = MISSIONS.filter((m) => !m.core);
-export const TIME_BUDGET_MIN = 10;
 
 /** Paste the published Google Form link here once it exists (see docs/pilot-form). Empty hides the button. */
 export const FEEDBACK_FORM_URL = '';
