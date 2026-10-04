@@ -78,6 +78,7 @@ export function reportMessage(w: World, userId: string, messageId: string, reaso
 
 export function blockUser(w: World, blockerId: string, blockedId: string) {
   if (blockerId !== blockedId && !w.blocks.some((b) => b.blockerId === blockerId && b.blockedId === blockedId)) w.blocks.push({ blockerId, blockedId });
+  w.friendships = w.friendships.filter((f) => !((f.fromId === blockerId && f.toId === blockedId) || (f.fromId === blockedId && f.toId === blockerId)));
 }
 export const unblockUser = (w: World, blockerId: string, blockedId: string) => { w.blocks = w.blocks.filter((b) => !(b.blockerId === blockerId && b.blockedId === blockedId)); };
 

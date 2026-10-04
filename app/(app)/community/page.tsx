@@ -1,10 +1,11 @@
 'use client';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { CalendarDays, Search, Ticket, Users } from 'lucide-react';
+import { CalendarDays, Mail, Search, Ticket, Users } from 'lucide-react';
 import { JoinCommunityButton } from '@/components/community/join-button';
 import { useApp } from '@/components/shell/app-context';
 import { allTags, memberCount, membershipOf, myCommunities, searchCommunities, suggestedCommunities } from '@/lib/engine/community';
+import { incoming } from '@/lib/engine/friends';
 import { unreadCount, communityChannel } from '@/lib/engine/chat';
 import type { Community } from '@/lib/world/types';
 
@@ -52,6 +53,7 @@ export default function CommunityHome() {
       <div className="mt-3 grid grid-cols-2 gap-2 text-sm font-semibold">
         <Link href="/events" className="flex items-center justify-center gap-2 rounded-card bg-lavender-100 p-3 text-lavender-600"><Ticket size={18} /> Events</Link>
         <Link href="/calendar" className="flex items-center justify-center gap-2 rounded-card bg-mint-100 p-3 text-mint-700"><CalendarDays size={18} /> Calendar</Link>
+        <Link href="/letterbox" className="col-span-2 flex items-center justify-center gap-2 rounded-card bg-pink-100 p-3 text-pink-700"><Mail size={18} /> Letterbox{incoming(w, me.id).length > 0 && <span className="rounded-full bg-pink-600 px-2 text-xs text-white">{incoming(w, me.id).length}</span>}</Link>
       </div>
 
       {mine.length > 0 && (

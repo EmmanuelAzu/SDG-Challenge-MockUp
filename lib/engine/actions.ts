@@ -7,6 +7,7 @@ import { notify, track, uid } from './helpers';
 import { lessonKey, syncMilestones } from './milestones';
 import { FEEDBACK_PER_WEEK, POINTS } from './points';
 import { syncBuddy } from './buddy';
+import { syncOweek } from './oweek';
 import { postMilestones } from './feed';
 import { levelFor } from './levels';
 import { checkWeeklyTarget, weeklyFor } from './weeklyTarget';
@@ -19,6 +20,7 @@ export function afterEarn(w: World, userId: string, now: Date): { badges: Earned
   checkWeeklyTarget(w, userId, now);
   const milestones = syncMilestones(w, userId, now);
   syncBuddy(w, userId, now);
+  syncOweek(w, userId, now);
   const badges = evaluateBadges(w, userId, now);
   return { badges, milestones };
 }

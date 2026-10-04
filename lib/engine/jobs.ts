@@ -1,3 +1,4 @@
+import { simFriendActivity } from './friends';
 import type { World } from '@/lib/world/types';
 import { CHAT_POOLS, COMMUNITY_TOPIC } from '@/lib/content/community-data';
 import { sastDate, isoWeekKey } from '@/lib/time';
@@ -34,6 +35,7 @@ export function simulateDay(w: World, now: Date) {
       evaluateBadges(w, u.id, now);
     }
   }
+  simFriendActivity(w, now);
   // sims join this week's challenge now and then, and sim buddies chip away at the weekly plan
   const ch0 = currentChallenge(w, now);
   if (ch0) for (const u of Object.values(w.users)) {

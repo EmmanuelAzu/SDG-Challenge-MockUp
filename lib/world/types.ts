@@ -70,6 +70,7 @@ export type InvestState = { affordability: Record<string, string>; monthly: numb
 
 export type PayslipRun = { id: string; gross: number; retirementPct: number; allocation: Record<BudgetCategory, number>; at: ISO };
 
+export type Friendship = { id: string; fromId: string; toId: string; status: 'pending' | 'accepted'; at: ISO };
 export type HelpRequest = { id: string; userId: string; kind: 'question' | 'call'; topic: string; body: string; windows: string[]; status: 'open' | 'answered' | 'closed'; answer: string; answeredBy: string | null; at: ISO; answeredAt: ISO | null };
 export type SafetyGroup = 'emergency' | 'gbv' | 'counselling' | 'student';
 export type SafetyResource = { id: string; group: SafetyGroup; name: string; description: string; phone: string; hours: string; verified: boolean };
@@ -129,6 +130,7 @@ export type World = {
   draws: Draw[];
   goals: SavingsGoal[];
   invest: Record<string, InvestState>;
+  friendships: Friendship[];
   helpRequests: HelpRequest[];
   safety: SafetyResource[];
   notifications: Notification[];

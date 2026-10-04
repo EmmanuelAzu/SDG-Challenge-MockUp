@@ -187,6 +187,59 @@ const RAW: RawCourse[] = [
       },
     ],
   },
+  {
+    slug: 'oweek-starter', title: 'O-Week Starter', topic: 'Starting out', level: 'Starter', milestone: null,
+    lessons: [
+      {
+        slug: 'first-month-plan', title: 'Your first-month plan', durationSec: 165,
+        takeaway: 'Cover the essentials first, then split what is left. Plan the month before it starts.',
+        cards: [
+          { title: 'The first month is the hardest', body: 'New place, new routine, and a big first allowance or deposit. Without a plan, it is easy to spend the early weeks as if the money will never run out.' },
+          { title: 'Essentials first', body: 'Write down what you must pay: accommodation, transport, food, data. Pay or set these aside first, before anything fun.' },
+          { title: 'Split the rest', body: 'What is left is yours to spread across the weeks. Dividing it by the number of weeks gives you a weekly number you can actually check.' },
+          { title: 'Keep a small cushion', body: 'Hold back a little for surprises, like a cracked phone screen or a lab fee. Even a small buffer stops one surprise from wrecking your month.' },
+        ],
+        quiz: [
+          { prompt: 'What do you sort out first in a first-month plan?', options: ['Fun spending', 'Essentials like accommodation, food and transport', 'Gifts', 'Savings you cannot touch'], correct: 1, explanation: 'Essentials are the things you cannot skip, so they come first.' },
+          { prompt: 'Why divide what is left into weekly amounts?', options: ['It looks neat', 'It gives you a number you can check as you go', 'Banks require it', 'It lowers prices'], correct: 1, explanation: 'A weekly number is easier to track than a whole month.' },
+          { prompt: 'A small cushion is for…', options: ['Treating yourself', 'Surprises', 'Lending to friends', 'Nothing'], correct: 1, explanation: 'A buffer absorbs one-off surprises.' },
+        ],
+        action: { title: 'Write your essentials and a weekly spending number', description: 'Use a note on your phone or the Budget builder. Nothing leaves this browser.' },
+      },
+      {
+        slug: 'scam-smart', title: 'Scam-smart on campus', durationSec: 165,
+        takeaway: 'Real offers do not ask for your PIN, OTP or an upfront fee. Pause before you pay or click.',
+        cards: [
+          { title: 'Scammers love new students', body: 'Fake bursaries, fake rooms to rent and fake job offers all target people who are new and in a hurry.' },
+          { title: 'Common warning signs', body: 'You are asked to pay a fee upfront, to act today, or to share a PIN, password or one-time pin (OTP). Real banks and universities never ask for these.' },
+          { title: 'Pause and check', body: 'Before you pay, look up the organisation yourself, not through the link you were sent. Ask someone you trust, like a senior student or your Circle.' },
+          { title: 'If it happens', body: 'Tell your bank straight away, keep the messages, and report it. It is not your fault, and speaking up quickly helps.' },
+        ],
+        quiz: [
+          { prompt: 'Who legitimately asks for your OTP?', options: ['Your bank, by SMS', 'A bursary officer', 'Nobody. Never share it', 'A landlord'], correct: 2, explanation: 'An OTP is for you only. Anyone asking for it is a warning sign.' },
+          { prompt: 'A room listing asks for a deposit before you can view it. You should…', options: ['Pay quickly so you do not lose it', 'Pause and check it yourself first', 'Send your ID number', 'Share it widely'], correct: 1, explanation: 'Pressure to pay before viewing is a classic scam sign.' },
+          { prompt: 'If you think you were scammed, you should…', options: ['Stay quiet', 'Tell your bank straight away', 'Delete all messages', 'Pay again'], correct: 1, explanation: 'Fast reporting gives the bank the best chance to help.' },
+        ],
+        action: { title: 'Save your bank’s fraud line in your phone', description: 'Find the number on your bank’s official website or card, not from a message.' },
+      },
+      {
+        slug: 'student-accounts', title: 'Student accounts in plain words', durationSec: 165,
+        takeaway: 'Compare monthly fees before you choose an account. Cheaper is often fine for a student.',
+        cards: [
+          { title: 'An account has a price', body: 'Many accounts charge a monthly fee and fees per transaction. These small charges add up over a year.' },
+          { title: 'Ask about student options', body: 'Several banks offer low-cost or student accounts. Ask what the monthly fee is, what ATM and card payments cost, and whether there is a fee to withdraw cash.' },
+          { title: 'Match the account to you', body: 'If you mostly tap to pay and rarely use cash, the cheapest basic account may be enough. Pick for how you actually spend.' },
+          { title: 'Protect your account', body: 'Keep your PIN and app password to yourself, turn on notifications for every transaction, and check your balance weekly.' },
+        ],
+        quiz: [
+          { prompt: 'Which fees should you compare?', options: ['Only the monthly fee', 'Monthly and per-transaction fees', 'Only ATM colours', 'None'], correct: 1, explanation: 'Per-transaction fees can matter as much as the monthly fee.' },
+          { prompt: 'A good way to choose an account is…', options: ['Pick what a friend has without checking', 'Match it to how you actually spend', 'Pick the fanciest card', 'Choose at random'], correct: 1, explanation: 'The best account fits your habits and costs the least.' },
+          { prompt: 'Transaction notifications help you…', options: ['Spot problems early', 'Earn interest', 'Avoid all fees', 'Skip budgeting'], correct: 0, explanation: 'You see strange activity quickly.' },
+        ],
+        action: { title: 'Compare two accounts’ monthly fees', description: 'Check two banks’ websites. No sign-up needed.' },
+      },
+    ],
+  },
 ];
 
 const FSCA = { title: 'FSCA: consumer education', url: 'https://www.fsca.co.za/' };
@@ -205,6 +258,9 @@ const SOURCES: Record<string, { title: string; url?: string }[]> = {
   'tfsa-plain-words': [SARS, TREASURY],
   'compound-growth': [FSCA],
   'fees-quiet-thief': [FSCA],
+  'first-month-plan': [TREASURY],
+  'scam-smart': [FSCA, { title: 'Banking Association South Africa', url: 'https://www.banking.org.za/' }],
+  'student-accounts': [{ title: 'Banking Association South Africa', url: 'https://www.banking.org.za/' }],
 };
 
 /** Hook-first openers: the first card must earn the next 30 seconds. */

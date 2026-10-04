@@ -8,6 +8,7 @@ import { firstName } from '@/lib/engine/helpers';
 import { shouldAskShare } from '@/lib/engine/feed';
 import { realResults } from '@/lib/engine/goals';
 import { JOINT_WEEKS_NEEDED, jointWeeks, pairOf } from '@/lib/engine/buddy';
+import { friendIds, incoming } from '@/lib/engine/friends';
 import { stepsDone } from '@/lib/engine/invest';
 import { rand } from '@/lib/money';
 import { update } from '@/lib/world/store';
@@ -102,6 +103,7 @@ export default function HomePage() {
       <ul className="mt-3 grid grid-cols-2 gap-3 text-sm font-semibold">
         <li><Link href="/tools/budget" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300">💰 Budget builder<span className="block text-xs font-normal text-plum-500">{w.budgets[me.id] ? 'Update your budget' : 'Plan your month'}</span></Link></li>
         <li><Link href="/tools/goals" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300">🎯 Savings goals<span className="block text-xs font-normal text-plum-500">{money.goals ? `${money.goals} active` : 'Set your first goal'}</span></Link></li>
+        <li><Link href="/letterbox" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300">💌 Letterbox<span className="block text-xs font-normal text-plum-500">{incoming(w, me.id).length ? `${incoming(w, me.id).length} friend request${incoming(w, me.id).length > 1 ? 's' : ''}` : `${friendIds(w, me.id).length} friends`}</span></Link></li>
       </ul>
 
       <div className="mt-8 rounded-card bg-white p-4 ring-1 ring-pink-100">

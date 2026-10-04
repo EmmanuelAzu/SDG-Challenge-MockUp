@@ -18,6 +18,7 @@ export default function Admin() {
           : <li className="rounded-card bg-pink-100 p-4 text-sm">Reward claims are reviewed by PPS admins only.</li>}
         {canAnswer(w, me.id) && <li><Link href="/admin/help" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300"><b className="font-display text-lg">Help requests</b><span className="block text-sm text-plum-500">{w.helpRequests.filter((h) => h.status === 'open').length} open</span></Link></li>}
         {canEditSafety(w, me.id) && <li><Link href="/admin/safety" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300"><b className="font-display text-lg">Safety resources</b><span className="block text-sm text-plum-500">{w.safety.filter((r) => !r.verified).length} numbers still unverified</span></Link></li>}
+        <li><Link href="/admin/poster" className="block rounded-card bg-white p-4 ring-1 ring-pink-100 hover:ring-pink-300"><b className="font-display text-lg">O-Week QR poster</b><span className="block text-sm text-plum-500">Printable A4 poster with a join QR code</span></Link></li>
       </ul>
     </div>
   );

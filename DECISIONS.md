@@ -56,3 +56,9 @@
 - Safety numbers are well-known South African lines but ship **unverified** (visible flag) until a PPS admin ticks "verified" in `/admin/safety`. I could not verify them from here; please check each before any real use.
 - Added a demo persona "Ayanda" (role `professional`) who answers help requests; PPS admins can too. Max 3 open requests, 48 h target shown, general-education notice on every answer.
 - FAQ is `lib/content/faq.ts` (searchable accordion); figures in it match the spec's points table only. WORLD_VERSION is now 5 (stored demo data resets once).
+
+## Letterbox, O-Week and the QR poster
+- Letterbox friends: request by nickname/first name (2+ letters, members only) or by invite link/QR (`/friends/[code]`, the link is the inviter's consent so it befriends immediately). Simulated members accept straight away; Nomsa is seeded with five friends and one pending request. Friends' wins are existing milestone posts (only exist if the author opted in), shown with the same 💗👏🔥🌱 reactions and notes (presets or ≤140 chars, profanity-masked). Blocking also removes the friendship. There is no separate "report a post" flow yet (reports are message-based); block is the safety valve for now.
+- Simulated friends react to a person's new posts during the daily job.
+- O-Week Starter is a real 3-lesson course (`oweek-starter`: first-month plan, scam-smart, student accounts) with no statistics. Finishing all three records a 0-point `oweek_done` flag that drives the badge. `/join/[slug]` is the O-Week landing for campus communities (auto-joins after sign-up through the existing `community` param).
+- QR poster: `/admin/poster` renders an A4 (1240×1754, 150 dpi) PNG in the browser using the current site origin, so download it from the deployed site for a correct link. `public/qr/wits.png` is a static QR for `https://sdg-challenge-mock-up.vercel.app/join/wits`; regenerate it if the domain changes. WORLD_VERSION is now 6.

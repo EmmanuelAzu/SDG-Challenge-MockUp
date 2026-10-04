@@ -8,7 +8,7 @@ import { isoWeekKey, sastDate } from '@/lib/time';
 import { weekStart as weekStartOf } from '@/lib/engine/leaderboard';
 import type { Message, PointEvent, User, World } from './types';
 
-export const WORLD_VERSION = 5;
+export const WORLD_VERSION = 6;
 export const DEMO_PASSWORD = 'SisiDemo2026!';
 const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'];
 
@@ -247,6 +247,19 @@ export function buildWorld(now = new Date()): World {
     { id: 'help-1', userId: 'u-nomsa', kind: 'question', topic: 'Saving', body: 'Is it better to pay off my store card first or build an emergency fund?', windows: [], status: 'answered', answer: 'A small emergency buffer first (even one month of basics), then put extra towards the account with the highest interest. Store cards are usually the most expensive. This is general education, not personal advice.', answeredBy: 'u-pro', at: iso(daysAgo(5)), answeredAt: iso(daysAgo(4)) },
     { id: 'help-2', userId: 'u-nomsa', kind: 'question', topic: 'Investing', body: 'What does a unit trust actually hold?', windows: [], status: 'open', answer: '', answeredBy: null, at: iso(daysAgo(1)), answeredAt: null },
   ];
+  // Letterbox: Nomsa has five friends who share their wins, plus one request waiting for her answer
+  const friendIds = ['m-1', 'm-2', 'm-5', 'm-6', 'm-7'];
+  const friendships: World['friendships'] = [
+    ...friendIds.map((id, k) => ({ id: `fr-${k}`, fromId: k % 2 ? 'u-nomsa' : id, toId: k % 2 ? id : 'u-nomsa', status: 'accepted' as const, at: iso(daysAgo(30 - k)) })),
+    { id: 'fr-pending', fromId: 'm-10', toId: 'u-nomsa', status: 'pending', at: iso(daysAgo(1)) },
+  ];
+  friendIds.forEach((u, k) => {
+    const first = users[u].displayName.split(' ')[0];
+    const [kind, text, ref] = k % 3 === 0 ? ['badge', FEED_TEMPLATES.badge(first, 'Savings Streak'), 'savings-streak'] as const : k % 3 === 1 ? ['weekly', FEED_TEMPLATES.weekly(first, 3 + k), 'glow-3w'] as const : ['milestone', FEED_TEMPLATES.milestone(first, 'the First budget'), 'first-budget'] as const;
+    const id = `fp-fr-${k}`;
+    feed.push({ id, userId: u, communityId: null, kind, text, refSlug: ref, at: iso(daysAgo(0.2 + k * 0.9)) });
+    if (k < 3) feedReactions.push({ postId: id, userId: friendIds[(k + 1) % 5], emoji: r.pick(REACTIONS) });
+  });
   const world: World = {
     version: WORLD_VERSION, clockOffsetMs: 0, users, communities, communityMembers, circles, circleMembers, lessonProgress, actionCompletions,
     milestonesDone: { 'u-nomsa': { 'cash-flow-check': iso(daysAgo(3)) } },
@@ -260,7 +273,7 @@ export function buildWorld(now = new Date()): World {
       { id: 't-3', userId: members[2], body: 'Doing my first tax return', voters: members.slice(4, 7), at: iso(daysAgo(3)) },
     ],
     shares: [], channels, messages, reactions: [], reports: [], blocks: [], mutes: [], reads,
-    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone, seasons, payslipRuns: {}, buddies, claims: [], draws: [], helpRequests, safety: SAFETY_DEFAULTS.map((r) => ({ ...r })), askedShare: { 'u-nomsa': true },
+    events: sisiEvents, bookings: uniqueBookings, sessions, rsvps, attendance: [], feed, feedReactions, feedNotes, challenges, challengeDone, seasons, payslipRuns: {}, buddies, claims: [], draws: [], friendships, helpRequests, safety: SAFETY_DEFAULTS.map((r) => ({ ...r })), askedShare: { 'u-nomsa': true },
     // Nomsa's private money data: a budget and two goals (one 60% done)
     budgets: { 'u-nomsa': { template: 'Allowance', income: 4200, lines: { rent: 1000, transport: 420, groceries: 1000, utilities: 420, family: 0, emergency: 420, investing: 0, fun: 420 }, savedAt: iso(daysAgo(9)) } },
     goals: [

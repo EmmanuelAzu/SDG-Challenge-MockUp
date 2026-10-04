@@ -1,5 +1,6 @@
 import type { EarnedBadge, FeedPost, World } from '@/lib/world/types';
 import { FEED_TEMPLATES } from '@/lib/content/community-data';
+import { maskProfanity } from '@/lib/moderation/filter';
 import { isActiveMember, myCommunities } from './community';
 import { firstName, notify, uid } from './helpers';
 
@@ -41,7 +42,7 @@ export function reactToPost(w: World, userId: string, postId: string, emoji: str
 }
 
 export function addNote(w: World, userId: string, postId: string, body: string, now: Date): boolean {
-  const text = body.trim().slice(0, 140);
+  const text = maskProfanity(body.trim().slice(0, 140));
   if (!text) return false;
   w.feedNotes.push({ id: uid('fn'), postId, userId, body: text, at: now.toISOString() });
   const post = w.feed.find((p) => p.id === postId);

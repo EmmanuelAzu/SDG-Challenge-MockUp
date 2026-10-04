@@ -28,7 +28,7 @@ export default function Profile() {
       for (const k of Object.keys(x.actionCompletions)) if (k.startsWith(`${me.id}:`)) delete x.actionCompletions[k];
       delete x.milestonesDone[me.id]; delete x.glossaryLookups[me.id];
       delete x.budgets[me.id]; delete x.invest[me.id]; x.goals = x.goals.filter((g) => g.userId !== me.id);
-      x.buddies = x.buddies.filter((p) => p.inviterId !== me.id && p.inviteeId !== me.id); x.claims = x.claims.filter((c) => c.userId !== me.id); delete x.payslipRuns[me.id];
+      x.buddies = x.buddies.filter((p) => p.inviterId !== me.id && p.inviteeId !== me.id); x.claims = x.claims.filter((c) => c.userId !== me.id); delete x.payslipRuns[me.id]; x.friendships = x.friendships.filter((f) => f.fromId !== me.id && f.toId !== me.id); x.helpRequests = x.helpRequests.filter((h) => h.userId !== me.id);
     });
     setSession(null);
     router.replace('/');
