@@ -68,3 +68,6 @@
 - Knowledge change is measured with six concepts × two parallel forms, counterbalanced by participant, with "I'm not sure". Task success is observed from real actions. Results travel as an anonymous code the facilitator pastes into Staff console → Pilot results (no backend). Quick start (nickname only) replaces full sign-up inside the 10 minutes; full sign-up is an alternative path timed separately.
 - WORLD_VERSION is 7. Do not bump it during the pilot: it resets every tester's stored data.
 - Fixed a real bug in simulated chat (`>>` on an unsigned hash could give a negative index and crash a reply) and made simulated friend reactions guarantee at least one reaction.
+
+## SDG framing for the pilot
+- Primary goals are SDG 4 and SDG 5; SDG 10 is a byproduct (equity cuts, no separate measures). SDG 1 and 8 mapping removed from the feedback form. Added a say-over-money question (Q5) and a "spoke to women like me" question (Q9), swapped out satisfaction (the app already has UMUX-Lite and recommend) and the 7-day-intention question (the day-7 form covers actual actions). Q18 now includes "someone else controlling or checking my phone". Day-7 D6 asks whether they decided alone or with someone.

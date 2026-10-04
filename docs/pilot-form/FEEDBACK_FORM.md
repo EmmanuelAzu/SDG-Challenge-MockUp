@@ -4,9 +4,13 @@ Status: draft for PPS review. Generated from `questions.json`, which is the sour
 
 ## Read this first
 
-**What changed.** The feedback form now has **20 items in total: consent, participant ID and 18 questions**. Every question is **multiple choice** (one answer, or tick all that apply). Each one has an **optional "Want to tell us more?" box** underneath, so people can expand on an answer without having to. Those boxes are optional add-ons and are not counted in the 20. Taking part needs about **3.3 minutes** of tapping; the optional boxes add time only for people who choose to write.
+**What changed.** The feedback form now has **20 items in total: consent, participant ID and 18 questions**. Every question is **multiple choice** (one answer, or tick all that apply). Each one has an **optional "Want to tell us more?" box** underneath, so people can expand on an answer without having to. Those boxes are optional add-ons and are not counted in the 20. Taking part needs about **3.2 minutes** of tapping; the optional boxes add time only for people who choose to write.
 
-**About the SDGs.** The brief calls this the "PPS Investments SDG Challenge" but **never names the specific Sustainable Development Goals**, so I do not know which ones your challenge targets. Every question is tagged with an *evidence area* and the table in section 2 maps each area to SDG targets I think fit a money-confidence app for young women. Those targets are **proposals to confirm**. Tell me the real goals and only that table changes.
+**Which SDGs this serves.** Your **primary goals are SDG 4 (Quality Education) and SDG 5 (Gender Equality)**. **SDG 10 (Reduced Inequalities) is a byproduct**: it is not measured with questions of its own but through **equity cuts**, comparing results by age, situation, data cost, shared or monitored phones and language to show whether the women who benefit are the ones usually left out. Every question carries an evidence area and a note of the target it informs (section 2). Targets are from my reading of the SDGs, so confirm the wording against the UN list.
+
+- **SDG 4:** 4.6 (literacy and numeracy: Q6 to Q8), 4.4 (skills applied: Q14, D5, D6), 4.5 (equal access: Q9, Q18).
+- **SDG 5:** 5.a (economic resources and financial services: Q3, Q4, Q5, Q15, D2, D3, D6), 5.b (technology: Q18), and safe, relevant participation for women (Q9, Q17).
+- **SDG 10 (byproduct):** Q1, Q2, Q18 and the language and cost answers used as cuts.
 
 ## 1. What this pack contains
 
@@ -19,24 +23,26 @@ Status: draft for PPS review. Generated from `questions.json`, which is the sour
 
 Three forms, on purpose:
 
-1. **Pilot feedback form**: consent, participant ID, 18 multiple-choice questions (18 with the optional expansion box). Given straight after the session.
+1. **Pilot feedback form**: consent, participant ID, 18 multiple-choice questions, each with the optional expansion box. Given straight after the session.
 2. **Day-7 follow-up**: participant ID and 9 multiple-choice questions, about 1.5 minutes. Sent a week later. It asks what people did, not just what they know, which is your best evidence of behaviour change.
 3. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Contact details have to be typed, so this one is not multiple choice.
 
-## 2. Evidence areas and SDG mapping (candidate targets, to confirm)
+## 2. Evidence areas and SDG mapping (SDG 4 and 5 primary, SDG 10 byproduct)
 
-| Evidence area | Questions | Candidate SDG targets (**to confirm**) | What it lets us say |
+| Evidence area | Questions | SDG targets informed | What it lets us say |
 |---|---|---|---|
-| Learning and confidence | Q13, D5, D6 | SDG 4.4, 4.6 | People feel more able to handle money decisions |
-| Ease of use and understandability | Q5, Q6, Q7, D7 | SDG 4.6 (usability of learning) | The content and tools are clear to the intended reader |
-| Access and inclusion | Q18 | SDG 5.b, 10.2, 4.5 | Who is left out by data cost, connection, device, language or accessibility |
-| Money behaviour (baseline and change) | Q3, Q4, Q15, D1, D2, D3, D4 | SDG 8.10, 1.4 | Baseline and change in saving, budgeting and account ownership |
-| Impact and needs | Q14, D9 | SDG 8, 4.4, 1.4 | Which outcomes people believe Sisi supports |
-| Trust, privacy and safety | Q17 | SDG 5, 16.10 (safe, trusted) | Whether Sisi is trusted and safe, a precondition for any impact |
-| Preferences, likes and dislikes | Q8, Q9, Q10, Q11, Q12, Q16, D8 | (product design) | What to keep, change, cut and build next |
-| Who took part | Q1, Q2 | SDG 10.2 (who benefits) | Whether the pilot reached the women it is meant for |
+| Learning and confidence | Q14, D5 | SDG 4.4, 4.6 | People feel more able to handle money decisions |
+| Ease of use and understandability | Q6, Q7, Q8, D7 | SDG 4.6 | The content and tools are clear to the intended reader |
+| Relevance to women | Q9 | SDG 5, 4.5 (gender-responsive) | Whether the content and tone speak to women, not just to anyone |
+| Women’s say over money (agency) | Q5, D6 | SDG 5.a, 5.1 | Whether young women have a say over their money, and whether that grows |
+| Money behaviour (baseline and change) | Q3, Q4, D1, D2, D3, D4 | SDG 5.a, 4.4 | Baseline and change in saving, budgeting and account ownership |
+| Impact and needs | Q15, D9 | SDG 4.4, 5.a | Which outcomes people believe Sisi supports |
+| Trust, privacy and safety | Q17 | SDG 5 (safe participation) | Whether Sisi is trusted and safe, a precondition for any impact |
+| Access and inclusion | Q18 | SDG 4.5, 5.b (equity cuts for SDG 10.2) | Who is left out by data cost, connection, device, language or accessibility |
+| Preferences, likes and dislikes | Q10, Q11, Q12, Q13, Q16, D8 | (product design) | What to keep, change, cut and build next |
+| Who took part | Q1, Q2 | SDG 10.2 (byproduct: who benefits) | Whether the pilot reached the women it is meant for |
 
-Concepts for account ownership (Q3) follow the Global Findex survey; the wording is ours. The reduction to 18 questions removed the longer grids and agency items, so women's financial agency (SDG 5.a) is now only covered indirectly (Q13, Q14, Q17). If 5.a is one of your named goals, I would swap one question for a dedicated agency item.
+Concepts for account ownership (Q3) follow the Global Findex survey; the wording is ours. The agency item (Q5) is a draft, not a validated scale: check it against a validated women's economic empowerment measure before publishing results.
 
 ## 3. How it fits with the in-app pilot
 
@@ -45,10 +51,11 @@ The app already measures knowledge change (6 items, two parallel forms), confide
 ## 4. Design choices
 
 - **Multiple choice throughout**, so answers can be counted and compared. The optional box under each question keeps the "why" without making it a chore.
-- **Likes and dislikes are separate questions** (Q8, Q9) so negative feedback is not buried, plus two forced choices (Q10 "which ONE part was most useful", Q11 "change ONE thing first") that reveal real priorities.
-- **Comprehension is tested, not asked**: Q5 offers four descriptions of Sisi and one is correct, which checks whether people understood "education, not advice".
+- **Likes and dislikes are separate questions** (Q10, Q11) so negative feedback is not buried, plus two forced choices (Q12 "which ONE part was most useful", Q13 "change ONE thing first") that reveal real priorities.
+- **Comprehension is tested, not asked**: Q6 offers four descriptions of Sisi and one is correct, which checks whether people understood "education, not advice".
 - **No income amounts, ever.** We only ask whether people have an account or save, never how much.
 - **"Prefer not to say"** on every question about the person. Only consent and the participant ID are required in the feedback form.
+- **Women-specific on purpose**: Q5 asks about say over money, Q9 whether Sisi spoke to women like them, Q17 safety, and Q18 includes shared or monitored phones, because these are the SDG 5 conditions the product has to meet.
 - **Anonymity**: contact details live in their own form.
 
 ## 5. Before you publish
@@ -95,86 +102,86 @@ The app already measures knowledge change (6 items, two parallel forms), confide
 **Q1.** How old are you?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Who took part
 - Options: 18–20 · 21–23 · 24–26 · 27 or older · Prefer not to say
-- Why we ask: Equity: who the pilot reached
+- Why we ask: SDG 10 byproduct: who the pilot reached
 
 **Q2.** Which best describes you right now?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Who took part
 - Options: University or college student · Student who also works · In my first job (under 2 years) · Working for 2 years or more · Not studying or working at the moment · Something else · Prefer not to say
-- Why we ask: Equity and sampling check (students vs first-jobbers)
+- Why we ask: SDG 10 byproduct: equity cut (students vs first-jobbers)
 
 **Q3.** Do you have your own account with a bank or a mobile-money service?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Money behaviour (baseline and change)
 - Options: Yes, a bank account · Yes, mobile money only · Yes, both · No · Prefer not to say
-- Why we ask: Baseline formal financial inclusion (account ownership) (Concept follows Global Findex account ownership; wording is ours)
+- Why we ask: SDG 5.a baseline: access to financial services (Concept follows Global Findex account ownership; wording is ours)
 
 **Q4.** In the past 3 months, did you put any money aside as savings, even a small amount?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Money behaviour (baseline and change)
 - Options: Yes, regularly · Yes, sometimes · No · Prefer not to say
-- Why we ask: Baseline saving behaviour (compare with the day-7 follow-up)
+- Why we ask: SDG 5.a / 4.4 baseline: saving behaviour (compare with the day-7 follow-up)
+
+**Q5.** How much say do you usually have in big decisions about your money?
+- Multiple choice (one answer) + optional “Want to tell us more?” box · Women’s say over money (agency)
+- Options: I decide on my own · I decide together with family or a partner · Other people mostly decide for me · It depends · Prefer not to say
+- Why we ask: SDG 5.a baseline: women's say over money (compare with D6 at day 7) (Draft item for this pilot; check against a validated women's economic empowerment measure before publishing)
 
 #### Understanding and ease
 *Think about what you just did in the pilot.*
 
-**Q5.** What is Sisi mainly for?
+**Q6.** What is Sisi mainly for?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Ease of use and understandability
 - Options: Learning about money in plain words and practising with simple tools · Getting personal financial advice · Opening a bank account or taking out a loan · Buying and selling investments with real money · I am not sure
-- Why we ask: Understandability: did people grasp the purpose without being told? (Correct answer: the first option.)
+- Why we ask: SDG 4.6: did people grasp the purpose without being told? (Correct answer: the first option.)
 
-**Q6.** How clear was it what to do next at each step?
+**Q7.** How clear was it what to do next at each step?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Ease of use and understandability
 - Options: Always clear · Mostly clear · Sometimes unclear · Often unclear · Never clear
-- Why we ask: Navigation clarity
+- Why we ask: SDG 4.6: navigation clarity
 
-**Q7.** How easy were the words and explanations to understand?
+**Q8.** How easy were the words and explanations to understand?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Ease of use and understandability
 - Options: Very easy · Easy · Okay · Difficult · Very difficult
-- Why we ask: Language understandability
+- Why we ask: SDG 4.6: language understandability
+
+**Q9.** How well did Sisi speak to women like you?
+- Multiple choice (one answer) + optional “Want to tell us more?” box · Relevance to women
+- Options: Very well · Fairly well · Not very well · Not at all · I am not sure
+- Why we ask: SDG 5 / 4.5: is the content and tone gender-responsive and relevant?
 
 #### What you liked and prefer
 *Be as honest as you like. Critical answers are the most useful.*
 
-**Q8.** What did you like? (Tick up to three)
+**Q10.** What did you like? (Tick up to three)
 - Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Preferences, likes and dislikes
 - Options: The short, clear lesson · The budget task · The community and chat · The friendly tone · Points, badges or rewards · That it felt private and safe · How simple it looked · Nothing in particular · *Other (write in)*
 - Why we ask: Likes, in structured form
 
-**Q9.** What did you dislike or find frustrating? (Tick up to three)
+**Q11.** What did you dislike or find frustrating? (Tick up to three)
 - Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Preferences, likes and dislikes
 - Options: Words I did not understand · The lesson was too long · Too much text on screen · The budget task was hard · The community felt unclear or awkward · It was slow or did not work well on my phone · Data cost or a weak connection · Something felt unsafe or uncomfortable · Nothing · *Other (write in)*
 - Why we ask: Dislikes and friction, in structured form
 
-**Q10.** Which ONE part of Sisi was most useful to you?
+**Q12.** Which ONE part of Sisi was most useful to you?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Preferences, likes and dislikes
 - Options: The lesson · The budget task · The community chat · Events · Money Buddy · Letterbox (friends) · Payslip simulator · Invest HER (simulation) · Talk to someone · Rewards · None of them
 - Why we ask: Forced choice: preferred feature
 
-**Q11.** If we could change only ONE thing first, what should it be?
+**Q13.** If we could change only ONE thing first, what should it be?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Preferences, likes and dislikes
 - Options: Make the lessons shorter or simpler · Make the budget tool simpler · Make the community easier to use · Add more topics · Make it faster or work better on my phone · Make rewards clearer · Make it feel more like my life · *Other (write in)*
 - Why we ask: Forced choice: top priority to fix
 
-**Q12.** Overall, how satisfied are you with Sisi?
-- Multiple choice (one answer) + optional “Want to tell us more?” box · Preferences, likes and dislikes
-- Options: Very satisfied · Satisfied · Neither satisfied nor dissatisfied · Dissatisfied · Very dissatisfied
-- Why we ask: Overall satisfaction (CSAT)
-
 #### Learning and what is next
 *A few questions about what changed for you and what would help.*
 
-**Q13.** Compared with before today, how confident do you feel about making everyday money decisions?
+**Q14.** Compared with before today, how confident do you feel about making everyday money decisions?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Learning and confidence
 - Options: Much more confident · A bit more confident · About the same · A bit less confident · Much less confident
-- Why we ask: Retrospective self-efficacy change (second estimate beside the in-app before/after) (Retrospective then/now design reduces response-shift bias)
+- Why we ask: SDG 4.4 / 5.a: retrospective self-efficacy change (second estimate beside the in-app before/after) (Retrospective then/now design reduces response-shift bias)
 
-**Q14.** Learning about money like this could help me to… (Tick all that apply)
+**Q15.** Learning about money like this could help me to… (Tick all that apply)
 - Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Impact and needs
-- Options: Feel less stressed about money · Make and keep a budget · Start saving · Avoid or get out of debt · Start investing · Talk about money with my family · Ask for fair pay or fees · Start or grow a business or side hustle · Plan for study or my career · None of these · *Other (write in)*
-- Why we ask: Perceived benefit by outcome area (maps to SDG outcomes)
-
-**Q15.** In the next 7 days, I plan to… (Tick all that apply)
-- Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Money behaviour (baseline and change)
-- Options: Make or update a budget · Set a savings goal · Start or add to an emergency fund · Talk to someone about money · Open Sisi again · Do the lessons with a friend · Nothing yet
-- Why we ask: Stated intention, checked against the day-7 follow-up
+- Options: Feel less stressed about money · Make and keep a budget · Start saving · Avoid or get out of debt · Start investing · Talk about money with my family · Say no to money requests I cannot afford · Ask for fair pay or fees · Start or grow a business or side hustle · Plan for study or my career · None of these · *Other (write in)*
+- Why we ask: Perceived benefit by outcome area: skills (SDG 4.4) and economic agency (SDG 5.a)
 
 **Q16.** What would make you most likely to come back? (Tick up to two)
 - Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Preferences, likes and dislikes
@@ -187,12 +194,12 @@ The app already measures knowledge change (6 items, two parallel forms), confide
 **Q17.** How safe and comfortable did you feel using Sisi, including the community?
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Trust, privacy and safety
 - Options: Very safe and comfortable · Mostly safe and comfortable · Neutral · A bit uneasy · Not safe or comfortable · I did not use the community
-- Why we ask: Trust, privacy and safety
+- Why we ask: SDG 5: safe participation for women online
 
 **Q18.** What could stop you using an app like Sisi regularly? (Tick all that apply)
 - Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Access and inclusion
-- Options: Data cost · A weak connection · Sharing a phone · The language · Not having time · Worry about privacy · Hard to read or tap (text size, colours, buttons) · Nothing · *Other (write in)*
-- Why we ask: Access and inclusion barriers (SDG 5.b, 10.2)
+- Options: Data cost · A weak connection · Sharing a phone · Someone else controlling or checking my phone · The language · Not having time · Worry about privacy · Hard to read or tap (text size, colours, buttons) · Nothing · *Other (write in)*
+- Why we ask: SDG 5.b / 4.5: access barriers, including the gender digital divide (equity cuts for SDG 10.2)
 
 **Confirmation message:** Thank you! Your feedback helps make Sisi better for other young women.
 
@@ -220,12 +227,12 @@ The app already measures knowledge change (6 items, two parallel forms), confide
 **D2.** Since the session, have you… (Tick all that apply) *(required)*
 - Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Money behaviour (baseline and change)
 - Options: Made or updated a budget · Set a savings goal · Put money aside that I would not have saved otherwise · Started or added to an emergency fund · Talked about money with someone · Done a Sisi lesson with a friend · None of these · *Other (write in)*
-- Why we ask: Behaviour change vs the stated intentions (Q15)
+- Why we ask: SDG 5.a / 4.4: behaviour change since the session
 
 **D3.** In the past 7 days, did you put any money aside as savings, even a small amount? *(required)*
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Money behaviour (baseline and change)
 - Options: Yes · No · Prefer not to say
-- Why we ask: Savings behaviour (compare with Q4)
+- Why we ask: SDG 5.a: savings behaviour (compare with Q4)
 
 **D4.** Which best describes how you planned your money this week? *(required)*
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Money behaviour (baseline and change)
@@ -235,12 +242,12 @@ The app already measures knowledge change (6 items, two parallel forms), confide
 **D5.** Compared with before the session, how confident do you feel now about everyday money decisions? *(required)*
 - Multiple choice (one answer) + optional “Want to tell us more?” box · Learning and confidence
 - Options: Much more confident · A bit more confident · About the same · A bit less confident · Much less confident
-- Why we ask: Self-efficacy at day 7 (compare with Q13)
+- Why we ask: SDG 4.4 / 5.a: self-efficacy at day 7 (compare with Q14)
 
-**D6.** Have you used something you learned in a real money decision? *(required)*
-- Multiple choice (one answer) + optional “Want to tell us more?” box · Learning and confidence
-- Options: Yes · Not yet · Not sure
-- Why we ask: Transfer to real decisions (ask them not to include amounts or names)
+**D6.** Have you used what you learned in a real money decision? *(required)*
+- Multiple choice (one answer) + optional “Want to tell us more?” box · Women’s say over money (agency)
+- Options: Yes, I decided on my own · Yes, together with someone else · Not yet · Not sure
+- Why we ask: SDG 5.a / 4.4: skills applied, and who made the decision (compare with Q5; ask for no amounts or names)
 
 **D7.** If you did not use Sisi again, what got in the way? (Tick all that apply)
 - Multiple choice (tick all that apply) + optional “Want to tell us more?” box · Ease of use and understandability
@@ -294,9 +301,12 @@ The app already measures knowledge change (6 items, two parallel forms), confide
 
 ## 7. Analysis plan (short)
 
-- **Preferences:** Q8 and Q9 (tick-lists), Q10 and Q11 (forced choices), Q16 (what brings people back), cut by Q1 and Q2. Read the optional boxes and code themes (two people code a sample, agree, then code the rest).
-- **Understandability and ease:** Q5 (percent who choose the correct description), Q6, Q7, with the in-app per-task ease to locate the hard parts.
-- **Satisfaction and confidence:** Q12, Q13, alongside the in-app knowledge gain.
-- **SDG outcomes:** Q3 and Q4 as the baseline profile, D2 to D4 and D9 at day 7 as change, Q14 as perceived benefit, Q15 against D2 (intention versus action).
-- **Equity:** compare Q6, Q7, Q12 and Q17 for Q18 barriers (data cost, language, shared phone) to see who is being left behind.
-- Say plainly that this is a small, self-selected pilot with no control group.
+**SDG 4 evidence (education).** The in-app knowledge gain (6 items, parallel forms) is the headline. Support it with Q6 (percent who choose the correct description of Sisi), Q7 and Q8 (clarity and language), Q14 and D5 (confidence), and D6 (skills used in a real decision at day 7).
+
+**SDG 5 evidence (gender equality).** Baseline: Q3 (account), Q4 (saving), Q5 (say over money). Change at day 7: D2 and D3 (actions and saving), D6 (decided on my own or together). Conditions: Q9 (spoke to women like me), Q17 (safety), Q18 (phone access barriers), Q15 (benefits people expect, including saying no to money requests and asking for fair pay).
+
+**SDG 10 (byproduct).** Cut Q7, Q8, Q9, Q14 and Q17 by Q1, Q2 and the Q18 barriers (data cost, language, shared or monitored phone). Report whether the gaps are small or large. That is the evidence that Sisi is reaching women who are usually left out.
+
+**Product decisions.** Q10 and Q11 (tick-lists), Q12 and Q13 (forced choices) and Q16 (what brings people back). Read the optional boxes and code themes (two people code a sample, agree, then code the rest).
+
+Say plainly that this is a small, self-selected pilot with no control group.

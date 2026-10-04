@@ -9,15 +9,17 @@
   "Stay in touch": ""
  },
  "domains": {
-  "ACC": "SDG 5.b, 10.2, 4.5",
   "KNW": "SDG 4.4, 4.6",
-  "UX": "SDG 4.6 (usability of learning)",
+  "UX": "SDG 4.6",
+  "ACC": "SDG 4.5, 5.b (equity cuts for SDG 10.2)",
+  "BEH": "SDG 5.a, 4.4",
+  "AGY": "SDG 5.a, 5.1",
+  "REL": "SDG 5, 4.5 (gender-responsive)",
+  "TRUST": "SDG 5 (safe participation)",
+  "IMP": "SDG 4.4, 5.a",
+  "DEM": "SDG 10.2 (byproduct: who benefits)",
   "PREF": "(product design)",
-  "TRUST": "SDG 5, 16.10 (safe, trusted)",
-  "BEH": "SDG 8.10, 1.4",
-  "DEM": "SDG 10.2 (who benefits)",
-  "CONT": "(admin)",
-  "IMP": "SDG 8, 4.4, 1.4"
+  "CONT": "(admin)"
  },
  "forms": {
   "main": {
@@ -77,7 +79,7 @@
    "type": "choice",
    "title": "How old are you?",
    "domain": "DEM",
-   "purpose": "Equity: who the pilot reached",
+   "purpose": "SDG 10 byproduct: who the pilot reached",
    "required": false,
    "help": "",
    "source": "",
@@ -96,7 +98,7 @@
    "type": "choice",
    "title": "Which best describes you right now?",
    "domain": "DEM",
-   "purpose": "Equity and sampling check (students vs first-jobbers)",
+   "purpose": "SDG 10 byproduct: equity cut (students vs first-jobbers)",
    "required": false,
    "help": "",
    "source": "",
@@ -117,7 +119,7 @@
    "type": "choice",
    "title": "Do you have your own account with a bank or a mobile-money service?",
    "domain": "BEH",
-   "purpose": "Baseline formal financial inclusion (account ownership)",
+   "purpose": "SDG 5.a baseline: access to financial services",
    "required": false,
    "help": "",
    "source": "Concept follows Global Findex account ownership; wording is ours",
@@ -136,7 +138,7 @@
    "type": "choice",
    "title": "In the past 3 months, did you put any money aside as savings, even a small amount?",
    "domain": "BEH",
-   "purpose": "Baseline saving behaviour (compare with the day-7 follow-up)",
+   "purpose": "SDG 5.a / 4.4 baseline: saving behaviour (compare with the day-7 follow-up)",
    "required": false,
    "help": "",
    "source": "",
@@ -152,9 +154,28 @@
   {
    "id": "Q5",
    "type": "choice",
+   "title": "How much say do you usually have in big decisions about your money?",
+   "domain": "AGY",
+   "purpose": "SDG 5.a baseline: women's say over money (compare with D6 at day 7)",
+   "required": false,
+   "help": "",
+   "source": "Draft item for this pilot; check against a validated women's economic empowerment measure before publishing",
+   "expand": true,
+   "options": [
+    "I decide on my own",
+    "I decide together with family or a partner",
+    "Other people mostly decide for me",
+    "It depends",
+    "Prefer not to say"
+   ],
+   "section": "About you"
+  },
+  {
+   "id": "Q6",
+   "type": "choice",
    "title": "What is Sisi mainly for?",
    "domain": "UX",
-   "purpose": "Understandability: did people grasp the purpose without being told? (Correct answer: the first option.)",
+   "purpose": "SDG 4.6: did people grasp the purpose without being told? (Correct answer: the first option.)",
    "required": false,
    "help": "",
    "source": "",
@@ -169,11 +190,11 @@
    "section": "Understanding and ease"
   },
   {
-   "id": "Q6",
+   "id": "Q7",
    "type": "choice",
    "title": "How clear was it what to do next at each step?",
    "domain": "UX",
-   "purpose": "Navigation clarity",
+   "purpose": "SDG 4.6: navigation clarity",
    "required": false,
    "help": "",
    "source": "",
@@ -188,11 +209,11 @@
    "section": "Understanding and ease"
   },
   {
-   "id": "Q7",
+   "id": "Q8",
    "type": "choice",
    "title": "How easy were the words and explanations to understand?",
    "domain": "UX",
-   "purpose": "Language understandability",
+   "purpose": "SDG 4.6: language understandability",
    "required": false,
    "help": "",
    "source": "",
@@ -207,7 +228,26 @@
    "section": "Understanding and ease"
   },
   {
-   "id": "Q8",
+   "id": "Q9",
+   "type": "choice",
+   "title": "How well did Sisi speak to women like you?",
+   "domain": "REL",
+   "purpose": "SDG 5 / 4.5: is the content and tone gender-responsive and relevant?",
+   "required": false,
+   "help": "",
+   "source": "",
+   "expand": true,
+   "options": [
+    "Very well",
+    "Fairly well",
+    "Not very well",
+    "Not at all",
+    "I am not sure"
+   ],
+   "section": "Understanding and ease"
+  },
+  {
+   "id": "Q10",
    "type": "checkbox",
    "title": "What did you like? (Tick up to three)",
    "domain": "PREF",
@@ -230,7 +270,7 @@
    "section": "What you liked and prefer"
   },
   {
-   "id": "Q9",
+   "id": "Q11",
    "type": "checkbox",
    "title": "What did you dislike or find frustrating? (Tick up to three)",
    "domain": "PREF",
@@ -254,7 +294,7 @@
    "section": "What you liked and prefer"
   },
   {
-   "id": "Q10",
+   "id": "Q12",
    "type": "choice",
    "title": "Which ONE part of Sisi was most useful to you?",
    "domain": "PREF",
@@ -279,7 +319,7 @@
    "section": "What you liked and prefer"
   },
   {
-   "id": "Q11",
+   "id": "Q13",
    "type": "choice",
    "title": "If we could change only ONE thing first, what should it be?",
    "domain": "PREF",
@@ -301,30 +341,11 @@
    "section": "What you liked and prefer"
   },
   {
-   "id": "Q12",
-   "type": "choice",
-   "title": "Overall, how satisfied are you with Sisi?",
-   "domain": "PREF",
-   "purpose": "Overall satisfaction (CSAT)",
-   "required": false,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Very satisfied",
-    "Satisfied",
-    "Neither satisfied nor dissatisfied",
-    "Dissatisfied",
-    "Very dissatisfied"
-   ],
-   "section": "What you liked and prefer"
-  },
-  {
-   "id": "Q13",
+   "id": "Q14",
    "type": "choice",
    "title": "Compared with before today, how confident do you feel about making everyday money decisions?",
    "domain": "KNW",
-   "purpose": "Retrospective self-efficacy change (second estimate beside the in-app before/after)",
+   "purpose": "SDG 4.4 / 5.a: retrospective self-efficacy change (second estimate beside the in-app before/after)",
    "required": false,
    "help": "",
    "source": "Retrospective then/now design reduces response-shift bias",
@@ -339,11 +360,11 @@
    "section": "Learning and what is next"
   },
   {
-   "id": "Q14",
+   "id": "Q15",
    "type": "checkbox",
    "title": "Learning about money like this could help me to… (Tick all that apply)",
    "domain": "IMP",
-   "purpose": "Perceived benefit by outcome area (maps to SDG outcomes)",
+   "purpose": "Perceived benefit by outcome area: skills (SDG 4.4) and economic agency (SDG 5.a)",
    "required": false,
    "help": "",
    "source": "",
@@ -355,33 +376,13 @@
     "Avoid or get out of debt",
     "Start investing",
     "Talk about money with my family",
+    "Say no to money requests I cannot afford",
     "Ask for fair pay or fees",
     "Start or grow a business or side hustle",
     "Plan for study or my career",
     "None of these"
    ],
    "other": true,
-   "section": "Learning and what is next"
-  },
-  {
-   "id": "Q15",
-   "type": "checkbox",
-   "title": "In the next 7 days, I plan to… (Tick all that apply)",
-   "domain": "BEH",
-   "purpose": "Stated intention, checked against the day-7 follow-up",
-   "required": false,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Make or update a budget",
-    "Set a savings goal",
-    "Start or add to an emergency fund",
-    "Talk to someone about money",
-    "Open Sisi again",
-    "Do the lessons with a friend",
-    "Nothing yet"
-   ],
    "section": "Learning and what is next"
   },
   {
@@ -412,7 +413,7 @@
    "type": "choice",
    "title": "How safe and comfortable did you feel using Sisi, including the community?",
    "domain": "TRUST",
-   "purpose": "Trust, privacy and safety",
+   "purpose": "SDG 5: safe participation for women online",
    "required": false,
    "help": "",
    "source": "",
@@ -432,7 +433,7 @@
    "type": "checkbox",
    "title": "What could stop you using an app like Sisi regularly? (Tick all that apply)",
    "domain": "ACC",
-   "purpose": "Access and inclusion barriers (SDG 5.b, 10.2)",
+   "purpose": "SDG 5.b / 4.5: access barriers, including the gender digital divide (equity cuts for SDG 10.2)",
    "required": false,
    "help": "",
    "source": "",
@@ -441,6 +442,7 @@
     "Data cost",
     "A weak connection",
     "Sharing a phone",
+    "Someone else controlling or checking my phone",
     "The language",
     "Not having time",
     "Worry about privacy",
@@ -488,7 +490,7 @@
    "type": "checkbox",
    "title": "Since the session, have you… (Tick all that apply)",
    "domain": "BEH",
-   "purpose": "Behaviour change vs the stated intentions (Q15)",
+   "purpose": "SDG 5.a / 4.4: behaviour change since the session",
    "required": true,
    "help": "",
    "source": "",
@@ -510,7 +512,7 @@
    "type": "choice",
    "title": "In the past 7 days, did you put any money aside as savings, even a small amount?",
    "domain": "BEH",
-   "purpose": "Savings behaviour (compare with Q4)",
+   "purpose": "SDG 5.a: savings behaviour (compare with Q4)",
    "required": true,
    "help": "",
    "source": "",
@@ -545,7 +547,7 @@
    "type": "choice",
    "title": "Compared with before the session, how confident do you feel now about everyday money decisions?",
    "domain": "KNW",
-   "purpose": "Self-efficacy at day 7 (compare with Q13)",
+   "purpose": "SDG 4.4 / 5.a: self-efficacy at day 7 (compare with Q14)",
    "required": true,
    "help": "",
    "source": "",
@@ -562,15 +564,16 @@
   {
    "id": "D6",
    "type": "choice",
-   "title": "Have you used something you learned in a real money decision?",
-   "domain": "KNW",
-   "purpose": "Transfer to real decisions (ask them not to include amounts or names)",
+   "title": "Have you used what you learned in a real money decision?",
+   "domain": "AGY",
+   "purpose": "SDG 5.a / 4.4: skills applied, and who made the decision (compare with Q5; ask for no amounts or names)",
    "required": true,
    "help": "",
    "source": "",
    "expand": true,
    "options": [
-    "Yes",
+    "Yes, I decided on my own",
+    "Yes, together with someone else",
     "Not yet",
     "Not sure"
    ],

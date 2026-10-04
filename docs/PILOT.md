@@ -15,6 +15,21 @@ Testers spend **about 10 minutes** using Sisi and then tell us what worked. The 
 
 What it is not: a controlled trial. There is no control group, testers are self-selected and the after-test is immediate, so we can describe short-term learning and usability, not lasting behaviour change. Section 9 lists the limits to state whenever results are shown.
 
+### SDG alignment
+
+Primary goals: **SDG 4 (Quality Education)** and **SDG 5 (Gender Equality)**. **SDG 10 (Reduced Inequalities)** is a byproduct, shown through equity cuts rather than its own measures.
+
+| SDG | What the pilot measures |
+|---|---|
+| 4.6 literacy and numeracy, 4.4 skills | Knowledge gain (6 parallel-form items), confidence change, understandability of purpose and words, skills used in a real decision at day 7 |
+| 4.5 equal access | Access barriers: data cost, connection, shared phone, language, accessibility |
+| 5.a economic resources and financial services | Account ownership, saving, say over money (baseline and day 7), perceived benefits |
+| 5.b technology | Phone access and whether someone else controls or checks the phone |
+| 5 safe, relevant participation | Comfort and safety in the community, whether Sisi speaks to women like them |
+| 10.2 (byproduct) | Every result cut by age, situation, data cost, language and phone access |
+
+The Google Form pack in `docs/pilot-form/` carries the detail.
+
 ## 2. The 10 minutes (run of show)
 
 | Clock | Step | Where | Measured |

@@ -8,7 +8,7 @@ const optText = (o) => (typeof o === 'string' ? o : o.v);
 const typeLabel = { choice: 'Multiple choice (one answer)', checkbox: 'Multiple choice (tick all that apply)', text: 'Short answer' };
 const secs = { choice: 8, checkbox: 14, text: 8 };
 const minutes = (items) => Math.round(items.reduce((a, q) => a + (secs[q.type] ?? 8), 0) / 6) / 10;
-const pillar = { ACC: 'Access and inclusion', KNW: 'Learning and confidence', UX: 'Ease of use and understandability', PREF: 'Preferences, likes and dislikes', TRUST: 'Trust, privacy and safety', BEH: 'Money behaviour (baseline and change)', DEM: 'Who took part', CONT: 'Consent and admin', IMP: 'Impact and needs' };
+const pillar = { ACC: 'Access and inclusion', KNW: 'Learning and confidence', UX: 'Ease of use and understandability', PREF: 'Preferences, likes and dislikes', TRUST: 'Trust, privacy and safety', BEH: 'Money behaviour (baseline and change)', DEM: 'Who took part', CONT: 'Consent and admin', IMP: 'Impact and needs', AGY: 'Women’s say over money (agency)', REL: 'Relevance to women' };
 
 /* ---------- codebook ---------- */
 const csv = (v) => { const s = Array.isArray(v) ? v.join(' | ') : String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
@@ -122,8 +122,8 @@ const formMd = (title, meta, items) => `### ${title}\n\n**Form title:** ${meta.t
 
 const idsByDomain = {};
 [...D.main, ...D.day7].forEach((q) => { if (q.domain !== 'CONT') (idsByDomain[q.domain] ??= []).push(q.id); });
-const gist = { KNW: 'People feel more able to handle money decisions', UX: 'The content and tools are clear to the intended reader', ACC: 'Who is left out by data cost, connection, device, language or accessibility', BEH: 'Baseline and change in saving, budgeting and account ownership', IMP: 'Which outcomes people believe Sisi supports', TRUST: 'Whether Sisi is trusted and safe, a precondition for any impact', PREF: 'What to keep, change, cut and build next', DEM: 'Whether the pilot reached the women it is meant for' };
-const sdgTable = ['| Evidence area | Questions | Candidate SDG targets (**to confirm**) | What it lets us say |', '|---|---|---|---|', ...Object.keys(gist).map((d) => `| ${pillar[d]} | ${(idsByDomain[d] ?? []).join(', ')} | ${D.domains[d]} | ${gist[d]} |`)].join('\n');
+const gist = { KNW: 'People feel more able to handle money decisions', UX: 'The content and tools are clear to the intended reader', ACC: 'Who is left out by data cost, connection, device, language or accessibility', BEH: 'Baseline and change in saving, budgeting and account ownership', IMP: 'Which outcomes people believe Sisi supports', TRUST: 'Whether Sisi is trusted and safe, a precondition for any impact', PREF: 'What to keep, change, cut and build next', DEM: 'Whether the pilot reached the women it is meant for', AGY: 'Whether young women have a say over their money, and whether that grows', REL: 'Whether the content and tone speak to women, not just to anyone' };
+const sdgTable = ['| Evidence area | Questions | SDG targets informed | What it lets us say |', '|---|---|---|---|', ...['KNW', 'UX', 'REL', 'AGY', 'BEH', 'IMP', 'TRUST', 'ACC', 'PREF', 'DEM'].map((d) => `| ${pillar[d]} | ${(idsByDomain[d] ?? []).join(', ')} | ${D.domains[d]} | ${gist[d]} |`)].join('\n');
 
 const nMain = D.main.length; const nExp = D.main.filter((q) => q.expand).length;
 const md = `# Sisi pilot feedback: Google Form pack (v2: 20 questions, all multiple choice)
@@ -134,7 +134,11 @@ Status: draft for PPS review. Generated from \`questions.json\`, which is the so
 
 **What changed.** The feedback form now has **${nMain} items in total: consent, participant ID and 18 questions**. Every question is **multiple choice** (one answer, or tick all that apply). Each one has an **optional "Want to tell us more?" box** underneath, so people can expand on an answer without having to. Those boxes are optional add-ons and are not counted in the 20. Taking part needs about **${minutes(D.main)} minutes** of tapping; the optional boxes add time only for people who choose to write.
 
-**About the SDGs.** The brief calls this the "PPS Investments SDG Challenge" but **never names the specific Sustainable Development Goals**, so I do not know which ones your challenge targets. Every question is tagged with an *evidence area* and the table in section 2 maps each area to SDG targets I think fit a money-confidence app for young women. Those targets are **proposals to confirm**. Tell me the real goals and only that table changes.
+**Which SDGs this serves.** Your **primary goals are SDG 4 (Quality Education) and SDG 5 (Gender Equality)**. **SDG 10 (Reduced Inequalities) is a byproduct**: it is not measured with questions of its own but through **equity cuts**, comparing results by age, situation, data cost, shared or monitored phones and language to show whether the women who benefit are the ones usually left out. Every question carries an evidence area and a note of the target it informs (section 2). Targets are from my reading of the SDGs, so confirm the wording against the UN list.
+
+- **SDG 4:** 4.6 (literacy and numeracy: Q6 to Q8), 4.4 (skills applied: Q14, D5, D6), 4.5 (equal access: Q9, Q18).
+- **SDG 5:** 5.a (economic resources and financial services: Q3, Q4, Q5, Q15, D2, D3, D6), 5.b (technology: Q18), and safe, relevant participation for women (Q9, Q17).
+- **SDG 10 (byproduct):** Q1, Q2, Q18 and the language and cost answers used as cuts.
 
 ## 1. What this pack contains
 
@@ -147,15 +151,15 @@ Status: draft for PPS review. Generated from \`questions.json\`, which is the so
 
 Three forms, on purpose:
 
-1. **Pilot feedback form**: consent, participant ID, 18 multiple-choice questions (${nExp} with the optional expansion box). Given straight after the session.
+1. **Pilot feedback form**: consent, participant ID, 18 multiple-choice questions, each with the optional expansion box. Given straight after the session.
 2. **Day-7 follow-up**: participant ID and ${D.day7.length - 1} multiple-choice questions, about ${minutes(D.day7)} minutes. Sent a week later. It asks what people did, not just what they know, which is your best evidence of behaviour change.
 3. **Contact form** (optional, separate). Names and contact details are collected here so they are never stored next to feedback answers. Contact details have to be typed, so this one is not multiple choice.
 
-## 2. Evidence areas and SDG mapping (candidate targets, to confirm)
+## 2. Evidence areas and SDG mapping (SDG 4 and 5 primary, SDG 10 byproduct)
 
 ${sdgTable}
 
-Concepts for account ownership (Q3) follow the Global Findex survey; the wording is ours. The reduction to 18 questions removed the longer grids and agency items, so women's financial agency (SDG 5.a) is now only covered indirectly (Q13, Q14, Q17). If 5.a is one of your named goals, I would swap one question for a dedicated agency item.
+Concepts for account ownership (Q3) follow the Global Findex survey; the wording is ours. The agency item (Q5) is a draft, not a validated scale: check it against a validated women's economic empowerment measure before publishing results.
 
 ## 3. How it fits with the in-app pilot
 
@@ -164,10 +168,11 @@ The app already measures knowledge change (6 items, two parallel forms), confide
 ## 4. Design choices
 
 - **Multiple choice throughout**, so answers can be counted and compared. The optional box under each question keeps the "why" without making it a chore.
-- **Likes and dislikes are separate questions** (Q8, Q9) so negative feedback is not buried, plus two forced choices (Q10 "which ONE part was most useful", Q11 "change ONE thing first") that reveal real priorities.
-- **Comprehension is tested, not asked**: Q5 offers four descriptions of Sisi and one is correct, which checks whether people understood "education, not advice".
+- **Likes and dislikes are separate questions** (Q10, Q11) so negative feedback is not buried, plus two forced choices (Q12 "which ONE part was most useful", Q13 "change ONE thing first") that reveal real priorities.
+- **Comprehension is tested, not asked**: Q6 offers four descriptions of Sisi and one is correct, which checks whether people understood "education, not advice".
 - **No income amounts, ever.** We only ask whether people have an account or save, never how much.
 - **"Prefer not to say"** on every question about the person. Only consent and the participant ID are required in the feedback form.
+- **Women-specific on purpose**: Q5 asks about say over money, Q9 whether Sisi spoke to women like them, Q17 safety, and Q18 includes shared or monitored phones, because these are the SDG 5 conditions the product has to meet.
 - **Anonymity**: contact details live in their own form.
 
 ## 5. Before you publish
@@ -189,12 +194,15 @@ ${formMd('Form 3: Contact form (optional, separate)', D.forms.contact, D.contact
 
 ## 7. Analysis plan (short)
 
-- **Preferences:** Q8 and Q9 (tick-lists), Q10 and Q11 (forced choices), Q16 (what brings people back), cut by Q1 and Q2. Read the optional boxes and code themes (two people code a sample, agree, then code the rest).
-- **Understandability and ease:** Q5 (percent who choose the correct description), Q6, Q7, with the in-app per-task ease to locate the hard parts.
-- **Satisfaction and confidence:** Q12, Q13, alongside the in-app knowledge gain.
-- **SDG outcomes:** Q3 and Q4 as the baseline profile, D2 to D4 and D9 at day 7 as change, Q14 as perceived benefit, Q15 against D2 (intention versus action).
-- **Equity:** compare Q6, Q7, Q12 and Q17 for Q18 barriers (data cost, language, shared phone) to see who is being left behind.
-- Say plainly that this is a small, self-selected pilot with no control group.
+**SDG 4 evidence (education).** The in-app knowledge gain (6 items, parallel forms) is the headline. Support it with Q6 (percent who choose the correct description of Sisi), Q7 and Q8 (clarity and language), Q14 and D5 (confidence), and D6 (skills used in a real decision at day 7).
+
+**SDG 5 evidence (gender equality).** Baseline: Q3 (account), Q4 (saving), Q5 (say over money). Change at day 7: D2 and D3 (actions and saving), D6 (decided on my own or together). Conditions: Q9 (spoke to women like me), Q17 (safety), Q18 (phone access barriers), Q15 (benefits people expect, including saying no to money requests and asking for fair pay).
+
+**SDG 10 (byproduct).** Cut Q7, Q8, Q9, Q14 and Q17 by Q1, Q2 and the Q18 barriers (data cost, language, shared or monitored phone). Report whether the gaps are small or large. That is the evidence that Sisi is reaching women who are usually left out.
+
+**Product decisions.** Q10 and Q11 (tick-lists), Q12 and Q13 (forced choices) and Q16 (what brings people back). Read the optional boxes and code themes (two people code a sample, agree, then code the rest).
+
+Say plainly that this is a small, self-selected pilot with no control group.
 `;
 fs.writeFileSync(`${dir}/FEEDBACK_FORM.md`, md);
 
