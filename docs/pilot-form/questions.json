@@ -1,7 +1,8 @@
 {
  "sectionHelp": {
-  "About you": "These help us see who Sisi works for. Everything except your participant ID is optional. Choose Prefer not to say or skip anything you like.",
-  "Understanding and ease": "Think about what you just did in the pilot.",
+  "About you": "Everything except your participant ID is optional. Choose Prefer not to say or skip anything you like.",
+  "Your experience of the features": "Think about what you just did in the pilot. Skip a row if you did not try it.",
+  "Understanding": "Two quick questions about Sisi itself.",
   "What you liked and prefer": "Be as honest as you like. Critical answers are the most useful.",
   "Learning and what is next": "A few questions about what changed for you and what would help.",
   "Trust and access": "Last section. Thank you for sticking with us.",
@@ -15,6 +16,7 @@
   "BEH": "SDG 5.a, 4.4",
   "AGY": "SDG 5.a, 5.1",
   "REL": "SDG 5, 4.5 (gender-responsive)",
+  "FEAT": "(product design: feature experience)",
   "TRUST": "SDG 5 (safe participation)",
   "IMP": "SDG 4.4, 5.a",
   "DEM": "SDG 10.2 (byproduct: who benefits)",
@@ -24,7 +26,7 @@
  "forms": {
   "main": {
    "title": "Sisi pilot feedback",
-   "description": "Thank you for testing Sisi, a money-confidence app for young women, made with PPS Investments.\n\nThere are 18 quick questions, about 3 minutes. Every question is multiple choice, and each has an optional box if you want to say more. It is not a test of you. We are testing Sisi, and honest answers, including critical ones, help most.\n\nWhat we collect: your answers here. No name, email, ID number or bank details, and no amounts of your own money. The Sisi pilot team uses them to improve the app and to report anonymised, combined results to PPS Investments.\nTaking part is voluntary. You can stop at any time and skip any question you prefer not to answer.\n\nSisi is education, not financial advice.",
+   "description": "Thank you for testing Sisi, a money-confidence app for young women, made with PPS Investments.\n\nThere are 18 quick questions, about 4 to 5 minutes. Every question is multiple choice, and each has an optional box if you want to say more. It is not a test of you. We are testing Sisi, and honest answers, including critical ones, help most.\n\nWhat we collect: your answers here. No name, email, ID number or bank details, and no amounts of your own money. The Sisi pilot team uses them to improve the app and to report anonymised, combined results to PPS Investments.\nTaking part is voluntary. You can stop at any time and skip any question you prefer not to answer.\n\nSisi is education, not financial advice.",
    "confirmation": "Thank you! Your feedback helps make Sisi better for other young women."
   },
   "day7": {
@@ -77,46 +79,6 @@
   {
    "id": "Q1",
    "type": "choice",
-   "title": "How old are you?",
-   "domain": "DEM",
-   "purpose": "SDG 10 byproduct: who the pilot reached",
-   "required": false,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "18–20",
-    "21–23",
-    "24–26",
-    "27 or older",
-    "Prefer not to say"
-   ],
-   "section": "About you"
-  },
-  {
-   "id": "Q2",
-   "type": "choice",
-   "title": "Which best describes you right now?",
-   "domain": "DEM",
-   "purpose": "SDG 10 byproduct: equity cut (students vs first-jobbers)",
-   "required": false,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "University or college student",
-    "Student who also works",
-    "In my first job (under 2 years)",
-    "Working for 2 years or more",
-    "Not studying or working at the moment",
-    "Something else",
-    "Prefer not to say"
-   ],
-   "section": "About you"
-  },
-  {
-   "id": "Q3",
-   "type": "choice",
    "title": "Do you have your own account with a bank or a mobile-money service?",
    "domain": "BEH",
    "purpose": "SDG 5.a baseline: access to financial services",
@@ -134,7 +96,7 @@
    "section": "About you"
   },
   {
-   "id": "Q4",
+   "id": "Q2",
    "type": "choice",
    "title": "In the past 3 months, did you put any money aside as savings, even a small amount?",
    "domain": "BEH",
@@ -152,7 +114,7 @@
    "section": "About you"
   },
   {
-   "id": "Q5",
+   "id": "Q3",
    "type": "choice",
    "title": "How much say do you usually have in big decisions about your money?",
    "domain": "AGY",
@@ -171,7 +133,88 @@
    "section": "About you"
   },
   {
+   "id": "Q4",
+   "type": "grid",
+   "title": "How was your experience with each of these?",
+   "domain": "FEAT",
+   "purpose": "Experience of the four core features, side by side (compare with the in-app success, time and ease per mission)",
+   "required": false,
+   "help": "",
+   "source": "",
+   "expand": true,
+   "rows": [
+    "Joining a community",
+    "The lesson (Now-Now, Stack It, Grow It)",
+    "The budget task",
+    "The community chat and feed"
+   ],
+   "cols": [
+    "Loved it",
+    "Liked it",
+    "It was okay",
+    "Did not like it",
+    "I did not try this"
+   ],
+   "section": "Your experience of the features"
+  },
+  {
+   "id": "Q5",
+   "type": "grid",
+   "title": "And the extras, if you tried them?",
+   "domain": "FEAT",
+   "purpose": "Experience of the optional features (which to keep, fix or cut)",
+   "required": false,
+   "help": "",
+   "source": "",
+   "expand": true,
+   "rows": [
+    "Payslip simulator",
+    "Money Buddy",
+    "Letterbox (friends)",
+    "Invest HER (simulation)",
+    "Talk to someone",
+    "Support page and Quick exit",
+    "Rewards",
+    "Points and badges"
+   ],
+   "cols": [
+    "Loved it",
+    "Liked it",
+    "It was okay",
+    "Did not like it",
+    "I did not try this"
+   ],
+   "section": "Your experience of the features"
+  },
+  {
    "id": "Q6",
+   "type": "grid",
+   "title": "How easy was each of these to use or understand?",
+   "domain": "UX",
+   "purpose": "SDG 4.6: ease and understandability per feature, including the words and navigation",
+   "required": false,
+   "help": "",
+   "source": "",
+   "expand": true,
+   "rows": [
+    "Joining a community",
+    "Understanding the lesson",
+    "Doing the budget task",
+    "Using the community chat",
+    "Finding my way around the app"
+   ],
+   "cols": [
+    "Very easy",
+    "Easy",
+    "Okay",
+    "Difficult",
+    "Very difficult",
+    "I did not try this"
+   ],
+   "section": "Your experience of the features"
+  },
+  {
+   "id": "Q7",
    "type": "choice",
    "title": "What is Sisi mainly for?",
    "domain": "UX",
@@ -187,48 +230,10 @@
     "Buying and selling investments with real money",
     "I am not sure"
    ],
-   "section": "Understanding and ease"
-  },
-  {
-   "id": "Q7",
-   "type": "choice",
-   "title": "How clear was it what to do next at each step?",
-   "domain": "UX",
-   "purpose": "SDG 4.6: navigation clarity",
-   "required": false,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Always clear",
-    "Mostly clear",
-    "Sometimes unclear",
-    "Often unclear",
-    "Never clear"
-   ],
-   "section": "Understanding and ease"
+   "section": "Understanding"
   },
   {
    "id": "Q8",
-   "type": "choice",
-   "title": "How easy were the words and explanations to understand?",
-   "domain": "UX",
-   "purpose": "SDG 4.6: language understandability",
-   "required": false,
-   "help": "",
-   "source": "",
-   "expand": true,
-   "options": [
-    "Very easy",
-    "Easy",
-    "Okay",
-    "Difficult",
-    "Very difficult"
-   ],
-   "section": "Understanding and ease"
-  },
-  {
-   "id": "Q9",
    "type": "choice",
    "title": "How well did Sisi speak to women like you?",
    "domain": "REL",
@@ -244,10 +249,10 @@
     "Not at all",
     "I am not sure"
    ],
-   "section": "Understanding and ease"
+   "section": "Understanding"
   },
   {
-   "id": "Q10",
+   "id": "Q9",
    "type": "checkbox",
    "title": "What did you like? (Tick up to three)",
    "domain": "PREF",
@@ -270,7 +275,7 @@
    "section": "What you liked and prefer"
   },
   {
-   "id": "Q11",
+   "id": "Q10",
    "type": "checkbox",
    "title": "What did you dislike or find frustrating? (Tick up to three)",
    "domain": "PREF",
@@ -294,7 +299,7 @@
    "section": "What you liked and prefer"
   },
   {
-   "id": "Q12",
+   "id": "Q11",
    "type": "choice",
    "title": "Which ONE part of Sisi was most useful to you?",
    "domain": "PREF",
@@ -319,7 +324,7 @@
    "section": "What you liked and prefer"
   },
   {
-   "id": "Q13",
+   "id": "Q12",
    "type": "choice",
    "title": "If we could change only ONE thing first, what should it be?",
    "domain": "PREF",
@@ -338,6 +343,25 @@
     "Make it feel more like my life"
    ],
    "other": true,
+   "section": "What you liked and prefer"
+  },
+  {
+   "id": "Q13",
+   "type": "choice",
+   "title": "Points, badges and leaderboards are optional in Sisi. How do you feel about them?",
+   "domain": "PREF",
+   "purpose": "Gamification preference (evidence rule: must stay optional, with Focus mode)",
+   "required": false,
+   "help": "",
+   "source": "",
+   "expand": true,
+   "options": [
+    "They motivate me",
+    "I do not mind them",
+    "They put me off",
+    "I would switch them off",
+    "I did not notice them"
+   ],
    "section": "What you liked and prefer"
   },
   {
@@ -512,7 +536,7 @@
    "type": "choice",
    "title": "In the past 7 days, did you put any money aside as savings, even a small amount?",
    "domain": "BEH",
-   "purpose": "SDG 5.a: savings behaviour (compare with Q4)",
+   "purpose": "SDG 5.a: savings behaviour (compare with Q2)",
    "required": true,
    "help": "",
    "source": "",
@@ -566,7 +590,7 @@
    "type": "choice",
    "title": "Have you used what you learned in a real money decision?",
    "domain": "AGY",
-   "purpose": "SDG 5.a / 4.4: skills applied, and who made the decision (compare with Q5; ask for no amounts or names)",
+   "purpose": "SDG 5.a / 4.4: skills applied, and who made the decision (compare with Q3; ask for no amounts or names)",
    "required": true,
    "help": "",
    "source": "",
