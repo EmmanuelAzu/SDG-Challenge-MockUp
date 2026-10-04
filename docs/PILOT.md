@@ -78,7 +78,7 @@ These are proposals for PPS to confirm or change in `lib/pilot/analysis.ts`. Bel
 - **Shared devices:** between testers use Profile → "Delete my account / reset my data".
 - **How results reach you (no backend):** at the end each tester gets an anonymous **results code** (about 600 characters) and a short 4-character **participant ID** (for example 7K3Q). The results code is optional and sits behind a facilitator-only fold on the last screen; the in-app tracking is passive, on-device and holds no names, amounts or message text, so the pilot still works if you only use the Google Form plus observation, with the ID as the join key. They send the code by WhatsApp, email or file; a staff member pastes codes into **Staff console → Pilot results**, which shows the dashboard and exports a CSV. Join that CSV to the Google Form export on the participant ID. Codes from the earlier checklist pilot (they start with SISI2) are not accepted.
 - **Risk:** a tester who clears browser data before sending the code loses their record. Ask for the code before they leave.
-- Tester guide: `/pilot/guide` and `docs/Sisi-Pilot-Tester-Guide.pdf`.
+- Tester guide: `/pilot/guide` and `docs/Sisi-Pilot-Tester-Guide-FINAL.pdf`.
 
 ## 7. Threats to validity (say these when presenting results)
 
