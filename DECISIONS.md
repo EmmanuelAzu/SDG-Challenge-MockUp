@@ -32,3 +32,10 @@
 - Circle Cup / Campus Cup winners are chosen by `lib/jobs/winners.ts`; the 0-point `circle_cup` / `campus_cup` flag events drive the badge rules.
 - Courses: 5 courses / 10 lessons seeded so far (spec target is 11 courses / 30 lessons plus 6 reels); the rest is Phase 3/4 content work.
 - `SISI_PREVIEW=1 pnpm dev` swaps Supabase for an in-memory fixture backend (lib/preview/*) so every screen can be reviewed without a project. Dev-only: disabled when NODE_ENV=production.
+- Community build: 12 seeded communities (campus, workplace, interest) with tags; search is client-side over name, description, tags and kind; "Suggested for you" scores tag overlap with the user's Life Track and goals plus peers from shared communities.
+- Approval-only communities (PPS Young Professionals, Debt-Free Starters) show "Request pending"; staff approve or decline in the community's Manage tab.
+- Chat is real in the UI; other members are simulated (`lib/sim/chat.ts`): 1–2 keyword-aware replies per message, typing indicator, occasional reactions. Two tabs on different personas get genuine cross-tab chat.
+- Shared milestones = the community Feed. Auto-posts are created only when the author opted in (`shareMilestones`); never amounts. The friends-only Letterbox will reuse the same posts later.
+- The demo clock advances day by day (`advanceClock`): simulated members earn points and chat, the daily job runs each day (reminders, Circle Cup on the 1st, Campus Cup at season end).
+- Seeded sessions are relative to "now"; "today's" session may already be underway when the world is created.
+- Unread counts: before first opening a chat only messages since joining count; all personas start caught up.

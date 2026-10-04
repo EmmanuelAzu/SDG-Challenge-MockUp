@@ -5,6 +5,8 @@ import { Bloom } from '@/components/bloom';
 import { useApp } from '@/components/shell/app-context';
 import { playerFor } from '@/lib/engine/player';
 import { firstName } from '@/lib/engine/helpers';
+import { shouldAskShare } from '@/lib/engine/feed';
+import { update } from '@/lib/world/store';
 
 export default function HomePage() {
   const { w, me, now } = useApp();
@@ -41,6 +43,17 @@ export default function HomePage() {
               <div className="mt-1 h-2 rounded-full bg-pink-100"><div className="h-2 rounded-full bg-pink-300" style={{ width: `${level.progress * 100}%` }} /></div>
             </>
           )}
+        </div>
+      )}
+
+      {shouldAskShare(w, me.id) && (
+        <div className="mt-4 rounded-card bg-pink-100 p-4 text-sm">
+          <b>Share your milestones with friends?</b>
+          <p className="text-plum-500">Your badges and progress would appear in your communities’ feeds, never amounts. Off by default; you can change it any time in Profile.</p>
+          <div className="mt-2 flex gap-2">
+            <button onClick={() => update((x) => { x.users[me.id].shareMilestones = true; x.askedShare[me.id] = true; })} className="rounded-full bg-pink-600 px-4 py-1.5 font-semibold text-white">Yes, share</button>
+            <button onClick={() => update((x) => { x.askedShare[me.id] = true; })} className="rounded-full px-4 py-1.5 font-semibold text-pink-700 ring-1 ring-pink-300">Not now</button>
+          </div>
         </div>
       )}
 

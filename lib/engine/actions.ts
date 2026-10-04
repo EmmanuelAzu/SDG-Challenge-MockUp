@@ -6,25 +6,33 @@ import { evaluateBadges } from './badges';
 import { notify, track, uid } from './helpers';
 import { lessonKey, syncMilestones } from './milestones';
 import { FEEDBACK_PER_WEEK, POINTS } from './points';
-import { checkWeeklyTarget } from './weeklyTarget';
+import { postMilestones } from './feed';
+import { levelFor } from './levels';
+import { checkWeeklyTarget, weeklyFor } from './weeklyTarget';
 
 export const DEFAULT_REMINDER_DAYS: Record<number, number[]> = { 1: [3], 2: [2, 4], 3: [1, 3, 5] };
 const COLORS = ['#D81B60', '#7E57C2', '#0F7B5F', '#F2B33D', '#AD1457', '#F48FB1'];
 
 /** Call after any point-earning action: weekly target bonus, milestones, badges. */
-function afterEarn(w: World, userId: string, now: Date): { badges: EarnedBadge[]; milestones: string[] } {
+export function afterEarn(w: World, userId: string, now: Date): { badges: EarnedBadge[]; milestones: string[] } {
   checkWeeklyTarget(w, userId, now);
   const milestones = syncMilestones(w, userId, now);
   const badges = evaluateBadges(w, userId, now);
   return { badges, milestones };
 }
 
-/** Runs a mutation and reports what it earned (points delta, badges, milestones). */
-function earning(w: World, userId: string, now: Date, fn: () => void): Earned {
+/** Runs a mutation and reports what it earned (points delta, badges, milestones), and shares milestones with the community feed if the user opted in. */
+export function earning(w: World, userId: string, now: Date, fn: () => void): Earned {
   const before = xpOf(w, userId);
+  const levelBefore = levelFor(before).name;
+  const wtBefore = w.pointEvents.filter((p) => p.userId === userId && p.source === 'weekly_target').length;
   fn();
   const e = afterEarn(w, userId, now);
-  return { ...e, points: xpOf(w, userId) - before };
+  const after = xpOf(w, userId);
+  const levelAfter = levelFor(after).name;
+  const weeklyHit = w.pointEvents.filter((p) => p.userId === userId && p.source === 'weekly_target').length > wtBefore;
+  postMilestones(w, userId, { badges: e.badges, milestones: e.milestones, level: levelAfter !== levelBefore ? levelAfter : null, weeklyStreak: weeklyHit ? weeklyFor(w, userId, now).streakWeeks : null }, now);
+  return { ...e, points: after - before };
 }
 
 export function startLesson(w: World, userId: string, lessonId: string, now: Date) {
@@ -118,7 +126,7 @@ export function voteTopic(w: World, userId: string, id: string) {
 export function joinCommunity(w: World, userId: string, communityId: string, now: Date) {
   const c = w.communities.find((x) => x.id === communityId);
   if (!c || w.communityMembers.some((m) => m.communityId === communityId && m.userId === userId)) return;
-  w.communityMembers.push({ communityId, userId, role: 'member', status: c.requiresApproval ? 'pending' : 'active', joinedAt: now.toISOString() });
+  w.communityMembers.push({ communityId, userId, role: 'member', status: c.requiresApproval ? 'pending' : 'active', joinedAt: now.toISOString(), agreedAt: null });
 }
 
 export type OnboardingInput = { displayName: string; nickname: string; communityId: string | null; joinCode?: string; quiz: QuizAnswers; confidence: number[]; };

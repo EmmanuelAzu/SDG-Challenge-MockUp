@@ -30,8 +30,8 @@ export type User = {
   sim?: boolean;
 };
 
-export type Community = { id: string; slug: string; name: string; description: string; kind: 'university' | 'workplace' | 'community' | 'oweek'; joinCode: string; requiresApproval: boolean };
-export type CommunityMember = { communityId: string; userId: string; role: 'member' | 'facilitator' | 'admin'; status: 'pending' | 'active'; joinedAt: ISO };
+export type Community = { id: string; slug: string; name: string; description: string; kind: 'university' | 'workplace' | 'community' | 'oweek'; joinCode: string; requiresApproval: boolean; tags: string[]; emoji: string; color: string; createdAt: ISO };
+export type CommunityMember = { communityId: string; userId: string; role: 'member' | 'facilitator' | 'admin'; status: 'pending' | 'active'; joinedAt: ISO; agreedAt: ISO | null };
 export type Circle = { id: string; communityId: string; name: string; topic: string; facilitatorId: string; weekday: number; startTime: string; capacity: number; isOpen: boolean };
 export type CircleMember = { circleId: string; userId: string; agreedAt: ISO | null; joinedAt: ISO };
 
@@ -42,6 +42,25 @@ export type Survey = { userId: string; kind: 'pre' | 'post'; answers: number[]; 
 export type Feedback = { userId: string; lessonId: string; rating: number; text: string; at: ISO };
 export type TopicSuggestion = { id: string; userId: string; body: string; voters: string[]; at: ISO };
 export type ShareLink = { code: string; userId: string; badgeId: string; at: ISO; revoked: boolean };
+
+export type Channel = { id: string; kind: 'circle' | 'community' | 'buddy'; refId: string };
+export type Message = { id: string; channelId: string; userId: string | null; body: string; replyTo: string | null; kind: 'user' | 'system'; pinned: boolean; deleted: boolean; at: ISO; image?: string };
+export type Reaction = { messageId: string; userId: string; emoji: string };
+export type Report = { id: string; messageId: string; reporterId: string; reason: string; status: 'open' | 'dismissed' | 'actioned'; at: ISO };
+
+export type EventType = 'workshop' | 'expert_qa' | 'oweek' | 'meetup';
+export type SisiEvent = { id: string; communityId: string | null; type: EventType; title: string; description: string; agenda: string[]; hostName: string; hostRole: string; startsAt: ISO; endsAt: ISO; location: string; online: boolean; capacity: number; emoji: string; published: boolean };
+export type Booking = { id: string; eventId: string; userId: string; status: 'booked' | 'waitlisted' | 'cancelled' | 'checked_in'; ticketCode: string; waitlistPosition: number | null; at: ISO };
+export type Session = { id: string; communityId: string; circleId: string; title: string; startsAt: ISO; endsAt: ISO; location: string; seriesId: string; cancelled: boolean };
+export type Attendance = { sessionId: string; userId: string; rating: number | null };
+
+export type FeedKind = 'badge' | 'milestone' | 'level' | 'weekly' | 'announcement';
+export type FeedPost = { id: string; userId: string; communityId: string | null; kind: FeedKind; text: string; refSlug?: string; pinned?: boolean; at: ISO };
+export type FeedReaction = { postId: string; userId: string; emoji: string };
+export type FeedNote = { id: string; postId: string; userId: string; body: string; at: ISO };
+
+export type Challenge = { id: string; communityId: string | null; title: string; description: string; points: number; weekStart: string };
+export type CampusSeason = { id: string; name: string; startsOn: string; endsOn: string; prizeText: string; communityIds: string[]; awardedAt: ISO | null };
 
 export type Notification = { id: string; userId: string; kind: string; title: string; body: string; href: string; at: ISO; read: boolean; key?: string };
 export type AnalyticsEvent = { id: string; userId: string; name: string; props: Record<string, string | number | boolean>; at: ISO };
@@ -65,6 +84,25 @@ export type World = {
   feedback: Feedback[];
   topicSuggestions: TopicSuggestion[];
   shares: ShareLink[];
+  channels: Channel[];
+  messages: Message[];
+  reactions: Reaction[];
+  reports: Report[];
+  blocks: { blockerId: string; blockedId: string }[];
+  mutes: { channelId: string; userId: string; until: ISO }[];
+  reads: Record<string, ISO>; // `${userId}:${channelId}`
+  events: SisiEvent[];
+  bookings: Booking[];
+  sessions: Session[];
+  rsvps: Record<string, 'going' | 'maybe' | 'no'>; // `${sessionId}:${userId}`
+  attendance: Attendance[];
+  feed: FeedPost[];
+  feedReactions: FeedReaction[];
+  feedNotes: FeedNote[];
+  challenges: Challenge[];
+  challengeDone: { challengeId: string; userId: string; at: ISO }[];
+  seasons: CampusSeason[];
+  askedShare: Record<string, boolean>;
   notifications: Notification[];
   analytics: AnalyticsEvent[];
 };

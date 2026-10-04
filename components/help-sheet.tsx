@@ -2,12 +2,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { HelpCircle, X } from 'lucide-react';
+import { useRaised } from '@/components/shell/use-raised';
 
 export function HelpSheet() {
   const [open, setOpen] = useState(false);
+  const raised = useRaised();
   return (
     <>
-      <button onClick={() => setOpen(true)} aria-label="Help" className="fixed bottom-20 right-4 z-30 rounded-full bg-pink-600 p-3 text-white shadow-lg md:bottom-6">
+      <button onClick={() => setOpen(true)} aria-label="Help" className={`fixed right-4 z-30 rounded-full bg-pink-600 p-3 text-white shadow-lg md:bottom-6 ${raised ? 'bottom-44' : 'bottom-20'}`}>
         <HelpCircle size={24} />
       </button>
       {open && (

@@ -2,7 +2,7 @@
 import { buildWorld, WORLD_VERSION } from './seed';
 import type { World } from './types';
 
-const KEY = 'sisi.world.v1';
+const KEY = 'sisi.world.v2';
 const SESSION = 'sisi.session';
 
 let world: World | null = null;
